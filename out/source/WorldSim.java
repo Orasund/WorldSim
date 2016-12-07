@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException; 
 
-public class world_sim extends PApplet {
+public class WorldSim extends PApplet {
 
 /* PRESS STRG+SHIFT+B TO COMPILE */
 int[][] TEMPLATE;
@@ -2648,7 +2648,7 @@ public void registerObjects()
 }
   public void settings() {  size(640, 640); }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "world_sim" };
+    String[] appletArgs = new String[] { "WorldSim" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {
