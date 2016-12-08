@@ -6,8 +6,6 @@ Simulation initOrganicSim(final int[][] template,String group)
   Part[] Tiles = Game.ObjectManager.getGroup(group);
   int size = template[0].length;
 
-  //int[][] organics = new int[size][size];
-  //creating Organic table
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
     {
@@ -19,16 +17,12 @@ Simulation initOrganicSim(final int[][] template,String group)
           println("BUG in simOrganic:groupname not elements");
           return sim;
         }
-        //organics[i][j] = Tiles[template[i][j]].getResources()[3];
         sim.setEntry("organics",i,j,Tiles[template[i][j]].getResources()[3]);
       }
       else
         sim.setEntry("organics",i,j,0);
     }
       
-  
-  //int[][] water = new int[size][size];
-  //int[][] water_buffer = new int[size][size];
   //creating water table and water_buffer
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
@@ -81,109 +75,52 @@ int[][] simOrganic(final int[][] template,final int[][] temp_template_,String gr
     for(int j = 0; j<size; j++)
       temp_template[i][j] = temp_template_[i][j];
 
-  /*Part[] Tiles = Game.ObjectManager.getGroup(group);
-  int size = template[0].length;
-
-  int[][] temp_template = new int[size][size];
-
-  //int[][] organics = new int[size][size];
+  for(int i = 0; i<size; i++)
+    for(int j = 0; j<size; j++)
+      sim.setEntry("water_buffer",i,j,sim.getEntry("water",i,j));
+  
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
     {
-      temp_template[i][j] = temp_template_[i][j];
-
-
-      if(Tiles[template[i][j]].is("organic"))
-      {
-        //we assume that the groupname is element
-        if(Tiles[template[i][j]].getGroupName().equals("elements")==false)
-        {
-          println("BUG in simOrganic:groupname not elements");
-          return temp_template;
-        }
-        //organics[i][j] = Tiles[template[i][j]].getResources()[3];
-        sim.setEntry(1,i,j) = Tiles[template[i][j]].getResources()[3];
-      }
-      else
-        organics[i][j] = 0;
-    }
+      if(sim.getEntry("water",i,j)<=0)
+        continue;
       
-
-  int[][] water = new int[size][size];
-  int[][] water_buffer = new int[size][size];
-  for(int i = 0; i<size; i++)
-    for(int j = 0; j<size; j++)
-      if(Tiles[template[i][j]].is("water"))
+      for(int k = 0; k<4; k++)
       {
-        water[i][j] = 100;
-        water_buffer[i][j] = 100;
-      }*/
-  
-  for(int iter = 0; iter < 16; iter++)
-  {
-    //int[][] organics = sim.getTable("organics");
-    //int[][] water = sim.getTable("water");
-    //int[][] water_buffer = sim.getTable("water_buffer");
-
-    for(int i = 0; i<size; i++)
-      for(int j = 0; j<size; j++)
-        //water_buffer[i][j] = water[i][j];
-        sim.setEntry("water_buffer",i,j,sim.getEntry("water",i,j));
-    
-    for(int i = 0; i<size; i++)
-      for(int j = 0; j<size; j++)
-      {
-        //if(water[i][j]<=0)
-        if(sim.getEntry("water",i,j)<=0)
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(x<0 || y<0 || x>=size || y>=size)
+          continue;
+        if(sim.getEntry("organics",x,y)==0)
           continue;
         
-        for(int k = 0; k<4; k++)
-        {
-          x = i+dir[k][0];
-          y = j+dir[k][1];
-          if(x<0 || y<0 || x>=size || y>=size)
-            continue;
-          //if(organics[x][y]==0)
-          if(sim.getEntry("organics",x,y)==0)
-            continue;
-          
-         // water[x][y]+=water[i][j];
-          sim.setEntry("water",x,y,sim.getEntry("water",i,j));
-          //if(water[x][y]>organics[x][y])
-          if(sim.getEntry("water",x,y)>sim.getEntry("organics",x,y))
-            //water[x][y]=organics[x][y];
-            sim.setEntry("water",x,y,sim.getEntry("organics",x,y));
-        }
+        sim.setEntry("water",x,y,sim.getEntry("water",i,j));
+        if(sim.getEntry("water",x,y)>sim.getEntry("organics",x,y))
+          sim.setEntry("water",x,y,sim.getEntry("organics",x,y));
       }
-    
-    for(int i = 0; i<size; i++)
-      for(int j = 0; j<size; j++)
+    }
+  
+  for(int i = 0; i<size; i++)
+    for(int j = 0; j<size; j++)
+    {
+      if(sim.getEntry("water_buffer",i,j)>0)
       {
-        //if(water_buffer[i][j]>0)
-        if(sim.getEntry("water_buffer",i,j)>0)
-        {
-          //water[i][j] = 0;
-          sim.setEntry("water",i,j,0);
-          //organics[i][j] = 0;
-          sim.setEntry("organics",i,j,0);
-        }
-
-        if(sim.getEntry("organics",i,j)==0)
-        //if(organics[i][j] == 0)
-          continue;
-
-        //if(organics[i][j] == 1)
-        if(sim.getEntry("organics",i,j)==1)
-        {
-          //Delete
-          if(Tiles[temp_template[i][j]].is("organic"))
-            temp_template[i][j] = 0;
-        }
-
-        //organics[i][j]--;
-        sim.setEntry("organics",i,j,sim.getEntry("organics",i,j)-1);
+        sim.setEntry("water",i,j,0);
+        sim.setEntry("organics",i,j,0);
       }
-  }
+
+      if(sim.getEntry("organics",i,j)==0)
+        continue;
+
+      if(sim.getEntry("organics",i,j)==1)
+      {
+        //Delete
+        if(Tiles[temp_template[i][j]].is("organic"))
+          temp_template[i][j] = 0;
+      }
+
+      sim.setEntry("organics",i,j,sim.getEntry("organics",i,j)-1);
+    }
 
   return temp_template;
 }

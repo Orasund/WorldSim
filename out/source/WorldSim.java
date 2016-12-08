@@ -76,6 +76,91 @@ public void keyPressed()
   String out = new String(k);
   Game.InputHandler.registerInput(out);
 }
+public Simulation initOrganicSpawnSim(final int[][] template,String group)
+{
+  String[] names = {"water","organic_spawn"};
+  Simulation sim = new Simulation(names);
+  Part[] Tiles = Game.ObjectManager.getGroup(group);
+  int size = template[0].length;
+
+    //creating water table and organic_spawn
+  for(int i = 0; i<size; i++)
+    for(int j = 0; j<size; j++)
+    {
+      if(Tiles[template[i][j]].is("water"))
+      {
+        sim.setEntry("water",i,j, 1);
+      }
+
+      if(Tiles[template[i][j]].is("organic_spawn"))
+      {
+        sim.setEntry("organic_spawn",i,j, 1);
+      }
+    }
+
+  return sim; 
+}
+
+public int[][] simOrganicSpawn(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y,x2,y2;
+  int size = template[0].length;
+  Part[] Tiles = Game.ObjectManager.getGroup(group);
+
+  int[][] temp_template = new int[size][size];
+  for(int i = 0; i<size; i++)
+    for(int j = 0; j<size; j++)
+      temp_template[i][j] = temp_template_[i][j];
+
+  for(int i = 0; i<size; i++)
+    for(int j = 0; j<size; j++)
+    {
+      if(sim.getEntry("organic_spawn",i,j)==0)
+        continue;
+
+      //create new spawn if possible
+
+      for(int k = 0; k<4; k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(x<0 || y<0 || x>=size || y>=size)
+          continue;
+
+        if(sim.getEntry("water",x,y)==0)
+          continue;
+        
+        if(sim.getEntry("organic_spawn",x,y)==1)
+          continue;
+
+        //two or three waters next to it are allowed
+        int count = 0;
+        for(int l = 0; l<4; l++)
+        {
+          x2 = x+dir[l][0];
+          y2 = y+dir[l][1];
+          if(x2<0 || y2<0 || x2>=size || y2>=size)
+          continue;
+
+          if(sim.getEntry("water",x2,y2)==0)
+            continue;
+          
+          count++;
+        }
+
+        if(count>3 || count <2)
+          continue;
+        
+        //new spawn can be created
+        temp_template[x][y] = template[i][j];
+        sim.setEntry("organic_spawn",x,y,1);
+        println("hey hoo");
+      }
+    }
+
+  return temp_template;
+}
 public Simulation initOrganicSim(final int[][] template,String group)
 {
   String[] names = {"organics","water","water_buffer"};
@@ -84,8 +169,6 @@ public Simulation initOrganicSim(final int[][] template,String group)
   Part[] Tiles = Game.ObjectManager.getGroup(group);
   int size = template[0].length;
 
-  //int[][] organics = new int[size][size];
-  //creating Organic table
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
     {
@@ -97,16 +180,12 @@ public Simulation initOrganicSim(final int[][] template,String group)
           println("BUG in simOrganic:groupname not elements");
           return sim;
         }
-        //organics[i][j] = Tiles[template[i][j]].getResources()[3];
         sim.setEntry("organics",i,j,Tiles[template[i][j]].getResources()[3]);
       }
       else
         sim.setEntry("organics",i,j,0);
     }
       
-  
-  //int[][] water = new int[size][size];
-  //int[][] water_buffer = new int[size][size];
   //creating water table and water_buffer
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
@@ -159,109 +238,52 @@ public int[][] simOrganic(final int[][] template,final int[][] temp_template_,St
     for(int j = 0; j<size; j++)
       temp_template[i][j] = temp_template_[i][j];
 
-  /*Part[] Tiles = Game.ObjectManager.getGroup(group);
-  int size = template[0].length;
-
-  int[][] temp_template = new int[size][size];
-
-  //int[][] organics = new int[size][size];
+  for(int i = 0; i<size; i++)
+    for(int j = 0; j<size; j++)
+      sim.setEntry("water_buffer",i,j,sim.getEntry("water",i,j));
+  
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
     {
-      temp_template[i][j] = temp_template_[i][j];
-
-
-      if(Tiles[template[i][j]].is("organic"))
-      {
-        //we assume that the groupname is element
-        if(Tiles[template[i][j]].getGroupName().equals("elements")==false)
-        {
-          println("BUG in simOrganic:groupname not elements");
-          return temp_template;
-        }
-        //organics[i][j] = Tiles[template[i][j]].getResources()[3];
-        sim.setEntry(1,i,j) = Tiles[template[i][j]].getResources()[3];
-      }
-      else
-        organics[i][j] = 0;
-    }
+      if(sim.getEntry("water",i,j)<=0)
+        continue;
       
-
-  int[][] water = new int[size][size];
-  int[][] water_buffer = new int[size][size];
-  for(int i = 0; i<size; i++)
-    for(int j = 0; j<size; j++)
-      if(Tiles[template[i][j]].is("water"))
+      for(int k = 0; k<4; k++)
       {
-        water[i][j] = 100;
-        water_buffer[i][j] = 100;
-      }*/
-  
-  for(int iter = 0; iter < 16; iter++)
-  {
-    //int[][] organics = sim.getTable("organics");
-    //int[][] water = sim.getTable("water");
-    //int[][] water_buffer = sim.getTable("water_buffer");
-
-    for(int i = 0; i<size; i++)
-      for(int j = 0; j<size; j++)
-        //water_buffer[i][j] = water[i][j];
-        sim.setEntry("water_buffer",i,j,sim.getEntry("water",i,j));
-    
-    for(int i = 0; i<size; i++)
-      for(int j = 0; j<size; j++)
-      {
-        //if(water[i][j]<=0)
-        if(sim.getEntry("water",i,j)<=0)
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(x<0 || y<0 || x>=size || y>=size)
+          continue;
+        if(sim.getEntry("organics",x,y)==0)
           continue;
         
-        for(int k = 0; k<4; k++)
-        {
-          x = i+dir[k][0];
-          y = j+dir[k][1];
-          if(x<0 || y<0 || x>=size || y>=size)
-            continue;
-          //if(organics[x][y]==0)
-          if(sim.getEntry("organics",x,y)==0)
-            continue;
-          
-         // water[x][y]+=water[i][j];
-          sim.setEntry("water",x,y,sim.getEntry("water",i,j));
-          //if(water[x][y]>organics[x][y])
-          if(sim.getEntry("water",x,y)>sim.getEntry("organics",x,y))
-            //water[x][y]=organics[x][y];
-            sim.setEntry("water",x,y,sim.getEntry("organics",x,y));
-        }
+        sim.setEntry("water",x,y,sim.getEntry("water",i,j));
+        if(sim.getEntry("water",x,y)>sim.getEntry("organics",x,y))
+          sim.setEntry("water",x,y,sim.getEntry("organics",x,y));
       }
-    
-    for(int i = 0; i<size; i++)
-      for(int j = 0; j<size; j++)
+    }
+  
+  for(int i = 0; i<size; i++)
+    for(int j = 0; j<size; j++)
+    {
+      if(sim.getEntry("water_buffer",i,j)>0)
       {
-        //if(water_buffer[i][j]>0)
-        if(sim.getEntry("water_buffer",i,j)>0)
-        {
-          //water[i][j] = 0;
-          sim.setEntry("water",i,j,0);
-          //organics[i][j] = 0;
-          sim.setEntry("organics",i,j,0);
-        }
-
-        if(sim.getEntry("organics",i,j)==0)
-        //if(organics[i][j] == 0)
-          continue;
-
-        //if(organics[i][j] == 1)
-        if(sim.getEntry("organics",i,j)==1)
-        {
-          //Delete
-          if(Tiles[temp_template[i][j]].is("organic"))
-            temp_template[i][j] = 0;
-        }
-
-        //organics[i][j]--;
-        sim.setEntry("organics",i,j,sim.getEntry("organics",i,j)-1);
+        sim.setEntry("water",i,j,0);
+        sim.setEntry("organics",i,j,0);
       }
-  }
+
+      if(sim.getEntry("organics",i,j)==0)
+        continue;
+
+      if(sim.getEntry("organics",i,j)==1)
+      {
+        //Delete
+        if(Tiles[temp_template[i][j]].is("organic"))
+          temp_template[i][j] = 0;
+      }
+
+      sim.setEntry("organics",i,j,sim.getEntry("organics",i,j)-1);
+    }
 
   return temp_template;
 }
@@ -313,26 +335,45 @@ public class Chunk implements Part
     y = 0;
   }
 
-  Chunk(String name_, int[][] template,String group_)
+  Chunk(String name_, int[][] template_,String group_)
   { 
-    resources = new int[8];
-    for(int i = 0;i<8;i++)
+    int size = 8;
+    resources = new int[size];
+    for(int i = 0;i<size;i++)
     {
       resources[i] = 0;
     }
 
-    blocks = new int[8][8];
-    for(int j = 0;j<8;j++)
-      for(int k = 0;k<8;k++)
-        blocks[j][k] = template[j][k];
+    
+    int[][] temp_template = new int[size][size];
+    blocks = new int[size][size];
+    for(int j = 0;j<size;j++)
+      for(int k = 0;k<size;k++)
+      {
+        temp_template[j][k] = template_[j][k];
+        blocks[j][k] = template_[j][k];
+      }
+        
 
-    Simulation organicSim = initOrganicSim(template,group_);
-    blocks = simOrganic(template,blocks,group_,organicSim);
-    for(int j = 0;j<8;j++)
-      for(int k = 0;k<8;k++)
+    Simulation organicSim = initOrganicSim(template_,group_);
+    Simulation organicSpawnSim = initOrganicSpawnSim(template_,group_);
+    
+    for(int iter=0; iter<16; iter++)    
+    {
+      temp_template = simOrganic(blocks,temp_template,group_,organicSim);
+      temp_template = simOrganicSpawn(blocks,temp_template,group_,organicSpawnSim);
+      
+      for(int i = 0; i<size; i++)
+        for(int j = 0; j<size; j++)
+          blocks[i][j] = temp_template[i][j];
+    }
+      
+
+    for(int j = 0;j<size;j++)
+      for(int k = 0;k<size;k++)
       {
         //blocks[j][k] = template[j][k];
-        resources[template[j][k]]++;
+        resources[blocks[j][k]]++;
       }
     
     name = name_;
@@ -883,30 +924,6 @@ public class Space extends Element
     return "Space";
   }
 }*/
-class Water extends Tile
-{
-  Water(int[][][] img_,int[]resources_,int background_, int x, int y)
-  {
-    super(img_,resources_,background_,x,y,color(0,0,255));
-  }
-
-  Water(int[][] template)
-  { 
-    super(template,color(0,0,255));
-  }
-
-  public Water copy()
-  {
-    Water out = new Water(img,resources,background,x,y);
-    return out;
-  }
-
-  public boolean is(String type){
-    if(type.equals("water"))
-      return true;
-    return false;
-  }
-}
 public class Element implements Part
 {
   private int c;
@@ -1479,6 +1496,56 @@ class Organic extends Tile
 
   public boolean is(String type){
     if(type.equals("organic"))
+      return true;
+    return false;
+  }
+}
+class OrganicSpawn extends Tile
+{
+  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int x, int y)
+  {
+    super(img_,resources_,background_,x,y,color(0,0,255));
+  }
+
+  OrganicSpawn(int[][] template)
+  { 
+    super(template,color(0,0,255));
+  }
+
+  public OrganicSpawn copy()
+  {
+    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y);
+    return out;
+  }
+
+  public boolean is(String type){
+    if(type.equals("water"))
+      return true;
+    if(type.equals("organic_spawn"))
+      return true;
+    return false;
+  }
+}
+class Water extends Tile
+{
+  Water(int[][][] img_,int[]resources_,int background_, int x, int y)
+  {
+    super(img_,resources_,background_,x,y,color(0,0,255));
+  }
+
+  Water(int[][] template)
+  { 
+    super(template,color(0,0,255));
+  }
+
+  public Water copy()
+  {
+    Water out = new Water(img,resources,background,x,y);
+    return out;
+  }
+
+  public boolean is(String type){
+    if(type.equals("water"))
       return true;
     return false;
   }
@@ -2274,7 +2341,7 @@ public Tile createMoss(){return new Tile(solidTemplate(50,20,10),color(0,0,0));}
 public Tile createGround(){return new Tile(groundTemplate(10,0,0),color(0,0,0));}
 public Tile createLake(){return new Water(groundTemplate(0,50,0));}//,color(0,0,255));}
 public Tile createStone(){return new Tile(solidTemplate(80,1,0),color(0,0,0));}
-public Tile createAlga(){return new Water(groundTemplate(0,20,4));}//,color(0,0,255));}
+public Tile createAlga(){return new OrganicSpawn(groundTemplate(0,20,4));}//,color(0,0,255));}
 
 public Chunk createChunk(String name, int[] amount, String[] names, String group_name)
 {

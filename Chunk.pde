@@ -46,26 +46,45 @@ public class Chunk implements Part
     y = 0;
   }
 
-  Chunk(String name_, int[][] template,String group_)
+  Chunk(String name_, int[][] template_,String group_)
   { 
-    resources = new int[8];
-    for(int i = 0;i<8;i++)
+    int size = 8;
+    resources = new int[size];
+    for(int i = 0;i<size;i++)
     {
       resources[i] = 0;
     }
 
-    blocks = new int[8][8];
-    for(int j = 0;j<8;j++)
-      for(int k = 0;k<8;k++)
-        blocks[j][k] = template[j][k];
+    
+    int[][] temp_template = new int[size][size];
+    blocks = new int[size][size];
+    for(int j = 0;j<size;j++)
+      for(int k = 0;k<size;k++)
+      {
+        temp_template[j][k] = template_[j][k];
+        blocks[j][k] = template_[j][k];
+      }
+        
 
-    Simulation organicSim = initOrganicSim(template,group_);
-    blocks = simOrganic(template,blocks,group_,organicSim);
-    for(int j = 0;j<8;j++)
-      for(int k = 0;k<8;k++)
+    Simulation organicSim = initOrganicSim(template_,group_);
+    Simulation organicSpawnSim = initOrganicSpawnSim(template_,group_);
+    
+    for(int iter=0; iter<16; iter++)    
+    {
+      temp_template = simOrganic(blocks,temp_template,group_,organicSim);
+      temp_template = simOrganicSpawn(blocks,temp_template,group_,organicSpawnSim);
+      
+      for(int i = 0; i<size; i++)
+        for(int j = 0; j<size; j++)
+          blocks[i][j] = temp_template[i][j];
+    }
+      
+
+    for(int j = 0;j<size;j++)
+      for(int k = 0;k<size;k++)
       {
         //blocks[j][k] = template[j][k];
-        resources[template[j][k]]++;
+        resources[blocks[j][k]]++;
       }
     
     name = name_;
