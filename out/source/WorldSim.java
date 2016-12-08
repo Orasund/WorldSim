@@ -155,7 +155,6 @@ public int[][] simOrganicSpawn(final int[][] template,final int[][] temp_templat
         //new spawn can be created
         temp_template[x][y] = template[i][j];
         sim.setEntry("organic_spawn",x,y,1);
-        println("hey hoo");
       }
     }
 
@@ -965,9 +964,9 @@ public class Element implements Part
         temp_template[i][j]=temp_template_[i][j];
 
     //String[] a = {};
-    Msg msg = new Msg("interpreter","idle",new JSONObject());
+    //Msg msg = new Msg("interpreter","idle",new JSONObject());
 
-    return interpretPart(msg,template,temp_template,x,y);
+    return temp_template;//interpretPart(msg,template,temp_template,x,y);
   }
 
   public int getColor()
@@ -1475,9 +1474,14 @@ public class Msg
 class Organic extends Tile
 {
   //int food;
-  Organic(int[][][] img_,int[]resources_,int background_, int x, int y)
+  Organic(int[][][] img_,int[]resources_,int background_, int x_, int y_,int c_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x,y,color(0,255,0));
+    super(img_,resources_,background_,x_,y_,c_,types_);
+  }
+
+  Organic(int[][][] img_,int[]resources_,int background_, int x_, int y_, Set<Boolean> types_)
+  {
+    super(img_,resources_,background_,x_,y_,color(0,255,0),types_);
   }
 
   Organic(int[][] template)
@@ -1489,7 +1493,7 @@ class Organic extends Tile
 
   public Organic copy()
   {
-    Organic out = new Organic(img,resources,background,x,y);
+    Organic out = new Organic(img,resources,background,x,y,types);
     //out.food = food;
     return out;
   }
@@ -1502,9 +1506,14 @@ class Organic extends Tile
 }
 class OrganicSpawn extends Tile
 {
-  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int x, int y)
+  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int x_, int y_,int c_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x,y,color(0,0,255));
+    super(img_,resources_,background_,x_,y_,c_,types_);
+  }
+
+  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int x_, int y_,Set<Boolean> types_)
+  {
+    super(img_,resources_,background_,x_,y_,color(0,0,255),types_);
   }
 
   OrganicSpawn(int[][] template)
@@ -1514,7 +1523,7 @@ class OrganicSpawn extends Tile
 
   public OrganicSpawn copy()
   {
-    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y);
+    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y,types);
     return out;
   }
 
@@ -1528,9 +1537,14 @@ class OrganicSpawn extends Tile
 }
 class Water extends Tile
 {
-  Water(int[][][] img_,int[]resources_,int background_, int x, int y)
+  Water(int[][][] img_,int[]resources_,int background_, int x_, int y_,int c_,Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x,y,color(0,0,255));
+    super(img_,resources_,background_,x_,y_,c_,types_);
+  }
+
+  Water(int[][][] img_,int[]resources_,int background_, int x_, int y_,Set<Boolean> types_)
+  {
+    super(img_,resources_,background_,x_,y_,color(0,0,255),types_);
   }
 
   Water(int[][] template)
@@ -1540,7 +1554,7 @@ class Water extends Tile
 
   public Water copy()
   {
-    Water out = new Water(img,resources,background,x,y);
+    Water out = new Water(img,resources,background,x,y,types);
     return out;
   }
 
@@ -1594,7 +1608,7 @@ public class ObjectManager implements Service
     return database.getGroup(name);
   }
 }
-public int[][] interpretPart(Msg msg, int[][] template,int[][] temp_template_, int x, int y)
+/*int[][] interpretPart(Msg msg, int[][] template,int[][] temp_template_, int x, int y)
 {
   int[][] temp_template = new int[8][8];
     for(int i=0;i<8;i++)
@@ -1609,7 +1623,7 @@ public int[][] interpretPart(Msg msg, int[][] template,int[][] temp_template_, i
   }
 
   return temp_template;
-}
+}*/
 public class Player implements Service
 {
   private PVector pos;
@@ -2336,12 +2350,18 @@ public Chunk createForestChunk()
   return createChunk("mountain",amount,names,"tiles");
 }
 
-public Tile createBush(){return new Organic(plantTemplate(0,10,10));}
-public Tile createMoss(){return new Tile(solidTemplate(50,20,10),color(0,0,0));}
-public Tile createGround(){return new Tile(groundTemplate(10,0,0),color(0,0,0));}
-public Tile createLake(){return new Water(groundTemplate(0,50,0));}//,color(0,0,255));}
-public Tile createStone(){return new Tile(solidTemplate(80,1,0),color(0,0,0));}
-public Tile createAlga(){return new OrganicSpawn(groundTemplate(0,20,4));}//,color(0,0,255));}
+//Tile createBush(){return new Organic(plantTemplate(0,10,10));}
+public Tile createBush(){return evaluateTile(plantTemplate(0,10,10));}
+//Tile createMoss(){return new Tile(solidTemplate(50,20,10),color(0,0,0));}
+public Tile createMoss(){return evaluateTile(solidTemplate(50,20,10));}
+//Tile createGround(){return new Tile(groundTemplate(10,0,0),color(0,0,0));}
+public Tile createGround(){return evaluateTile(groundTemplate(10,0,0));}
+//Tile createLake(){return new Water(groundTemplate(0,50,0));}
+public Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
+//Tile createStone(){return new Tile(solidTemplate(80,1,0),color(0,0,0));}
+public Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
+//Tile createAlga(){return new OrganicSpawn(groundTemplate(0,20,4));}
+public Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
 
 public Chunk createChunk(String name, int[] amount, String[] names, String group_name)
 {
@@ -2430,8 +2450,9 @@ public class Tile implements Part
   public int x;
   public int y;
   private String name;
+  public Set<Boolean> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, int x, int y, int c)
+  Tile(int[][][] img_,int[]resources_,int background_, int x, int y, int c,Set<Boolean> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -2443,6 +2464,8 @@ public class Tile implements Part
     for(int i = 0;i<5;i++)
       resources[i] = resources_[i];
     
+    types = types_.copy();
+
     background = background_;
     //isObj = isObj_;
 
@@ -2462,6 +2485,8 @@ public class Tile implements Part
     for(int k = 0;k<5;k++)
       resources_[k] = 0;
     
+    types = new Set<Boolean>();
+    
     background = 0;
     //isObj = false;
     c = c_;
@@ -2471,7 +2496,9 @@ public class Tile implements Part
   }
 
   Tile(int[][] template, int c_)
-  {    
+  { 
+    types = new Set<Boolean>();
+
     int[][] temp_template = new int[8][8];
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
@@ -2516,7 +2543,7 @@ public class Tile implements Part
     y = 0;
   }
 
-  public Tile copy(){return new Tile(img,resources,background,x,y,c);}
+  public Tile copy(){return new Tile(img,resources,background,x,y,c,types);}
 
   public int getX(){return x;}
 
@@ -2528,7 +2555,7 @@ public class Tile implements Part
 
   public Part createInstance(int x, int y)
   {
-    return new Tile(img,resources,background,x,y,c);
+    return new Tile(img,resources,background,x,y,c,types);
   }
 
   //Pls remove as fast as possible
@@ -2646,6 +2673,82 @@ public void draw()
   {
     Game.SceneManager.renderArea();
   }
+}
+public Tile evaluateTile(int[][] template)
+{
+  Tile out;
+  Set<Boolean> types = new Set<Boolean>();
+
+  //Iterate for 16 Ticks
+  int[][] temp_template = new int[8][8];
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      temp_template[i][j]=template[i][j];
+  
+  int[][] map_empty = new int[8][8];
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      map_empty[i][j]=0;
+      
+  for(int k = 0;k<16;k++)
+  {
+    //temp_template = iterate(temp_template,map_empty,0,0);
+    temp_template = iterateTile(temp_template,map_empty);
+  }
+  
+  int[][][] img = new int[6][8][8];
+  int[] resources = new int[5];
+  for(int k = 0;k<6;k++)
+  {
+    //temp_template = iterate(temp_template,map_empty,0,0);
+    temp_template = iterateTile(temp_template,map_empty);
+    for(int i=0;i<8;i++)
+      for(int j=0;j<8;j++)
+      {
+        img[k][i][j] = temp_template[i][j];
+        if(k==0)
+          resources[temp_template[i][j]]=0;
+        if(k==5)
+          resources[temp_template[i][j]]++;
+      }
+  }
+
+  //create simple Background
+  // 1 stone = 4 void
+  // 1 source = 3 stone = 12 void
+  // 1 life = 2.66 source = 5 stone = 20 void
+  int[] mult = {1,4,12,20,1};
+  int background = 0;
+  for(int i=1;i<5;i++)
+    if(mult[i]*resources[i]>mult[background]*resources[background])
+      background = i;
+  
+  //life
+  switch(background)
+  {
+    //organic
+    case 3:
+      out = new Organic(img,resources,background,0,0,color(0,255,0),types);
+      break;
+
+    //water
+    case 2:
+      //does life exist?
+      if(resources[3]>0) //OrganicSpawn
+        out = new OrganicSpawn(img,resources,background,0,0,color(0,0,255),types);
+      else //water
+        out = new Water(img,resources,background,0,0,color(0,0,255),types);
+    
+    //stone
+    case 1:
+      out = new Tile(img,resources,background,0,0,color(0,0,0),types);
+    
+    //ground
+    default:
+      out = new Tile(img,resources,background,0,0,color(0,0,0),types);
+  }
+
+  return out;
 }
 public void registerObjects()
 {

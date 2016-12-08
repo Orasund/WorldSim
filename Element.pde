@@ -39,9 +39,9 @@ public class Element implements Part
         temp_template[i][j]=temp_template_[i][j];
 
     //String[] a = {};
-    Msg msg = new Msg("interpreter","idle",new JSONObject());
+    //Msg msg = new Msg("interpreter","idle",new JSONObject());
 
-    return interpretPart(msg,template,temp_template,x,y);
+    return temp_template;//interpretPart(msg,template,temp_template,x,y);
   }
 
   public color getColor()

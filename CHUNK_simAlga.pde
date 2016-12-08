@@ -77,7 +77,6 @@ int[][] simOrganicSpawn(final int[][] template,final int[][] temp_template_,Stri
         //new spawn can be created
         temp_template[x][y] = template[i][j];
         sim.setEntry("organic_spawn",x,y,1);
-        println("hey hoo");
       }
     }
 

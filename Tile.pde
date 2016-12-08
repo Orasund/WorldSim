@@ -8,8 +8,9 @@ public class Tile implements Part
   public int x;
   public int y;
   private String name;
+  public Set<Boolean> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, int x, int y, color c)
+  Tile(int[][][] img_,int[]resources_,int background_, int x, int y, color c,Set<Boolean> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -21,6 +22,8 @@ public class Tile implements Part
     for(int i = 0;i<5;i++)
       resources[i] = resources_[i];
     
+    types = types_.copy();
+
     background = background_;
     //isObj = isObj_;
 
@@ -40,6 +43,8 @@ public class Tile implements Part
     for(int k = 0;k<5;k++)
       resources_[k] = 0;
     
+    types = new Set<Boolean>();
+    
     background = 0;
     //isObj = false;
     c = c_;
@@ -49,7 +54,9 @@ public class Tile implements Part
   }
 
   Tile(int[][] template, color c_)
-  {    
+  { 
+    types = new Set<Boolean>();
+
     int[][] temp_template = new int[8][8];
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
@@ -94,7 +101,7 @@ public class Tile implements Part
     y = 0;
   }
 
-  public Tile copy(){return new Tile(img,resources,background,x,y,c);}
+  public Tile copy(){return new Tile(img,resources,background,x,y,c,types);}
 
   public int getX(){return x;}
 
@@ -106,7 +113,7 @@ public class Tile implements Part
 
   public Part createInstance(int x, int y)
   {
-    return new Tile(img,resources,background,x,y,c);
+    return new Tile(img,resources,background,x,y,c,types);
   }
 
   //Pls remove as fast as possible

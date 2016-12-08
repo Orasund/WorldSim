@@ -27,12 +27,18 @@ Chunk createForestChunk()
   return createChunk("mountain",amount,names,"tiles");
 }
 
-Tile createBush(){return new Organic(plantTemplate(0,10,10));}
-Tile createMoss(){return new Tile(solidTemplate(50,20,10),color(0,0,0));}
-Tile createGround(){return new Tile(groundTemplate(10,0,0),color(0,0,0));}
-Tile createLake(){return new Water(groundTemplate(0,50,0));}//,color(0,0,255));}
-Tile createStone(){return new Tile(solidTemplate(80,1,0),color(0,0,0));}
-Tile createAlga(){return new OrganicSpawn(groundTemplate(0,20,4));}//,color(0,0,255));}
+//Tile createBush(){return new Organic(plantTemplate(0,10,10));}
+Tile createBush(){return evaluateTile(plantTemplate(0,10,10));}
+//Tile createMoss(){return new Tile(solidTemplate(50,20,10),color(0,0,0));}
+Tile createMoss(){return evaluateTile(solidTemplate(50,20,10));}
+//Tile createGround(){return new Tile(groundTemplate(10,0,0),color(0,0,0));}
+Tile createGround(){return evaluateTile(groundTemplate(10,0,0));}
+//Tile createLake(){return new Water(groundTemplate(0,50,0));}
+Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
+//Tile createStone(){return new Tile(solidTemplate(80,1,0),color(0,0,0));}
+Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
+//Tile createAlga(){return new OrganicSpawn(groundTemplate(0,20,4));}
+Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
 
 Chunk createChunk(String name, int[] amount, String[] names, String group_name)
 {

@@ -1,4 +1,4 @@
-int[][] interpretPart(Msg msg, int[][] template,int[][] temp_template_, int x, int y)
+/*int[][] interpretPart(Msg msg, int[][] template,int[][] temp_template_, int x, int y)
 {
   int[][] temp_template = new int[8][8];
     for(int i=0;i<8;i++)
@@ -13,4 +13,4 @@ int[][] interpretPart(Msg msg, int[][] template,int[][] temp_template_, int x, i
   }
 
   return temp_template;
-}
+}*/
