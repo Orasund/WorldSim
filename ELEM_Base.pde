@@ -1,4 +1,4 @@
-public class Base extends Element
+/*public class Base extends Element
 {
   Base(final color c_, int x_, int y_){super(c_,x_,y_);}
 
@@ -24,4 +24,4 @@ public class Base extends Element
 
     return temp_template;
   }
-}
+}*/

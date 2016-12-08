@@ -357,7 +357,7 @@ public class Chunk implements Part
     Simulation organicSim = initOrganicSim(template_,group_);
     Simulation organicSpawnSim = initOrganicSpawnSim(template_,group_);
     
-    for(int iter=0; iter<16; iter++)    
+    for(int iter = 0; iter<16; iter++)    
     {
       temp_template = simOrganic(blocks,temp_template,group_,organicSim);
       temp_template = simOrganicSpawn(blocks,temp_template,group_,organicSpawnSim);
@@ -452,11 +452,11 @@ public class Database<T>
   public void delete(String name){storage.remove(name);}
   public void deleteGroup(String name){groups.remove(name);}
 }
-public class Base extends Element
+/*public class Base extends Element
 {
-  Base(final int c_, int x_, int y_){super(c_,x_,y_);}
+  Base(final color c_, int x_, int y_){super(c_,x_,y_);}
 
-  Base(final int c_){super(c_);}
+  Base(final color c_){super(c_);}
 
   public Part copy(){return new Base(getColor());}
 
@@ -478,15 +478,15 @@ public class Base extends Element
 
     return temp_template;
   }
-}
-public class Life extends Element
+}*/
+/*public class Life extends Element
 {
-  Life(final int c_, int x_, int y_)
+  Life(final color c_, int x_, int y_)
   {
     super(c_,x_,y_);
   }
 
-  Life(final int c_)
+  Life(final color c_)
   {
     super(c_);
   }
@@ -525,91 +525,18 @@ public class Life extends Element
 
     return temp_template;
   }
- public boolean is(String type){return false;}
+  
+  public boolean is(String type){return false;}
 }
-
-
-
-/*public class Life implements Part
+*/
+/*public class Source extends Element
 {
-  private color c;
-  private int x;
-  private int y;
-
-  Life(final color c_, int x_, int y_)
-  {
-    c = c_;
-    x = x_;
-    y = y_;
-  }
-
-  Life(final color c_)
-  {
-    c = c_;
-    x = 0;
-    y = 0;
-  }
-
-  public Part copy()
-  {
-    return new Life(c);
-  }
-
-  public int[][] iterate(int[][] template,int[][] temp_template_, int x, int y, Part[] neighbors)
-  {
-    int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
-
-    int[] coord = simLife(template,x, y);
-
-    if(coord[0]>0 && coord[1]>0)
-    {
-      temp_template[coord[0]][coord[1]]=3;
-      temp_template[x][y]=3;
-    }
-    else
-      temp_template[x][y]=2;
-
-    return temp_template;
-  }
-
-  public void drawFrame(int x, int y, int frame){}
-
-  public color getColor()
-  {
-    return c;
-  }
-
-  public Part createInstance(int x, int y)
-  {
-    return new Life(c,x,y);
-  }
-
-  public int getX()
-  {
-    return x;
-  }
-
-  public int getY()
-  {
-    return y;
-  }
-
-  public String getName()
-  {
-    return "Life";
-  }
-}*/
-public class Source extends Element
-{
-  Source(final int c_, int x_, int y_)
+  Source(final color c_, int x_, int y_)
   {
     super(c_,x_,y_);
   }
 
-  Source(final int c_)
+  Source(final color c_)
   {
     super(c_);
   }
@@ -678,116 +605,15 @@ public class Source extends Element
       
     return temp_template;
   }
-}
-
-/*public class Source implements Part
-{
-  private color c;
-  private int x;
-  private int y;
-
-  Source(color c_, int x_, int y_)
-  {
-    c =c_;
-    x =x_;
-    y = x_;
-  }
-
-  Source(final color c_)
-  {
-    c =c_;
-    x =0;
-    y = 0;
-  }
-
-  public Part copy()
-  {
-    return new Source(c);
-  }
-
-  public color getColor()
-  {
-    return c;
-  }
-
-  public int getX()
-  {
-    return x;
-  }
-
-  public int getY()
-  {
-    return y;
-  }
-
-  public String getName()
-  {
-    return "Source";
-  }
-
-  public void drawFrame(int x, int y, int frame){}
-
-  public Part createInstance(int x, int y)
-  {
-    return new Source(c,x,y);
-  }
-
-  public int[][] iterate(int[][] template,int[][] temp_template_,int x, int y, Part[] neigh)
-  {
-    int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
-
-    int coord[] = {x,y};
-    int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-    
-    if(x==0 || y==0 || x==7 || y==7)
-    {
-      coord[0] = -1;
-      //return coord;
-    }
-    else
-    {
-      int[] neighbors = new int[4];
-      for(int i=0;i<4;i++)
-        neighbors[i] = template[x+dir[i][0]][y+dir[i][1]];
-      
-      boolean found = false;
-
-      for(int i=0;i<4;i++)
-        if((neighbors[i]==1) && (neighbors[(i+1)%4]==2) && neighbors[(i+2)%4]==2 && (neighbors[(i+3)%4]==2))
-        {
-          for(int k=0;k<2;k++)
-            coord[k] += dir[i][k];
-          found = true;
-          break;//return coord;
-        }
-      
-      if(found == false)
-        for(int i=0;i<4;i++)
-          if((neighbors[(i+2)%4]==2 || neighbors[(i+2)%4]==1) && neighbors[i]==0)
-          {
-            for(int k=0;k<2;k++)
-              coord[k] += dir[i][k];
-            break;//return coord;
-          }
-    }
-
-    if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)
-      temp_template[coord[0]][coord[1]]=2;
-      
-    return temp_template;
-  }
 }*/
-public class Space extends Element
+/*public class Space extends Element
 {
-  Space(final int c_, int x_, int y_)
+  Space(final color c_, int x_, int y_)
   {
     super(c_,x_,y_);
   }
 
-  Space(final int c_)
+  Space(final color c_)
   {
     super(c_);
   }
@@ -808,120 +634,162 @@ public class Space extends Element
   }
 
   public boolean is(String type){return false;}
+}*/
+public Simulation initBaseSim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
 
-  /*public int[][] iterate(int[][] template,int[][] temp_template_,int x, int y, Part[] neigh)
-  {
-    int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
+public int[][] simBase(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int size = 8;
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
 
-    int coord[] = {x,y};
-    int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-    
-    if(x==0 || y==0 || x==7 || y==7)
+  int[][] temp_template = new int[size][size];
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
     {
-      coord[0] = -1;
-      //return coord;
+      temp_template[i][j]=temp_template_[i][j];
+
+      if(template[i][j] != 1)
+        continue;
+
+      temp_template[i][j] = 1;
     }
-    else
+    
+  return temp_template;
+}
+/*Simulation initBaseSim(final int[][] template,String group)
+{
+
+}*/
+
+public Simulation initLifeSim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
+
+public int[][] simLife(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int size = 8;
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
+
+  int[][] temp_template = new int[size][size];
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
+      temp_template[i][j]=temp_template_[i][j];
+  
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
     {
+      if(template[i][j] != 3)
+        continue;
+
+      int[] coord = {-1,-1};
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(x<0 || y<0 || x>7 || y>7)
+          continue;
+        
+        if(template[x][y] == 2)
+        {
+          coord[0] = x;
+          coord[1] = y;
+          break;
+        }
+      }
+
+      //int[] coord = simLife(template,i, j);
+
+      if(coord[0]>0 && coord[1]>0)
+      {
+        temp_template[coord[0]][coord[1]]=3;
+        temp_template[i][j]=3;
+      }
+      else
+        temp_template[i][j]=2;
+    }
+
+  return temp_template;
+}
+public Simulation initSourceSim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
+
+public int[][] simSource(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int size = 8;
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
+
+  int[][] temp_template = new int[8][8];
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      temp_template[i][j]=temp_template_[i][j];
+
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
+    {
+      if(temp_template[i][j]!=2)
+        continue;
+
+      int coord[] = {i,j};
+      
+      temp_template[i][j]=0;
+
+      if(i==0 || j==0 || i==7 || j==7)
+        continue;
+        
       int[] neighbors = new int[4];
-      for(int i=0;i<4;i++)
-        neighbors[i] = template[x+dir[i][0]][y+dir[i][1]];
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        neighbors[k] = template[x][y];
+      }
       
       boolean found = false;
 
-      for(int i=0;i<4;i++)
-        if((neighbors[i]==1) && (neighbors[(i+1)%4]==2) && neighbors[(i+2)%4]==2 && (neighbors[(i+3)%4]==2))
+      for(int k=0;k<4;k++)
+        if((neighbors[k]==1) && (neighbors[(k+1)%4]==2) && neighbors[(k+2)%4]==2 && (neighbors[(k+3)%4]==2))
         {
-          for(int k=0;k<2;k++)
-            coord[k] += dir[i][k];
+          for(int l=0;l<2;l++)
+            coord[l] += dir[k][l];
           found = true;
           break;//return coord;
         }
       
       if(found == false)
-        for(int i=0;i<4;i++)
-          if((neighbors[(i+2)%4]==2 || neighbors[(i+2)%4]==1) && neighbors[i]==0)
+        for(int k=0;k<4;k++)
+          if((neighbors[(k+2)%4]==2 || neighbors[(k+2)%4]==1) && neighbors[k]==0)
           {
-            for(int k=0;k<2;k++)
-              coord[k] += dir[i][k];
+            for(int l=0;l<2;l++)
+              coord[l] += dir[k][l];
             break;//return coord;
           }
-    }
 
-    if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)
-      temp_template[coord[0]][coord[1]]=2;
-      
-    return temp_template;
-  }*/
+      if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)
+        temp_template[coord[0]][coord[1]]=2;
+    }
+  return temp_template;
+}
+/*Simulation initSpaceSim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
 }
 
-/*public class Space implements Part
+int[][] simSpace(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
-  private color c;
-  private int x;
-  private int y;
-
-  Space(final color c_, int x_, int y_)
-  {
-    c = c_;
-    x = x_;
-    y = y_;
-  }
-
-  Space(final color c_)
-  {
-    c = c_;
-    x = 0;
-    y = 0;
-  }
-
-  public Part copy()
-  {
-    return new Space(c);
-  }
-
-  public Part createInstance(int x, int y)
-  {
-    return new Space(c,x,y);
-  }
-
-  public void drawFrame(int x, int y, int frame){}
-
-  public int[][] iterate(final int[][] template,final int[][] temp_template_,
-    int x, int y, Part[] neighbors)
-  {
-    int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
-
-    Message msg = new Message("interpreter","idle",new JSONArray());
-
-    return interpretPart(msg,template,temp_template,x,y);
-  }
-
-  public color getColor()
-  {
-    return c;
-  }
-
-  public int getX()
-  {
-    return x;
-  }
-
-  public int getY()
-  {
-    return y;
-  }
-
-  public String getName()
-  {
-    return "Space";
-  }
+  return temp_template_;
 }*/
 public class Element implements Part
 {
@@ -1198,13 +1066,13 @@ public interface Part
   public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors);
   public String getName();
   public int getColor();
-  public int getX();
-  public int getY();
+  //public int getX();
+  //public int getY();
   public int[] getResources();
   public String getGroupName();
   public Part copy();
   public boolean is(String type);
-  public Part createInstance(int x, int y);
+  //public Part createInstance(int x, int y);
   public void drawFrame(int x, int y, int frame);
 }
 public class InputHandler implements Service
@@ -2225,36 +2093,22 @@ public class Simulation
     tables[n][x][y] = value;
   }
 }
-public int[][] iterateTile(int[][] template, int[][] temp_template_)
+public int[][] iterateTile(final int[][] template, final int[][] temp_template_)
 {
-  Part[] elements = Game.ObjectManager.getGroup("elements");
-
   int[][] temp_template = new int[8][8];
   for(int i=0;i<8;i++)
     for(int j=0;j<8;j++)
-      temp_template[i][j]=temp_template_[i][j];
+      temp_template[i][j]=template[i][j];
+
+  String group = "elements";
+  Simulation lifeSim = initLifeSim(template,group);
+  Simulation sourceSim = initSourceSim(template,group);
+  Simulation baseSim = initBaseSim(template,group);
   
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-    {
-      if(template[i][j] == 0)
-        continue;
-      Part part = elements[template[i][j]];
-      Part[] neighbors = new Part[4];
-      int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-      for(int k = 0; k < 4; k++)
-      {
-        int x = dir[k][0]+i;
-        int y = dir[k][1]+j;
-        if(x>=0 && x<8 && y>=0 && y<8)
-          neighbors[k] = elements[template[x][y]].copy();
-        else
-          neighbors[k] = elements[0].copy();
-      }
-        
-      temp_template = part.iterate(template,temp_template,i, j, neighbors);
-    }
-      
+  temp_template = simLife(template,temp_template,group,lifeSim);
+  temp_template = simSource(template,temp_template,group,sourceSim);
+  temp_template = simBase(template,temp_template,group,baseSim);
+     
   return temp_template;
 }
 public int[] simLife(int template[][],int x, int y)
@@ -2374,17 +2228,11 @@ public Chunk createForestChunk()
   return createChunk("mountain",amount,names,"tiles");
 }
 
-//Tile createBush(){return new Organic(plantTemplate(0,10,10));}
 public Tile createBush(){return evaluateTile(plantTemplate(0,10,10));}
-//Tile createMoss(){return new Tile(solidTemplate(50,20,10),color(0,0,0));}
 public Tile createMoss(){return evaluateTile(solidTemplate(50,20,10));}
-//Tile createGround(){return new Tile(groundTemplate(10,0,0),color(0,0,0));}
 public Tile createGround(){return evaluateTile(groundTemplate(10,0,0));}
-//Tile createLake(){return new Water(groundTemplate(0,50,0));}
 public Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
-//Tile createStone(){return new Tile(solidTemplate(80,1,0),color(0,0,0));}
 public Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
-//Tile createAlga(){return new OrganicSpawn(groundTemplate(0,20,4));}
 public Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
 
 public Chunk createChunk(String name, int[] amount, String[] names, String group_name)
@@ -2525,35 +2373,42 @@ public class Tile implements Part
     types = new Set<Boolean>();
 
     int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=template[i][j];
-    
     int[][] map_empty = new int[8][8];
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
-        map_empty[i][j]=0;
-        
-    for(int k = 0;k<16;k++)
-    {
-      temp_template = iterate(temp_template,map_empty,0,0);
-    }
-    
+      {
+        temp_template[i][j]=template[i][j];
+        map_empty[i][j]=template[i][j];
+      }
+
+    String group = "elements";
+
+    //Iteration
     img = new int[6][8][8];
+
     resources = new int[5];
-    for(int k = 0;k<6;k++)
+    for(int i = 0;i<5;i++)
+      resources[i] = 0;
+
+    for(int iter = 0;iter<16;iter++)
     {
-      temp_template = iterate(temp_template,map_empty,0,0);
+      map_empty = iterate(temp_template,map_empty,0,0);
+
       for(int i=0;i<8;i++)
         for(int j=0;j<8;j++)
         {
-          img[k][i][j] = temp_template[i][j];
-          if(k==0)
-            resources[temp_template[i][j]]=0;
-          if(k==5)
-            resources[temp_template[i][j]]++;
+          temp_template[i][j] = map_empty[i][j];
+        
+          if(iter>=10)
+            img[iter-10][i][j] = temp_template[i][j];
         }
     }
+    
+    
+    resources = new int[5];
+    for(int i=0;i<8;i++)
+      for(int j=0;j<8;j++)
+        resources[temp_template[i][j]]++;
     
     int[] mult = {1,4,12,20,1};
     background = 0;
@@ -2783,10 +2638,14 @@ public Tile evaluateTile(int[][] template)
 public void registerObjects()
 {
   ObjectManager ObjectManager = Game.ObjectManager;
-  ObjectManager.registerPart("space", new Space(color(0,0,0)));
-  ObjectManager.registerPart("base", new Base(color(40,40,40)));
-  ObjectManager.registerPart("source", new Source(color(0,0,255)));
-  ObjectManager.registerPart("life", new Life(color(0,80,0)));
+  //ObjectManager.registerPart("space", new Space(color(0,0,0)));
+  ObjectManager.registerPart("space", new Element(color(0,0,0)));
+  //ObjectManager.registerPart("base", new Base(color(40,40,40)));
+  ObjectManager.registerPart("base", new Element(color(40,40,40)));
+  //ObjectManager.registerPart("source", new Source(color(0,0,255)));
+  ObjectManager.registerPart("source", new Element(color(0,0,255)));
+  //ObjectManager.registerPart("life", new Life(color(0,80,0)));
+  ObjectManager.registerPart("life", new Element(color(0,80,0)));
   String[] elements = {"space","base","source","life"};
   ObjectManager.registerGroup("elements",elements);
 

@@ -59,35 +59,42 @@ public class Tile implements Part
     types = new Set<Boolean>();
 
     int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=template[i][j];
-    
     int[][] map_empty = new int[8][8];
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
-        map_empty[i][j]=0;
-        
-    for(int k = 0;k<16;k++)
-    {
-      temp_template = iterate(temp_template,map_empty,0,0);
-    }
-    
+      {
+        temp_template[i][j]=template[i][j];
+        map_empty[i][j]=template[i][j];
+      }
+
+    String group = "elements";
+
+    //Iteration
     img = new int[6][8][8];
+
     resources = new int[5];
-    for(int k = 0;k<6;k++)
+    for(int i = 0;i<5;i++)
+      resources[i] = 0;
+
+    for(int iter = 0;iter<16;iter++)
     {
-      temp_template = iterate(temp_template,map_empty,0,0);
+      map_empty = iterate(temp_template,map_empty,0,0);
+
       for(int i=0;i<8;i++)
         for(int j=0;j<8;j++)
         {
-          img[k][i][j] = temp_template[i][j];
-          if(k==0)
-            resources[temp_template[i][j]]=0;
-          if(k==5)
-            resources[temp_template[i][j]]++;
+          temp_template[i][j] = map_empty[i][j];
+        
+          if(iter>=10)
+            img[iter-10][i][j] = temp_template[i][j];
         }
     }
+    
+    
+    resources = new int[5];
+    for(int i=0;i<8;i++)
+      for(int j=0;j<8;j++)
+        resources[temp_template[i][j]]++;
     
     int[] mult = {1,4,12,20,1};
     background = 0;

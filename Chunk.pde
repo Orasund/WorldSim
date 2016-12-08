@@ -69,7 +69,7 @@ public class Chunk implements Part
     Simulation organicSim = initOrganicSim(template_,group_);
     Simulation organicSpawnSim = initOrganicSpawnSim(template_,group_);
     
-    for(int iter=0; iter<16; iter++)    
+    for(int iter = 0; iter<16; iter++)    
     {
       temp_template = simOrganic(blocks,temp_template,group_,organicSim);
       temp_template = simOrganicSpawn(blocks,temp_template,group_,organicSpawnSim);

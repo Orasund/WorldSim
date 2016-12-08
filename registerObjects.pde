@@ -1,10 +1,14 @@
 void registerObjects()
 {
   ObjectManager ObjectManager = Game.ObjectManager;
-  ObjectManager.registerPart("space", new Space(color(0,0,0)));
-  ObjectManager.registerPart("base", new Base(color(40,40,40)));
-  ObjectManager.registerPart("source", new Source(color(0,0,255)));
-  ObjectManager.registerPart("life", new Life(color(0,80,0)));
+  //ObjectManager.registerPart("space", new Space(color(0,0,0)));
+  ObjectManager.registerPart("space", new Element(color(0,0,0)));
+  //ObjectManager.registerPart("base", new Base(color(40,40,40)));
+  ObjectManager.registerPart("base", new Element(color(40,40,40)));
+  //ObjectManager.registerPart("source", new Source(color(0,0,255)));
+  ObjectManager.registerPart("source", new Element(color(0,0,255)));
+  //ObjectManager.registerPart("life", new Life(color(0,80,0)));
+  ObjectManager.registerPart("life", new Element(color(0,80,0)));
   String[] elements = {"space","base","source","life"};
   ObjectManager.registerGroup("elements",elements);
 
