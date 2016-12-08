@@ -1493,7 +1493,7 @@ class Organic extends Tile
 
   public Organic copy()
   {
-    Organic out = new Organic(img,resources,background,x,y,types);
+    Organic out = new Organic(img,resources,background,x,y,c,types);
     //out.food = food;
     return out;
   }
@@ -1523,7 +1523,7 @@ class OrganicSpawn extends Tile
 
   public OrganicSpawn copy()
   {
-    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y,types);
+    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y,c,types);
     return out;
   }
 
@@ -1554,7 +1554,7 @@ class Water extends Tile
 
   public Water copy()
   {
-    Water out = new Water(img,resources,background,x,y,types);
+    Water out = new Water(img,resources,background,x,y,c,types);
     return out;
   }
 
@@ -1704,10 +1704,34 @@ public class Player implements Service
       }
 }*/
 
-public void drawBackground(int x, int y,int background)
+/*void drawBackground(int x, int y, color c)
 {
   
-  int c;
+  color c;
+  switch(background)
+  {
+    case 3:
+      c = color(0,128,0);
+      break;
+    case 2:
+      c = color(80,80,256);
+      break;
+    case 1:
+      c = color(127,127,127);
+      break;
+    case 0:
+    default:
+      c = color(80,255,80);
+      break;
+  }
+  fill(c);
+  Game.RenderEngine.drawBackground(x,y);
+}*/
+
+/*void drawBackground(int x, int y,int background)
+{
+  
+  color c;
   switch(background)
   {
     case 3:
@@ -1727,7 +1751,7 @@ public void drawBackground(int x, int y,int background)
   fill(c);
   Game.RenderEngine.drawBackground(x,y);
   //CURRENT_VIEW.drawBackground(x,y);
-}
+}*/
 public int[][] randTemplate(int stone, int water, int life)
 {
   int template[][] = new int[8][8];
@@ -2446,13 +2470,13 @@ public class Tile implements Part
   public int[] resources;
   public int background;
   //public boolean isObj;
-  private int c;
+  public int c;
   public int x;
   public int y;
   private String name;
   public Set<Boolean> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, int x, int y, int c,Set<Boolean> types_)
+  Tile(int[][][] img_,int[]resources_,int background_, int x_, int y_, int c_,Set<Boolean> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -2469,6 +2493,7 @@ public class Tile implements Part
     background = background_;
     //isObj = isObj_;
 
+    c = c_;
     x = 0;
     y = 0;
   }
@@ -2582,7 +2607,10 @@ public class Tile implements Part
     int[][] template = img[frame];
     Part[] elements = Game.ObjectManager.getGroup("elements");
 
-    drawBackground(x*8,y*8,background);
+    //drawBackground(x*8,y*8,background);
+    //drawBackground(x*8,y*8,c);
+    fill(c);
+    Game.RenderEngine.drawBackground(x*8,y*8);
 
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
@@ -2728,24 +2756,26 @@ public Tile evaluateTile(int[][] template)
   {
     //organic
     case 3:
-      out = new Organic(img,resources,background,0,0,color(0,255,0),types);
+      out = new Organic(img,resources,background,0,0,color(0,128,0),types);
       break;
 
     //water
     case 2:
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
-        out = new OrganicSpawn(img,resources,background,0,0,color(0,0,255),types);
+        out = new OrganicSpawn(img,resources,background,0,0,color(53,80,128),types);
       else //water
-        out = new Water(img,resources,background,0,0,color(0,0,255),types);
-    
+        out = new Water(img,resources,background,0,0,color(80,80,256),types);
+      break;
+
     //stone
     case 1:
-      out = new Tile(img,resources,background,0,0,color(0,0,0),types);
-    
+      out = new Tile(img,resources,background,0,0,color(127,127,127),types);
+      break;
+
     //ground
     default:
-      out = new Tile(img,resources,background,0,0,color(0,0,0),types);
+      out = new Tile(img,resources,background,0,0,color(80,255,80),types);
   }
 
   return out;

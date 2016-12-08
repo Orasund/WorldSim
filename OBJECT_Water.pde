@@ -17,7 +17,7 @@ class Water extends Tile
 
   Water copy()
   {
-    Water out = new Water(img,resources,background,x,y,types);
+    Water out = new Water(img,resources,background,x,y,c,types);
     return out;
   }
 

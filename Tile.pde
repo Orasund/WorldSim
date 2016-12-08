@@ -4,13 +4,13 @@ public class Tile implements Part
   public int[] resources;
   public int background;
   //public boolean isObj;
-  private color c;
+  public color c;
   public int x;
   public int y;
   private String name;
   public Set<Boolean> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, int x, int y, color c,Set<Boolean> types_)
+  Tile(int[][][] img_,int[]resources_,int background_, int x_, int y_, color c_,Set<Boolean> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -27,6 +27,7 @@ public class Tile implements Part
     background = background_;
     //isObj = isObj_;
 
+    c = c_;
     x = 0;
     y = 0;
   }
@@ -140,7 +141,10 @@ public class Tile implements Part
     int[][] template = img[frame];
     Part[] elements = Game.ObjectManager.getGroup("elements");
 
-    drawBackground(x*8,y*8,background);
+    //drawBackground(x*8,y*8,background);
+    //drawBackground(x*8,y*8,c);
+    fill(c);
+    Game.RenderEngine.drawBackground(x*8,y*8);
 
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)

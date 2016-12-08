@@ -17,7 +17,7 @@ class OrganicSpawn extends Tile
 
   OrganicSpawn copy()
   {
-    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y,types);
+    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y,c,types);
     return out;
   }
 

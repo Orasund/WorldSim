@@ -26,7 +26,31 @@
       }
 }*/
 
-void drawBackground(int x, int y,int background)
+/*void drawBackground(int x, int y, color c)
+{
+  
+  color c;
+  switch(background)
+  {
+    case 3:
+      c = color(0,128,0);
+      break;
+    case 2:
+      c = color(80,80,256);
+      break;
+    case 1:
+      c = color(127,127,127);
+      break;
+    case 0:
+    default:
+      c = color(80,255,80);
+      break;
+  }
+  fill(c);
+  Game.RenderEngine.drawBackground(x,y);
+}*/
+
+/*void drawBackground(int x, int y,int background)
 {
   
   color c;
@@ -49,4 +73,4 @@ void drawBackground(int x, int y,int background)
   fill(c);
   Game.RenderEngine.drawBackground(x,y);
   //CURRENT_VIEW.drawBackground(x,y);
-}
+}*/

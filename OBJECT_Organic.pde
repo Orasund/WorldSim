@@ -20,7 +20,7 @@ class Organic extends Tile
 
   Organic copy()
   {
-    Organic out = new Organic(img,resources,background,x,y,types);
+    Organic out = new Organic(img,resources,background,x,y,c,types);
     //out.food = food;
     return out;
   }
