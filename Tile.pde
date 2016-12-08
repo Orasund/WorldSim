@@ -3,14 +3,10 @@ public class Tile implements Part
   public int[][][] img;
   public int[] resources;
   public int background;
-  //public boolean isObj;
   public color c;
-  public int x;
-  public int y;
-  private String name;
   public Set<Boolean> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, int x_, int y_, color c_,Set<Boolean> types_)
+  Tile(int[][][] img_,int[]resources_,int background_, color c_,Set<Boolean> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -25,11 +21,8 @@ public class Tile implements Part
     types = types_.copy();
 
     background = background_;
-    //isObj = isObj_;
 
     c = c_;
-    x = 0;
-    y = 0;
   }
 
   Tile(color c_)
@@ -47,11 +40,7 @@ public class Tile implements Part
     types = new Set<Boolean>();
     
     background = 0;
-    //isObj = false;
     c = c_;
-
-    x = 0;
-    y = 0;
   }
 
   Tile(int[][] template, color c_)
@@ -103,36 +92,20 @@ public class Tile implements Part
         background = i;
     
     c = c_;
-    //isObj = false;
-
-    x = 0;
-    y = 0;
   }
 
-  public Tile copy(){return new Tile(img,resources,background,x,y,c,types);}
-
-  public int getX(){return x;}
-
-  public int getY(){return y;}
-
-  public String getName(){return name;}
+  public Tile copy(){return new Tile(img,resources,background,c,types);}
 
   public boolean is(String type){return false;}
 
-  public Part createInstance(int x, int y)
+  /*public Part createInstance(int x, int y)
   {
     return new Tile(img,resources,background,x,y,c,types);
-  }
-
-  //Pls remove as fast as possible
-  /*public Block createBlock(int x, int y)
-  {
-    return new Block(img,resources,background,x,y,c);
   }*/
   
   public int[][] getFrame(int i){return img[i];}
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors)
+  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
   {
     return iterateTile(template,temp_template);
   }

@@ -1,7 +1,8 @@
 public interface Part
 {
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors);
-  public String getName();
+  //public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors);
+  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
+  //public String getName();
   public color getColor();
   //public int getX();
   //public int getY();

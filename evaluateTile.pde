@@ -52,26 +52,26 @@ Tile evaluateTile(int[][] template)
   {
     //organic
     case 3:
-      out = new Organic(img,resources,background,0,0,color(0,128,0),types);
+      out = new Organic(img,resources,background,color(0,128,0),types);
       break;
 
     //water
     case 2:
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
-        out = new OrganicSpawn(img,resources,background,0,0,color(53,80,128),types);
+        out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
       else //water
-        out = new Water(img,resources,background,0,0,color(80,80,256),types);
+        out = new Water(img,resources,background,color(80,80,256),types);
       break;
 
     //stone
     case 1:
-      out = new Tile(img,resources,background,0,0,color(127,127,127),types);
+      out = new Tile(img,resources,background,color(127,127,127),types);
       break;
 
     //ground
     default:
-      out = new Tile(img,resources,background,0,0,color(80,255,80),types);
+      out = new Tile(img,resources,background,color(80,255,80),types);
   }
 
   return out;

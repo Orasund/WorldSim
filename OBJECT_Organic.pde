@@ -1,27 +1,23 @@
 class Organic extends Tile
 {
-  //int food;
-  Organic(int[][][] img_,int[]resources_,int background_, int x_, int y_,color c_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, color c_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,c_,types_);
+    super(img_,resources_,background_,c_,types_);
   }
 
-  Organic(int[][][] img_,int[]resources_,int background_, int x_, int y_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,color(0,255,0),types_);
+    super(img_,resources_,background_,color(0,255,0),types_);
   }
 
   Organic(int[][] template)
   { 
     super(template,color(0,255,0));
-    //isObj = true;
-    //food = 0;
   }
 
   Organic copy()
   {
-    Organic out = new Organic(img,resources,background,x,y,c,types);
-    //out.food = food;
+    Organic out = new Organic(img,resources,background,c,types);
     return out;
   }
 

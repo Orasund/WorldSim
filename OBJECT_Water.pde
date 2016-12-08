@@ -1,13 +1,13 @@
 class Water extends Tile
 {
-  Water(int[][][] img_,int[]resources_,int background_, int x_, int y_,color c_,Set<Boolean> types_)
+  Water(int[][][] img_,int[]resources_,int background_,color c_,Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,c_,types_);
+    super(img_,resources_,background_,c_,types_);
   }
 
-  Water(int[][][] img_,int[]resources_,int background_, int x_, int y_,Set<Boolean> types_)
+  Water(int[][][] img_,int[]resources_,int background_,Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,color(0,0,255),types_);
+    super(img_,resources_,background_,color(0,0,255),types_);
   }
 
   Water(int[][] template)
@@ -17,7 +17,7 @@ class Water extends Tile
 
   Water copy()
   {
-    Water out = new Water(img,resources,background,x,y,c,types);
+    Water out = new Water(img,resources,background,c,types);
     return out;
   }
 

@@ -409,7 +409,10 @@ public class Chunk implements Part
     return new Chunk(name,blocks,group,background,x,y,c,resources);
   }
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors){return temp_template;}
+  //public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors){return temp_template;}
+
+  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors){return temp_template;}
+
 
   public int getColor(){return c;}
 
@@ -452,189 +455,6 @@ public class Database<T>
   public void delete(String name){storage.remove(name);}
   public void deleteGroup(String name){groups.remove(name);}
 }
-/*public class Base extends Element
-{
-  Base(final color c_, int x_, int y_){super(c_,x_,y_);}
-
-  Base(final color c_){super(c_);}
-
-  public Part copy(){return new Base(getColor());}
-
-  public Part createInstance(int x_, int y_){return new Base(getColor(),x_,y_);}
-  
-  public String getName(){return "Base";}
-
-  public boolean is(String type){return false;}
-
-  public int[][] iterate(int[][] template,int[][] temp_template_, int x, int y, Part[] neighbors)
-  {
-    int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
-
-    if(temp_template[x][y]==0)
-      temp_template[x][y]=template[x][y];
-
-    return temp_template;
-  }
-}*/
-/*public class Life extends Element
-{
-  Life(final color c_, int x_, int y_)
-  {
-    super(c_,x_,y_);
-  }
-
-  Life(final color c_)
-  {
-    super(c_);
-  }
-
-  public Part copy()
-  {
-    return new Life(getColor());
-  }
-
-  public Part createInstance(int x_, int y_)
-  {
-    return new Life(getColor(),x_,y_);
-  }
-
-  public String getName()
-  {
-    return "Life";
-  }
-
-  public int[][] iterate(int[][] template,int[][] temp_template_, int x, int y, Part[] neighbors)
-  {
-    int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
-
-    int[] coord = simLife(template,x, y);
-
-    if(coord[0]>0 && coord[1]>0)
-    {
-      temp_template[coord[0]][coord[1]]=3;
-      temp_template[x][y]=3;
-    }
-    else
-      temp_template[x][y]=2;
-
-    return temp_template;
-  }
-  
-  public boolean is(String type){return false;}
-}
-*/
-/*public class Source extends Element
-{
-  Source(final color c_, int x_, int y_)
-  {
-    super(c_,x_,y_);
-  }
-
-  Source(final color c_)
-  {
-    super(c_);
-  }
-
-  public Part copy()
-  {
-    return new Source(getColor());
-  }
-
-  public Part createInstance(int x_, int y_)
-  {
-    return new Source(getColor(),x_,y_);
-  }
-
-  public String getName()
-  {
-    return "Source";
-  }
-
-  public boolean is(String type){return false;}
-
-  public int[][] iterate(int[][] template,int[][] temp_template_,int x, int y, Part[] neigh)
-  {
-    int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
-
-    int coord[] = {x,y};
-    int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-    
-    if(x==0 || y==0 || x==7 || y==7)
-    {
-      coord[0] = -1;
-      //return coord;
-    }
-    else
-    {
-      int[] neighbors = new int[4];
-      for(int i=0;i<4;i++)
-        neighbors[i] = template[x+dir[i][0]][y+dir[i][1]];
-      
-      boolean found = false;
-
-      for(int i=0;i<4;i++)
-        if((neighbors[i]==1) && (neighbors[(i+1)%4]==2) && neighbors[(i+2)%4]==2 && (neighbors[(i+3)%4]==2))
-        {
-          for(int k=0;k<2;k++)
-            coord[k] += dir[i][k];
-          found = true;
-          break;//return coord;
-        }
-      
-      if(found == false)
-        for(int i=0;i<4;i++)
-          if((neighbors[(i+2)%4]==2 || neighbors[(i+2)%4]==1) && neighbors[i]==0)
-          {
-            for(int k=0;k<2;k++)
-              coord[k] += dir[i][k];
-            break;//return coord;
-          }
-    }
-
-    if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)
-      temp_template[coord[0]][coord[1]]=2;
-      
-    return temp_template;
-  }
-}*/
-/*public class Space extends Element
-{
-  Space(final color c_, int x_, int y_)
-  {
-    super(c_,x_,y_);
-  }
-
-  Space(final color c_)
-  {
-    super(c_);
-  }
-
-  public Part copy()
-  {
-    return new Space(getColor());
-  }
-
-  public Part createInstance(int x_, int y_)
-  {
-    return new Space(getColor(),x_,y_);
-  }
-
-  public String getName()
-  {
-    return "Space";
-  }
-
-  public boolean is(String type){return false;}
-}*/
 public Simulation initBaseSim(final int[][] template,String group)
 {
   String[] names = {};
@@ -794,21 +614,10 @@ int[][] simSpace(final int[][] template,final int[][] temp_template_,String grou
 public class Element implements Part
 {
   private int c;
-  private int x;
-  private int y;
-
-  Element(final int c_, int x_, int y_)
-  {
-    c = c_;
-    x = x_;
-    y = y_;
-  }
 
   Element(final int c_)
   {
     c = c_;
-    x = 0;
-    y = 0;
   }
 
   public Part copy()
@@ -816,25 +625,16 @@ public class Element implements Part
     return new Element(c);
   }
 
-  public Part createInstance(int x_, int y_)
-  {
-    return new Element(c,x_,y_);
-  }
-
   public void drawFrame(int x, int y, int frame){}
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template_,
-    int x, int y, Part[] neighbors)
+  public int[][] iterate(final int[][] template,final int[][] temp_template_,Part[] neighbors)
   {
     int[][] temp_template = new int[8][8];
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
         temp_template[i][j]=temp_template_[i][j];
 
-    //String[] a = {};
-    //Msg msg = new Msg("interpreter","idle",new JSONObject());
-
-    return temp_template;//interpretPart(msg,template,temp_template,x,y);
+    return temp_template;
   }
 
   public int getColor()
@@ -842,22 +642,7 @@ public class Element implements Part
     return c;
   }
 
-  public int getX()
-  {
-    return x;
-  }
-
-  public int getY()
-  {
-    return y;
-  }
-
   public boolean is(String type){return false;}
-
-  public String getName()
-  {
-    return "Undefined Element";
-  }
 
   public int[] getResources()
   {
@@ -1063,8 +848,9 @@ public class GameLoop implements Service
 }
 public interface Part
 {
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors);
-  public String getName();
+  //public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors);
+  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
+  //public String getName();
   public int getColor();
   //public int getX();
   //public int getY();
@@ -1341,28 +1127,24 @@ public class Msg
 }
 class Organic extends Tile
 {
-  //int food;
-  Organic(int[][][] img_,int[]resources_,int background_, int x_, int y_,int c_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, int c_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,c_,types_);
+    super(img_,resources_,background_,c_,types_);
   }
 
-  Organic(int[][][] img_,int[]resources_,int background_, int x_, int y_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,color(0,255,0),types_);
+    super(img_,resources_,background_,color(0,255,0),types_);
   }
 
   Organic(int[][] template)
   { 
     super(template,color(0,255,0));
-    //isObj = true;
-    //food = 0;
   }
 
   public Organic copy()
   {
-    Organic out = new Organic(img,resources,background,x,y,c,types);
-    //out.food = food;
+    Organic out = new Organic(img,resources,background,c,types);
     return out;
   }
 
@@ -1374,14 +1156,14 @@ class Organic extends Tile
 }
 class OrganicSpawn extends Tile
 {
-  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int x_, int y_,int c_, Set<Boolean> types_)
+  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int c_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,c_,types_);
+    super(img_,resources_,background_,c_,types_);
   }
 
-  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int x_, int y_,Set<Boolean> types_)
+  OrganicSpawn(int[][][] img_,int[]resources_,int background_, Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,color(0,0,255),types_);
+    super(img_,resources_,background_,color(0,0,255),types_);
   }
 
   OrganicSpawn(int[][] template)
@@ -1391,7 +1173,7 @@ class OrganicSpawn extends Tile
 
   public OrganicSpawn copy()
   {
-    OrganicSpawn out = new OrganicSpawn(img,resources,background,x,y,c,types);
+    OrganicSpawn out = new OrganicSpawn(img,resources,background,c,types);
     return out;
   }
 
@@ -1405,14 +1187,14 @@ class OrganicSpawn extends Tile
 }
 class Water extends Tile
 {
-  Water(int[][][] img_,int[]resources_,int background_, int x_, int y_,int c_,Set<Boolean> types_)
+  Water(int[][][] img_,int[]resources_,int background_,int c_,Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,c_,types_);
+    super(img_,resources_,background_,c_,types_);
   }
 
-  Water(int[][][] img_,int[]resources_,int background_, int x_, int y_,Set<Boolean> types_)
+  Water(int[][][] img_,int[]resources_,int background_,Set<Boolean> types_)
   {
-    super(img_,resources_,background_,x_,y_,color(0,0,255),types_);
+    super(img_,resources_,background_,color(0,0,255),types_);
   }
 
   Water(int[][] template)
@@ -1422,7 +1204,7 @@ class Water extends Tile
 
   public Water copy()
   {
-    Water out = new Water(img,resources,background,x,y,c,types);
+    Water out = new Water(img,resources,background,c,types);
     return out;
   }
 
@@ -2317,14 +2099,10 @@ public class Tile implements Part
   public int[][][] img;
   public int[] resources;
   public int background;
-  //public boolean isObj;
   public int c;
-  public int x;
-  public int y;
-  private String name;
   public Set<Boolean> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, int x_, int y_, int c_,Set<Boolean> types_)
+  Tile(int[][][] img_,int[]resources_,int background_, int c_,Set<Boolean> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -2339,11 +2117,8 @@ public class Tile implements Part
     types = types_.copy();
 
     background = background_;
-    //isObj = isObj_;
 
     c = c_;
-    x = 0;
-    y = 0;
   }
 
   Tile(int c_)
@@ -2361,11 +2136,7 @@ public class Tile implements Part
     types = new Set<Boolean>();
     
     background = 0;
-    //isObj = false;
     c = c_;
-
-    x = 0;
-    y = 0;
   }
 
   Tile(int[][] template, int c_)
@@ -2417,36 +2188,20 @@ public class Tile implements Part
         background = i;
     
     c = c_;
-    //isObj = false;
-
-    x = 0;
-    y = 0;
   }
 
-  public Tile copy(){return new Tile(img,resources,background,x,y,c,types);}
-
-  public int getX(){return x;}
-
-  public int getY(){return y;}
-
-  public String getName(){return name;}
+  public Tile copy(){return new Tile(img,resources,background,c,types);}
 
   public boolean is(String type){return false;}
 
-  public Part createInstance(int x, int y)
+  /*public Part createInstance(int x, int y)
   {
     return new Tile(img,resources,background,x,y,c,types);
-  }
-
-  //Pls remove as fast as possible
-  /*public Block createBlock(int x, int y)
-  {
-    return new Block(img,resources,background,x,y,c);
   }*/
   
   public int[][] getFrame(int i){return img[i];}
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors)
+  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
   {
     return iterateTile(template,temp_template);
   }
@@ -2611,26 +2366,26 @@ public Tile evaluateTile(int[][] template)
   {
     //organic
     case 3:
-      out = new Organic(img,resources,background,0,0,color(0,128,0),types);
+      out = new Organic(img,resources,background,color(0,128,0),types);
       break;
 
     //water
     case 2:
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
-        out = new OrganicSpawn(img,resources,background,0,0,color(53,80,128),types);
+        out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
       else //water
-        out = new Water(img,resources,background,0,0,color(80,80,256),types);
+        out = new Water(img,resources,background,color(80,80,256),types);
       break;
 
     //stone
     case 1:
-      out = new Tile(img,resources,background,0,0,color(127,127,127),types);
+      out = new Tile(img,resources,background,color(127,127,127),types);
       break;
 
     //ground
     default:
-      out = new Tile(img,resources,background,0,0,color(80,255,80),types);
+      out = new Tile(img,resources,background,color(80,255,80),types);
   }
 
   return out;
