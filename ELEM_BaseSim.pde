@@ -7,7 +7,7 @@ public class BaseSim extends Simulation
     //initBaseSim(template,group);
   }
 
-  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
   {
     return simBase(template,temp_template_,group,this);
   }

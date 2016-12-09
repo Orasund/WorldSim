@@ -1,4 +1,4 @@
-Simulation initOrganicSpawnSim(final int[][] template,String group)
+/*Simulation initOrganicSpawnSim(final int[][] template,String group)
 {
   String[] names = {"water","organic_spawn"};
   Simulation sim = new Simulation(names);
@@ -21,9 +21,9 @@ Simulation initOrganicSpawnSim(final int[][] template,String group)
     }
 
   return sim; 
-}
+}*/
 
-int[][] simOrganicSpawn(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+/*int[][] simOrganicSpawn(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y,x2,y2;
@@ -81,4 +81,4 @@ int[][] simOrganicSpawn(final int[][] template,final int[][] temp_template_,Stri
     }
 
   return temp_template;
-}
+}*/

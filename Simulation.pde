@@ -3,6 +3,7 @@ public class Simulation
   private int[][][] tables;
   private String[] names;
   private int size;
+  SimulationManager SimulationManager;
 
   Simulation(int n)
   {
@@ -15,8 +16,10 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+    SimulationManager = null;
   }
 
+  //pls delete as fast as possible
   Simulation(final String[] names_)
   {
     size = 8;
@@ -31,6 +34,11 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+  }
+
+  void addManager(SimulationManager SimulationManager_)
+  {
+    SimulationManager = SimulationManager_;
   }
 
   void setNames(String[] names_)
@@ -90,8 +98,9 @@ public class Simulation
     tables[n][x][y] = value;
   }
 
-  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  //int[][]
+  void sim(final int[][] template,final int[][] temp_template_,String group)
   {
-    return temp_template_;
+    //return temp_template_;
   }
 }

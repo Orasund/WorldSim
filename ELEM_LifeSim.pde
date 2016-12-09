@@ -7,7 +7,7 @@ public class LifeSim extends Simulation
     //initLifeSim(template,group);
   }
 
-  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
   {
     return simLife(template,temp_template_,group,this);
   }

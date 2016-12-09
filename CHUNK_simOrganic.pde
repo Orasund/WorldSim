@@ -1,4 +1,4 @@
-Simulation initOrganicSim(final int[][] template,String group)
+/*Simulation initOrganicSim(final int[][] template,String group)
 {
   String[] names = {"organics","water","water_buffer"};
   Simulation sim = new Simulation(names);
@@ -33,7 +33,7 @@ Simulation initOrganicSim(final int[][] template,String group)
       }
 
   return sim;
-}
+}*/
 
 /*
 * Input
@@ -63,7 +63,7 @@ Simulation initOrganicSim(final int[][] template,String group)
 *   5.)for each waterEntry
 *     A.) delete
 */
-int[][] simOrganic(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+/*int[][] simOrganic(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y;
@@ -123,4 +123,4 @@ int[][] simOrganic(final int[][] template,final int[][] temp_template_,String gr
     }
 
   return temp_template;
-}
+}*/

@@ -7,7 +7,7 @@ public class SourceSim extends Simulation
     //initSourceSim(template,group);
   }
 
-  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
   {
     return simSource(template,temp_template_,group,this);
   }

@@ -17,10 +17,12 @@ public class WorldSim extends PApplet {
 /* PRESS STRG+SHIFT+B TO COMPILE */
 int[][] TEMPLATE;
 int COUNTER;
+int SIZE;
 Game Game;
 
 public void setup() {
   
+  SIZE = 8;
   int MAP_DETAIL = 4;
   int MAP_SIZE = 4*MAP_DETAIL;
   Game = new Game();
@@ -114,9 +116,69 @@ public class OrganicSim extends Simulation
         }
   }
 
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  //int[][]
+  public void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
   {
-    return simOrganic(template,temp_template_,group,sim);
+    //return simOrganic(template,temp_template_,group,sim);
+    int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+    int x,y;
+    int size = template[0].length;
+    Part[] Tiles = Game.ObjectManager.getGroup(group);
+
+    int[][] temp_template = new int[size][size];
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+        temp_template[i][j] = temp_template_[i][j];
+
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+        sim.setEntry("water_buffer",i,j,sim.getEntry("water",i,j));
+    
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+      {
+        if(sim.getEntry("water",i,j)<=0)
+          continue;
+        
+        for(int k = 0; k<4; k++)
+        {
+          x = i+dir[k][0];
+          y = j+dir[k][1];
+          if(x<0 || y<0 || x>=size || y>=size)
+            continue;
+          if(sim.getEntry("organics",x,y)==0)
+            continue;
+          
+          sim.setEntry("water",x,y,sim.getEntry("water",i,j));
+          if(sim.getEntry("water",x,y)>sim.getEntry("organics",x,y))
+            sim.setEntry("water",x,y,sim.getEntry("organics",x,y));
+        }
+      }
+    
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+      {
+        if(sim.getEntry("water_buffer",i,j)>0)
+        {
+          sim.setEntry("water",i,j,0);
+          sim.setEntry("organics",i,j,0);
+        }
+
+        if(sim.getEntry("organics",i,j)==0)
+          continue;
+
+        if(sim.getEntry("organics",i,j)==1)
+        {
+          //Delete
+          if(Tiles[temp_template[i][j]].is("organic"))
+            SimulationManager.deleteEntry(i,j);
+            //temp_template[i][j] = 0;
+        }
+
+        sim.setEntry("organics",i,j,sim.getEntry("organics",i,j)-1);
+      }
+
+    //return temp_template;
   }
 }
 public class OrganicSpawnSim extends Simulation
@@ -146,12 +208,71 @@ public class OrganicSpawnSim extends Simulation
       }
   }
 
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  //int[][]
+  public void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
   {
-    return simOrganicSpawn(template,temp_template_,group,sim);
+    //return simOrganicSpawn(template,temp_template_,group,sim);
+    int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+    int x,y,x2,y2;
+    int size = template[0].length;
+    Part[] Tiles = Game.ObjectManager.getGroup(group);
+
+    int[][] temp_template = new int[size][size];
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+        temp_template[i][j] = temp_template_[i][j];
+
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+      {
+        if(sim.getEntry("organic_spawn",i,j)==0)
+          continue;
+
+        //create new spawn if possible
+
+        for(int k = 0; k<4; k++)
+        {
+          x = i+dir[k][0];
+          y = j+dir[k][1];
+          if(x<0 || y<0 || x>=size || y>=size)
+            continue;
+
+          if(sim.getEntry("water",x,y)==0)
+            continue;
+          
+          if(sim.getEntry("organic_spawn",x,y)==1)
+            continue;
+
+          //two or three waters next to it are allowed
+          int count = 0;
+          for(int l = 0; l<4; l++)
+          {
+            x2 = x+dir[l][0];
+            y2 = y+dir[l][1];
+            if(x2<0 || y2<0 || x2>=size || y2>=size)
+            continue;
+
+            if(sim.getEntry("water",x2,y2)==0)
+              continue;
+            
+            count++;
+          }
+
+          if(count>3 || count <2)
+            continue;
+          
+          //new spawn can be created
+          //temp_template[x][y] = template[i][j];
+          SimulationManager.deleteEntry(x,y);
+          SimulationManager.createEntry(template[i][j],x,y);
+          sim.setEntry("organic_spawn",x,y,1);
+        }
+      }
+
+    //return temp_template;
   }
 }
-public Simulation initOrganicSpawnSim(final int[][] template,String group)
+/*Simulation initOrganicSpawnSim(final int[][] template,String group)
 {
   String[] names = {"water","organic_spawn"};
   Simulation sim = new Simulation(names);
@@ -174,9 +295,9 @@ public Simulation initOrganicSpawnSim(final int[][] template,String group)
     }
 
   return sim; 
-}
+}*/
 
-public int[][] simOrganicSpawn(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+/*int[][] simOrganicSpawn(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y,x2,y2;
@@ -234,8 +355,8 @@ public int[][] simOrganicSpawn(final int[][] template,final int[][] temp_templat
     }
 
   return temp_template;
-}
-public Simulation initOrganicSim(final int[][] template,String group)
+}*/
+/*Simulation initOrganicSim(final int[][] template,String group)
 {
   String[] names = {"organics","water","water_buffer"};
   Simulation sim = new Simulation(names);
@@ -270,7 +391,7 @@ public Simulation initOrganicSim(final int[][] template,String group)
       }
 
   return sim;
-}
+}*/
 
 /*
 * Input
@@ -300,7 +421,7 @@ public Simulation initOrganicSim(final int[][] template,String group)
 *   5.)for each waterEntry
 *     A.) delete
 */
-public int[][] simOrganic(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+/*int[][] simOrganic(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y;
@@ -360,7 +481,7 @@ public int[][] simOrganic(final int[][] template,final int[][] temp_template_,St
     }
 
   return temp_template;
-}
+}*/
 public class Chunk implements Part
 {
   private int[][] blocks;
@@ -408,36 +529,6 @@ public class Chunk implements Part
     SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
 
     int size = 8;
-    /*resources = new int[size];
-    for(int i = 0;i<size;i++)
-    {
-      resources[i] = 0;
-    }
-
-    
-    int[][] temp_template = new int[size][size];
-    blocks = new int[size][size];
-    for(int j = 0;j<size;j++)
-      for(int k = 0;k<size;k++)
-      {
-        temp_template[j][k] = template_[j][k];
-        blocks[j][k] = template_[j][k];
-      }
-        
-    
-    //Simulation organicSim = initOrganicSim(template_,group_);
-    //Simulation organicSpawnSim = initOrganicSpawnSim(template_,group_);
-    
-    for(int iter = 0; iter<16; iter++)    
-    {
-      temp_template = simOrganic(blocks,temp_template,group_,organicSim);
-      temp_template = simOrganicSpawn(blocks,temp_template,group_,organicSpawnSim);
-      
-      for(int i = 0; i<size; i++)
-        for(int j = 0; j<size; j++)
-          blocks[i][j] = temp_template[i][j];
-    }
-      */
     blocks = SimulationManager.init(template_,group_);
 
     resources = new int[size];
@@ -511,7 +602,7 @@ public class BaseSim extends Simulation
     //initBaseSim(template,group);
   }
 
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
   {
     return simBase(template,temp_template_,group,this);
   }
@@ -525,7 +616,7 @@ public class LifeSim extends Simulation
     //initLifeSim(template,group);
   }
 
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
   {
     return simLife(template,temp_template_,group,this);
   }
@@ -539,7 +630,7 @@ public class SourceSim extends Simulation
     //initSourceSim(template,group);
   }
 
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
   {
     return simSource(template,temp_template_,group,this);
   }
@@ -1708,6 +1799,7 @@ public class Simulation
   private int[][][] tables;
   private String[] names;
   private int size;
+  SimulationManager SimulationManager;
 
   Simulation(int n)
   {
@@ -1720,8 +1812,10 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+    SimulationManager = null;
   }
 
+  //pls delete as fast as possible
   Simulation(final String[] names_)
   {
     size = 8;
@@ -1736,6 +1830,11 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+  }
+
+  public void addManager(SimulationManager SimulationManager_)
+  {
+    SimulationManager = SimulationManager_;
   }
 
   public void setNames(String[] names_)
@@ -1795,31 +1894,48 @@ public class Simulation
     tables[n][x][y] = value;
   }
 
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  //int[][]
+  public void sim(final int[][] template,final int[][] temp_template_,String group)
   {
-    return temp_template_;
+    //return temp_template_;
   }
 }
 public class SimulationManager
 {
   private HashMap<String,Simulation> sims;
+  private int[][] template_buffer;
 
   SimulationManager()
   {
     sims = new HashMap<String,Simulation>();
+    template_buffer = new int[SIZE][SIZE];
   }
 
   public void add(String name, final Simulation sim)
   {
+    sim.addManager(this);
     sims.put(name,sim);
+  }
+
+  public void createEntry(int i, int x, int y)
+  {
+    if(template_buffer[x][y] == 0)
+      return;
+
+    template_buffer[x][y] = i;
+  }
+
+  public void deleteEntry(int x, int y)
+  {
+    template_buffer[x][y] = 0;
   }
 
   public int[][] init(final int[][] template_,String group_)
   {
-    int size = 8;
+    int size = SIZE;
     ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
 
-    int[][] template_buffer = new int[size][size];
+    template_buffer = new int[size][size];
     int[][] template = new int[size][size];
     for(int i = 0;i<size;i++)
       for(int j = 0;j<size;j++)
@@ -1831,7 +1947,8 @@ public class SimulationManager
     for(int iter = 0; iter<16; iter++)    
     {
       for(int i=0; i<simList.size(); i++)
-        template_buffer = simList.get(i).sim(template,template_buffer,group_);
+        simList.get(i).sim(template,template_buffer,group_);
+        //template_buffer = 
       
       for(int i = 0; i<size; i++)
         for(int j = 0; j<size; j++)

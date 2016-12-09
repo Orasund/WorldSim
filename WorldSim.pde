@@ -1,10 +1,12 @@
 /* PRESS STRG+SHIFT+B TO COMPILE */
 int[][] TEMPLATE;
 int COUNTER;
+int SIZE;
 Game Game;
 
 void setup() {
   size(640, 640);
+  SIZE = 8;
   int MAP_DETAIL = 4;
   int MAP_SIZE = 4*MAP_DETAIL;
   Game = new Game();
