@@ -1,16 +1,9 @@
 void draw()
 {
-  //JSONObject a = new JSONObject;
   Game.send("input","check",new JSONObject());
-  //InputHandler.checkInputs();
 
   if(Game.GameLoop.tick())
   {
-    /*if(keyReleased)
-      InputHandler.dropInput(key);
-    if(keyPressed)
-      InputHandler.registerInput(key);*/
-      //controller();
 
     COUNTER++;
 
@@ -26,7 +19,6 @@ void draw()
       JSONObject a = new JSONObject();
       a.setString("a1","main");
       Game.send("scene","chanceScene",a);
-      //SceneManager.chanceScene("main");
     }
 
     if(COUNTER<16)

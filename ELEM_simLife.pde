@@ -1,8 +1,3 @@
-/*Simulation initBaseSim(final int[][] template,String group)
-{
-
-}*/
-
 Simulation initLifeSim(final int[][] template,String group)
 {
   String[] names = {};
@@ -41,8 +36,6 @@ int[][] simLife(final int[][] template,final int[][] temp_template_,String group
           break;
         }
       }
-
-      //int[] coord = simLife(template,i, j);
 
       if(coord[0]>0 && coord[1]>0)
       {

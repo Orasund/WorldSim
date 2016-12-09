@@ -97,11 +97,6 @@ public class Tile implements Part
   public Tile copy(){return new Tile(img,resources,background,c,types);}
 
   public boolean is(String type){return false;}
-
-  /*public Part createInstance(int x, int y)
-  {
-    return new Tile(img,resources,background,x,y,c,types);
-  }*/
   
   public int[][] getFrame(int i){return img[i];}
 
@@ -121,8 +116,6 @@ public class Tile implements Part
     int[][] template = img[frame];
     Part[] elements = Game.ObjectManager.getGroup("elements");
 
-    //drawBackground(x*8,y*8,background);
-    //drawBackground(x*8,y*8,c);
     fill(c);
     Game.RenderEngine.drawBackground(x*8,y*8);
 

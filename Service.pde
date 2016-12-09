@@ -1,4 +1,4 @@
-public interface Service
+/*public interface Service
 {
 
-}
+}*/

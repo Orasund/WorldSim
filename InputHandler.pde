@@ -1,4 +1,4 @@
-public class InputHandler implements Service
+public class InputHandler// implements Service
 {
   private int buffer;
   private Set<String> inputs;
@@ -85,13 +85,6 @@ public class InputHandler implements Service
 
   public void registerInput(String input_)
   {
-    //String[] long_press = {"w","s"};
-    /*for(int i = 0; i < long_press.length; i++)
-      if(input_ == long_press[i])
-      {
-        longInput(input_);
-        return;
-      }*/
     if(isLongPress(input_))
     {
       longInput(input_);
@@ -99,9 +92,6 @@ public class InputHandler implements Service
     }
     println("=>>" + input_);
     translateInput(input_);
-
-    
-    //bufferSet.remove(input_);
   }
 
   public void dropInput(String input_)

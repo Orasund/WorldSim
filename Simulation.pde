@@ -1,14 +1,27 @@
 public class Simulation
 {
-  int[][][] tables;
-  String[] names;
-  int size;
+  private int[][][] tables;
+  private String[] names;
+  private int size;
+
+  Simulation(int n)
+  {
+    size = 8;
+    names = new String[n];
+    tables = new int[n][size][size];
+    for(int i = 0; i < n; i++)
+    {
+      for(int j = 0; j < size; j++)
+        for(int k = 0; k < size; k++)
+          tables[i][j][k] = 0;
+    }
+  }
 
   Simulation(final String[] names_)
   {
     size = 8;
     int n = names_.length;
-    names = new String[3];
+    names = new String[n];
     tables = new int[n][size][size];
     for(int i = 0; i < n; i++)
     {
@@ -18,6 +31,20 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+  }
+
+  void setNames(String[] names_)
+  {
+    for(int i = 0; i < names.length; i++)
+      names[i] = names_[i];
+  }
+
+  Simulation copy()
+  {
+    Simulation out = new Simulation(names);
+    for(int i = 0; i<names.length; i++)
+      out.setTable(names[i], tables[i]);
+    return out;
   }
 
   int getNumfromName(String name)
@@ -61,5 +88,10 @@ public class Simulation
   {
     int n = getNumfromName(name);
     tables[n][x][y] = value;
+  }
+
+  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return temp_template_;
   }
 }

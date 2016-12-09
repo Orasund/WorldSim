@@ -76,6 +76,81 @@ public void keyPressed()
   String out = new String(k);
   Game.InputHandler.registerInput(out);
 }
+public class OrganicSim extends Simulation
+{
+  OrganicSim(final int[][] template,String group)
+  {
+    super(3);
+    String[] names_ = {"organics","water","water_buffer"};
+    setNames(names_);
+
+    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    int size = template[0].length;
+
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+      {
+        if(Tiles[template[i][j]].is("organic"))
+        {
+          //we assume that the groupname is element
+          if(Tiles[template[i][j]].getGroupName().equals("elements")==false)
+          {
+            println("BUG in simOrganic:groupname not elements");
+            return;
+          }
+          setEntry("organics",i,j,Tiles[template[i][j]].getResources()[3]);
+        }
+        else
+          setEntry("organics",i,j,0);
+      }
+        
+    //creating water table and water_buffer
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+        if(Tiles[template[i][j]].is("water"))
+        {
+          setEntry("water",i,j, 100);
+          setEntry("water_buffer",i,j,100);
+        }
+  }
+
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  {
+    return simOrganic(template,temp_template_,group,sim);
+  }
+}
+public class OrganicSpawnSim extends Simulation
+{
+  OrganicSpawnSim(final int[][] template,String group)
+  {
+    super(2);
+    String[] names_ = {"water","organic_spawn"};
+    setNames(names_);
+    
+    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    int size = template[0].length;
+
+    //creating water table and organic_spawn
+    for(int i = 0; i<size; i++)
+      for(int j = 0; j<size; j++)
+      {
+        if(Tiles[template[i][j]].is("water"))
+        {
+          setEntry("water",i,j, 1);
+        }
+
+        if(Tiles[template[i][j]].is("organic_spawn"))
+        {
+          setEntry("organic_spawn",i,j, 1);
+        }
+      }
+  }
+
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  {
+    return simOrganicSpawn(template,temp_template_,group,sim);
+  }
+}
 public Simulation initOrganicSpawnSim(final int[][] template,String group)
 {
   String[] names = {"water","organic_spawn"};
@@ -83,7 +158,7 @@ public Simulation initOrganicSpawnSim(final int[][] template,String group)
   Part[] Tiles = Game.ObjectManager.getGroup(group);
   int size = template[0].length;
 
-    //creating water table and organic_spawn
+  //creating water table and organic_spawn
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
     {
@@ -293,11 +368,8 @@ public class Chunk implements Part
   private String group;
   private int background;
   private int c;
-  private int x;
-  private int y;
-  private String name;
 
-  Chunk(String name_, int[][] blocks_,String group_,int background_, int x_, int y_, int c_, int[] resources_)
+  Chunk(int[][] blocks_,String group_,int background_, int c_, int[] resources_)
   {
     blocks = new int[8][8];
     for(int j = 0;j<8;j++)
@@ -312,11 +384,8 @@ public class Chunk implements Part
       resources[i] = resources_[i];
     } 
 
-    name = name_;
     group = group_;
     background = background_;
-    x = x_;
-    y = y_;
   }
 
   Chunk(int c_)
@@ -330,14 +399,16 @@ public class Chunk implements Part
     background = 0;
     resources = new int[0];
     c = c_;
-    x = 0;
-    y = 0;
   }
 
-  Chunk(String name_, int[][] template_,String group_)
+  Chunk(int[][] template_,String group_)
   { 
+    SimulationManager SimulationManager = new SimulationManager();
+    SimulationManager.add("Organic",new OrganicSim(template_,group_));
+    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+
     int size = 8;
-    resources = new int[size];
+    /*resources = new int[size];
     for(int i = 0;i<size;i++)
     {
       resources[i] = 0;
@@ -353,9 +424,9 @@ public class Chunk implements Part
         blocks[j][k] = template_[j][k];
       }
         
-
-    Simulation organicSim = initOrganicSim(template_,group_);
-    Simulation organicSpawnSim = initOrganicSpawnSim(template_,group_);
+    
+    //Simulation organicSim = initOrganicSim(template_,group_);
+    //Simulation organicSpawnSim = initOrganicSpawnSim(template_,group_);
     
     for(int iter = 0; iter<16; iter++)    
     {
@@ -366,50 +437,26 @@ public class Chunk implements Part
         for(int j = 0; j<size; j++)
           blocks[i][j] = temp_template[i][j];
     }
-      
+      */
+    blocks = SimulationManager.init(template_,group_);
+
+    resources = new int[size];
+    for(int i = 0;i<size;i++)
+      resources[i] = 0;
 
     for(int j = 0;j<size;j++)
       for(int k = 0;k<size;k++)
-      {
-        //blocks[j][k] = template[j][k];
         resources[blocks[j][k]]++;
-      }
     
-    name = name_;
     group = group_;
     background = 0;
     c = color(0);
-    x = 0;
-    y = 0;
   }
 
   public Chunk copy()
   {
-    /*int[][] b = new int[8][8];
-    for(int j = 0;j<8;j++)
-      for(int k = 0;k<8;k++)
-      {
-        b[j][k] = blocks[j][k];
-      }*/
-    return new Chunk(name,blocks,group,background,x,y,c,resources);
+    return new Chunk(blocks,group,background,c,resources);
   }
-
-  public int getX(){return x;}
-
-  public int getY(){return y;}
-
-  public String getName(){return name;}
-
-  public Part createInstance(int x, int y)
-  {
-    /*int[][] b = new int[8][8];
-    for(int j = 0;j<8;j++)
-      for(int k = 0;k<8;k++)
-        b[j][k] = blocks[j][k];*/
-    return new Chunk(name,blocks,group,background,x,y,c,resources);
-  }
-
-  //public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors){return temp_template;}
 
   public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors){return temp_template;}
 
@@ -455,6 +502,48 @@ public class Database<T>
   public void delete(String name){storage.remove(name);}
   public void deleteGroup(String name){groups.remove(name);}
 }
+public class BaseSim extends Simulation
+{
+  BaseSim(final int[][] template,String group)
+  {
+    super(0);
+
+    //initBaseSim(template,group);
+  }
+
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simBase(template,temp_template_,group,this);
+  }
+}
+public class LifeSim extends Simulation
+{
+  LifeSim(final int[][] template,String group)
+  {
+    super(0);
+
+    //initLifeSim(template,group);
+  }
+
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simLife(template,temp_template_,group,this);
+  }
+}
+public class SourceSim extends Simulation
+{
+  SourceSim(final int[][] template,String group)
+  {
+    super(0);
+
+    //initSourceSim(template,group);
+  }
+
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simSource(template,temp_template_,group,this);
+  }
+}
 public Simulation initBaseSim(final int[][] template,String group)
 {
   String[] names = {};
@@ -481,11 +570,6 @@ public int[][] simBase(final int[][] template,final int[][] temp_template_,Strin
     
   return temp_template;
 }
-/*Simulation initBaseSim(final int[][] template,String group)
-{
-
-}*/
-
 public Simulation initLifeSim(final int[][] template,String group)
 {
   String[] names = {};
@@ -524,8 +608,6 @@ public int[][] simLife(final int[][] template,final int[][] temp_template_,Strin
           break;
         }
       }
-
-      //int[] coord = simLife(template,i, j);
 
       if(coord[0]>0 && coord[1]>0)
       {
@@ -584,7 +666,7 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
           for(int l=0;l<2;l++)
             coord[l] += dir[k][l];
           found = true;
-          break;//return coord;
+          break;
         }
       
       if(found == false)
@@ -593,7 +675,7 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
           {
             for(int l=0;l<2;l++)
               coord[l] += dir[k][l];
-            break;//return coord;
+            break;
           }
 
       if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)
@@ -601,16 +683,6 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
     }
   return temp_template;
 }
-/*Simulation initSpaceSim(final int[][] template,String group)
-{
-  String[] names = {};
-  return new Simulation(names);
-}
-
-int[][] simSpace(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
-{
-  return temp_template_;
-}*/
 public class Element implements Part
 {
   private int c;
@@ -726,33 +798,6 @@ public class Game
     SceneManager = sv;
   }
 
-  /*public void add(String name, Service service)
-  {
-    switch(name)
-    {
-      case "player":
-        Player = service;
-        break;
-      case "gameLoop":
-        GameLoop = service;
-        break;
-      case "renderEngine":
-        RenderEngine = service;
-        break;
-      case "objectManager":
-        ObjectManager = service;
-        break;
-      case "sceneManager":
-        SceneManager = service;
-        break;
-      case "inputHandler":
-        InputHandler = service;
-        break;
-      default:
-        println("(!!!) TIPO in Game.add()");
-    }
-  }*/
-
   private void sendToScene(Msg msg)
   {
     int i1,i2,i3;
@@ -792,16 +837,10 @@ public class Game
       case "scene":
         sendToScene(msg);
         break;
-      /*case "render":
-        sendToRender(msg);
-        break;
-      case "object":
-        sendToObject(msg);
-        break;*/
     }
   }
 }
-public class GameLoop implements Service
+public class GameLoop //implements Service
 {
   private int length;
   private int counter;
@@ -848,20 +887,15 @@ public class GameLoop implements Service
 }
 public interface Part
 {
-  //public int[][] iterate(final int[][] template,final int[][] temp_template,final int x,final int y,final Part[] neighbors);
   public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
-  //public String getName();
   public int getColor();
-  //public int getX();
-  //public int getY();
   public int[] getResources();
   public String getGroupName();
   public Part copy();
   public boolean is(String type);
-  //public Part createInstance(int x, int y);
   public void drawFrame(int x, int y, int frame);
 }
-public class InputHandler implements Service
+public class InputHandler// implements Service
 {
   private int buffer;
   private Set<String> inputs;
@@ -948,13 +982,6 @@ public class InputHandler implements Service
 
   public void registerInput(String input_)
   {
-    //String[] long_press = {"w","s"};
-    /*for(int i = 0; i < long_press.length; i++)
-      if(input_ == long_press[i])
-      {
-        longInput(input_);
-        return;
-      }*/
     if(isLongPress(input_))
     {
       longInput(input_);
@@ -962,9 +989,6 @@ public class InputHandler implements Service
     }
     println("=>>" + input_);
     translateInput(input_);
-
-    
-    //bufferSet.remove(input_);
   }
 
   public void dropInput(String input_)
@@ -982,8 +1006,6 @@ public class InputHandler implements Service
 class Map
 {
   private int[][] map;
-  //private Block[][] obj_map;
-  //private ArrayList<Block> obj;
   private String group_name;
 
   Map(String parts)
@@ -995,24 +1017,7 @@ class Map
   Map(int size, int detail, String parts)
   {
     group_name = parts;
-
-    //map = genMap(size, detail);
     map = genMap();
-    //interate
-
-
-
-    
-    //obj_map = new Block[size/detail][size/detail];
-    /*obj = new ArrayList<Block>();
-    for(int i=0;i<size;i++)
-      for(int j=0;j<size;j++)
-      {
-        if(b[map[i][j]].isObj)
-        {
-          obj.add(b[map[i][j]].createBlock(i,j));
-        }
-      }*/
   }
 
   public int[][] getMap()
@@ -1072,7 +1077,6 @@ class Map
         }
       }
     
-    //int[] lake = {};
     int[][] pool =
     {
       {5,0,0,0,10},//ground
@@ -1103,14 +1107,6 @@ class Map
       }
     return out;
   }
-
-  /*void draw()
-  {
-    for(int i=0;i<MAP_SIZE;i++)
-        for(int j=0;j<MAP_SIZE;j++)
-          b[map[i][j]].drawFrame(i,j,GameLoop.getFrame());
-          //drawBlock(i,j,b[map[i][j]].getFrame(CURRENT_FRAME),b[map[i][j]].background);
-  }*/
 }
 public class Msg
 {
@@ -1214,7 +1210,7 @@ class Water extends Tile
     return false;
   }
 }
-public class ObjectManager implements Service
+public class ObjectManager// implements Service
 {
   private Database<Part> database;
 
@@ -1258,23 +1254,7 @@ public class ObjectManager implements Service
     return database.getGroup(name);
   }
 }
-/*int[][] interpretPart(Msg msg, int[][] template,int[][] temp_template_, int x, int y)
-{
-  int[][] temp_template = new int[8][8];
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        temp_template[i][j]=temp_template_[i][j];
-
-  switch(msg.msg)
-  {
-    //default:
-    case "idle":
-      break;
-  }
-
-  return temp_template;
-}*/
-public class Player implements Service
+public class Player //implements Service
 {
   private PVector pos;
   private float dir;
@@ -1326,82 +1306,6 @@ public class Player implements Service
 
   public PVector infrontOf(){return PVector.sub(pos,dirVector());}
 }
-/*void drawBlock(int x, int y, int template[][],int background)
-{
-  Element space = new Element(color(0,0,0));
-  Element life = new Element(color(0,80,0));
-  Element source = new Element(color(0,0,255));
-  Element base = new Element(color(0,0,0));
-
-  drawBackground(x*8,y*8,background);
-
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      switch(template[i][j])
-      {
-        case 3:
-          life.draw(x*8+i,y*8+j);
-          break;
-        case 2:
-          source.draw(x*8+i,y*8+j);
-          break;
-        case 1:
-          base.draw(x*8+i,y*8+j);
-          break;
-        case 0:
-        default:
-          break;
-      }
-}*/
-
-/*void drawBackground(int x, int y, color c)
-{
-  
-  color c;
-  switch(background)
-  {
-    case 3:
-      c = color(0,128,0);
-      break;
-    case 2:
-      c = color(80,80,256);
-      break;
-    case 1:
-      c = color(127,127,127);
-      break;
-    case 0:
-    default:
-      c = color(80,255,80);
-      break;
-  }
-  fill(c);
-  Game.RenderEngine.drawBackground(x,y);
-}*/
-
-/*void drawBackground(int x, int y,int background)
-{
-  
-  color c;
-  switch(background)
-  {
-    case 3:
-      c = color(0,128,0);
-      break;
-    case 2:
-      c = color(80,80,256);
-      break;
-    case 1:
-      c = color(127,127,127);
-      break;
-    case 0:
-    default:
-      c = color(80,255,80);
-      break;
-  }
-  fill(c);
-  Game.RenderEngine.drawBackground(x,y);
-  //CURRENT_VIEW.drawBackground(x,y);
-}*/
 public int[][] randTemplate(int stone, int water, int life)
 {
   int template[][] = new int[8][8];
@@ -1426,7 +1330,7 @@ public int[][] randTemplate(int stone, int water, int life)
     }
   return template;
 }
-class RenderEngine implements Service
+class RenderEngine// implements Service
 {
   JSONObject Views;
   String corrent_view;
@@ -1465,11 +1369,6 @@ class RenderEngine implements Service
 
   public void setPos(int x, int y)
   {
-    //float size = getView().getInt("size")*8;
-    /*JSONObject view = getView();
-    view.setFloat("pos_x",floor(x*size+size/2));
-    view.setFloat("pos_y",floor(y*size+size/2));
-    Views.setJSONObject(corrent_view, view);*/
     PVector pos = calcPos(x, y);
     setAbsPos(pos.x, pos.y);
   }
@@ -1482,7 +1381,6 @@ class RenderEngine implements Service
 
   public void setAbsPos(float x, float y)
   {
-    /*float size = getView().getInt("size")*8;*/
     JSONObject view = getView();
     view.setFloat("pos_x",x);
     view.setFloat("pos_y",y);
@@ -1589,7 +1487,6 @@ class RenderEngine implements Service
   {
     JSONObject a = new JSONObject();
     Game.send("scene","renderArea",a);
-    //SceneManager.renderArea();
   }
 }
 public class Scene
@@ -1606,9 +1503,6 @@ public class Scene
         map[i][j] = map_[i][j];
     
     group_name = tiles;
-    /*tiles = new Tile[tiles_.length];
-    for(int i = 0; i < tiles_.length; i++)
-      tiles[i] = tiles_[i].copy();*/
   }
 
   public void setMap(int[][] map_)
@@ -1644,10 +1538,9 @@ public class Scene
     for(int i=0;i<map.length;i++)
       for(int j=0;j<map[0].length;j++)
         Tiles[map[i][j]].drawFrame(i,j,Game.GameLoop.getFrame());
-        //tiles[map[i][j]].drawFrame(i,j,GameLoop.getFrame());
   }
 }
-public class SceneManager implements Service
+public class SceneManager //implements Service
 {
   private String corrent_scene;
   private int trans_time;
@@ -1748,10 +1641,10 @@ public class SceneManager implements Service
   }
 }
 
-public interface Service
+/*public interface Service
 {
 
-}
+}*/
 public class Set<E>
 {
   private ArrayList<E> list;
@@ -1812,15 +1705,28 @@ public class Set<E>
 }
 public class Simulation
 {
-  int[][][] tables;
-  String[] names;
-  int size;
+  private int[][][] tables;
+  private String[] names;
+  private int size;
+
+  Simulation(int n)
+  {
+    size = 8;
+    names = new String[n];
+    tables = new int[n][size][size];
+    for(int i = 0; i < n; i++)
+    {
+      for(int j = 0; j < size; j++)
+        for(int k = 0; k < size; k++)
+          tables[i][j][k] = 0;
+    }
+  }
 
   Simulation(final String[] names_)
   {
     size = 8;
     int n = names_.length;
-    names = new String[3];
+    names = new String[n];
     tables = new int[n][size][size];
     for(int i = 0; i < n; i++)
     {
@@ -1830,6 +1736,20 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+  }
+
+  public void setNames(String[] names_)
+  {
+    for(int i = 0; i < names.length; i++)
+      names[i] = names_[i];
+  }
+
+  public Simulation copy()
+  {
+    Simulation out = new Simulation(names);
+    for(int i = 0; i<names.length; i++)
+      out.setTable(names[i], tables[i]);
+    return out;
   }
 
   public int getNumfromName(String name)
@@ -1874,6 +1794,52 @@ public class Simulation
     int n = getNumfromName(name);
     tables[n][x][y] = value;
   }
+
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return temp_template_;
+  }
+}
+public class SimulationManager
+{
+  private HashMap<String,Simulation> sims;
+
+  SimulationManager()
+  {
+    sims = new HashMap<String,Simulation>();
+  }
+
+  public void add(String name, final Simulation sim)
+  {
+    sims.put(name,sim);
+  }
+
+  public int[][] init(final int[][] template_,String group_)
+  {
+    int size = 8;
+    ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
+
+    int[][] template_buffer = new int[size][size];
+    int[][] template = new int[size][size];
+    for(int i = 0;i<size;i++)
+      for(int j = 0;j<size;j++)
+      {
+        template_buffer[i][j] = template_[i][j];
+        template[i][j] = template_[i][j];
+      }
+    
+    for(int iter = 0; iter<16; iter++)    
+    {
+      for(int i=0; i<simList.size(); i++)
+        template_buffer = simList.get(i).sim(template,template_buffer,group_);
+      
+      for(int i = 0; i<size; i++)
+        for(int j = 0; j<size; j++)
+          template[i][j] = template_buffer[i][j];
+    }
+    
+    return template;
+  }
 }
 public int[][] iterateTile(final int[][] template, final int[][] temp_template_)
 {
@@ -1893,7 +1859,7 @@ public int[][] iterateTile(final int[][] template, final int[][] temp_template_)
      
   return temp_template;
 }
-public int[] simLife(int template[][],int x, int y)
+/*int[] simLife(int template[][],int x, int y)
 {
   int out[] = {x,y};
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
@@ -1916,39 +1882,6 @@ public int[] simLife(int template[][],int x, int y)
     }
   
   out[0]=-1;
-  return out;
-}
-/*int[] simSource(int template[][],int x, int y)
-{
-  int out[] = {x,y};
-  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-  
-  if(x==0 || y==0 || x==7 || y==7)
-  {
-    out[0] = -1;
-    return out;
-  }
-  
-  int[] neighbors = new int[4];
-  for(int i=0;i<4;i++)
-    neighbors[i] = template[x+dir[i][0]][y+dir[i][1]];
-  
-  for(int i=0;i<4;i++)
-    if((neighbors[i]==1) && (neighbors[(i+1)%4]==2) && neighbors[(i+2)%4]==2 && (neighbors[(i+3)%4]==2))
-    {
-      for(int k=0;k<2;k++)
-        out[k] += dir[i][k];
-      return out;
-    }
-  
-  for(int i=0;i<4;i++)
-    if((neighbors[(i+2)%4]==2 || neighbors[(i+2)%4]==1) && neighbors[i]==0)
-    {
-      for(int k=0;k<2;k++)
-        out[k] += dir[i][k];
-      return out;
-    }
-    
   return out;
 }*/
 public class Template
@@ -1985,29 +1918,28 @@ public Chunk createGroundChunk()
 {
   int[] amount = {5,10};
   String[] names = {"lake","bush"};
-  return createChunk("ground",amount,names,"tiles");
-  //return new Chunk("ground",chunkTemplate({5,10},{"lake","bush"},"tiles"),"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 public Chunk createWaterChunk()
 {
   int[] amount = {70,10};
   String[] names = {"lake","alga"};
-  return createChunk("water",amount,names,"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 public Chunk createMountainChunk()
 {
   int[] amount = {5,70,10};
   String[] names = {"lake","stone","moss"};
-  return createChunk("mountain",amount,names,"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 public Chunk createForestChunk()
 {
   int[] amount = {10,5,50};
   String[] names = {"lake","stone","bush"};
-  return createChunk("mountain",amount,names,"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 public Tile createBush(){return evaluateTile(plantTemplate(0,10,10));}
@@ -2017,7 +1949,7 @@ public Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
 public Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
 public Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
 
-public Chunk createChunk(String name, int[] amount, String[] names, String group_name)
+public Chunk createChunk(int[] amount, String[] names, String group_name)
 {
   String[] group = Game.ObjectManager.getNamesByGroup(group_name);
   int[] adresses = new int[names.length];
@@ -2036,7 +1968,6 @@ public Chunk createChunk(String name, int[] amount, String[] names, String group
     for(int j=0;j<size;j++)
     {
       float rand = random(100);
-      //int l = map_layout[i/detail][j/detail];
 
       int type = 0;
       for(int k=0;k<amount.length;k++)
@@ -2050,7 +1981,7 @@ public Chunk createChunk(String name, int[] amount, String[] names, String group
       }
       out[i][j] = type;
     }
-  Chunk ch = new Chunk(name,out,group_name);
+  Chunk ch = new Chunk(out,group_name);
   return ch;
 }
 
@@ -2193,11 +2124,6 @@ public class Tile implements Part
   public Tile copy(){return new Tile(img,resources,background,c,types);}
 
   public boolean is(String type){return false;}
-
-  /*public Part createInstance(int x, int y)
-  {
-    return new Tile(img,resources,background,x,y,c,types);
-  }*/
   
   public int[][] getFrame(int i){return img[i];}
 
@@ -2217,8 +2143,6 @@ public class Tile implements Part
     int[][] template = img[frame];
     Part[] elements = Game.ObjectManager.getGroup("elements");
 
-    //drawBackground(x*8,y*8,background);
-    //drawBackground(x*8,y*8,c);
     fill(c);
     Game.RenderEngine.drawBackground(x*8,y*8);
 
@@ -2250,17 +2174,10 @@ public class Tile implements Part
 }
 public void draw()
 {
-  //JSONObject a = new JSONObject;
   Game.send("input","check",new JSONObject());
-  //InputHandler.checkInputs();
 
   if(Game.GameLoop.tick())
   {
-    /*if(keyReleased)
-      InputHandler.dropInput(key);
-    if(keyPressed)
-      InputHandler.registerInput(key);*/
-      //controller();
 
     COUNTER++;
 
@@ -2276,7 +2193,6 @@ public void draw()
       JSONObject a = new JSONObject();
       a.setString("a1","main");
       Game.send("scene","chanceScene",a);
-      //SceneManager.chanceScene("main");
     }
 
     if(COUNTER<16)
@@ -2329,16 +2245,12 @@ public Tile evaluateTile(int[][] template)
       map_empty[i][j]=0;
       
   for(int k = 0;k<16;k++)
-  {
-    //temp_template = iterate(temp_template,map_empty,0,0);
     temp_template = iterateTile(temp_template,map_empty);
-  }
   
   int[][][] img = new int[6][8][8];
   int[] resources = new int[5];
   for(int k = 0;k<6;k++)
   {
-    //temp_template = iterate(temp_template,map_empty,0,0);
     temp_template = iterateTile(temp_template,map_empty);
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
@@ -2393,13 +2305,9 @@ public Tile evaluateTile(int[][] template)
 public void registerObjects()
 {
   ObjectManager ObjectManager = Game.ObjectManager;
-  //ObjectManager.registerPart("space", new Space(color(0,0,0)));
   ObjectManager.registerPart("space", new Element(color(0,0,0)));
-  //ObjectManager.registerPart("base", new Base(color(40,40,40)));
   ObjectManager.registerPart("base", new Element(color(40,40,40)));
-  //ObjectManager.registerPart("source", new Source(color(0,0,255)));
   ObjectManager.registerPart("source", new Element(color(0,0,255)));
-  //ObjectManager.registerPart("life", new Life(color(0,80,0)));
   ObjectManager.registerPart("life", new Element(color(0,80,0)));
   String[] elements = {"space","base","source","life"};
   ObjectManager.registerGroup("elements",elements);

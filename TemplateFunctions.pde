@@ -2,29 +2,28 @@ Chunk createGroundChunk()
 {
   int[] amount = {5,10};
   String[] names = {"lake","bush"};
-  return createChunk("ground",amount,names,"tiles");
-  //return new Chunk("ground",chunkTemplate({5,10},{"lake","bush"},"tiles"),"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 Chunk createWaterChunk()
 {
   int[] amount = {70,10};
   String[] names = {"lake","alga"};
-  return createChunk("water",amount,names,"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 Chunk createMountainChunk()
 {
   int[] amount = {5,70,10};
   String[] names = {"lake","stone","moss"};
-  return createChunk("mountain",amount,names,"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 Chunk createForestChunk()
 {
   int[] amount = {10,5,50};
   String[] names = {"lake","stone","bush"};
-  return createChunk("mountain",amount,names,"tiles");
+  return createChunk(amount,names,"tiles");
 }
 
 Tile createBush(){return evaluateTile(plantTemplate(0,10,10));}
@@ -34,7 +33,7 @@ Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
 Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
 Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
 
-Chunk createChunk(String name, int[] amount, String[] names, String group_name)
+Chunk createChunk(int[] amount, String[] names, String group_name)
 {
   String[] group = Game.ObjectManager.getNamesByGroup(group_name);
   int[] adresses = new int[names.length];
@@ -53,7 +52,6 @@ Chunk createChunk(String name, int[] amount, String[] names, String group_name)
     for(int j=0;j<size;j++)
     {
       float rand = random(100);
-      //int l = map_layout[i/detail][j/detail];
 
       int type = 0;
       for(int k=0;k<amount.length;k++)
@@ -67,7 +65,7 @@ Chunk createChunk(String name, int[] amount, String[] names, String group_name)
       }
       out[i][j] = type;
     }
-  Chunk ch = new Chunk(name,out,group_name);
+  Chunk ch = new Chunk(out,group_name);
   return ch;
 }
 

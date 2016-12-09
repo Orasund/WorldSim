@@ -12,9 +12,6 @@ public class Scene
         map[i][j] = map_[i][j];
     
     group_name = tiles;
-    /*tiles = new Tile[tiles_.length];
-    for(int i = 0; i < tiles_.length; i++)
-      tiles[i] = tiles_[i].copy();*/
   }
 
   public void setMap(int[][] map_)
@@ -50,6 +47,5 @@ public class Scene
     for(int i=0;i<map.length;i++)
       for(int j=0;j<map[0].length;j++)
         Tiles[map[i][j]].drawFrame(i,j,Game.GameLoop.getFrame());
-        //tiles[map[i][j]].drawFrame(i,j,GameLoop.getFrame());
   }
 }

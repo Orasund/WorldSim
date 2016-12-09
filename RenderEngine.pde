@@ -1,4 +1,4 @@
-class RenderEngine implements Service
+class RenderEngine// implements Service
 {
   JSONObject Views;
   String corrent_view;
@@ -37,11 +37,6 @@ class RenderEngine implements Service
 
   void setPos(int x, int y)
   {
-    //float size = getView().getInt("size")*8;
-    /*JSONObject view = getView();
-    view.setFloat("pos_x",floor(x*size+size/2));
-    view.setFloat("pos_y",floor(y*size+size/2));
-    Views.setJSONObject(corrent_view, view);*/
     PVector pos = calcPos(x, y);
     setAbsPos(pos.x, pos.y);
   }
@@ -54,7 +49,6 @@ class RenderEngine implements Service
 
   void setAbsPos(float x, float y)
   {
-    /*float size = getView().getInt("size")*8;*/
     JSONObject view = getView();
     view.setFloat("pos_x",x);
     view.setFloat("pos_y",y);
@@ -161,6 +155,5 @@ class RenderEngine implements Service
   {
     JSONObject a = new JSONObject();
     Game.send("scene","renderArea",a);
-    //SceneManager.renderArea();
   }
 }

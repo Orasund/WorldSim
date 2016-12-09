@@ -1,8 +1,6 @@
 class Map
 {
   private int[][] map;
-  //private Block[][] obj_map;
-  //private ArrayList<Block> obj;
   private String group_name;
 
   Map(String parts)
@@ -14,24 +12,7 @@ class Map
   Map(int size, int detail, String parts)
   {
     group_name = parts;
-
-    //map = genMap(size, detail);
     map = genMap();
-    //interate
-
-
-
-    
-    //obj_map = new Block[size/detail][size/detail];
-    /*obj = new ArrayList<Block>();
-    for(int i=0;i<size;i++)
-      for(int j=0;j<size;j++)
-      {
-        if(b[map[i][j]].isObj)
-        {
-          obj.add(b[map[i][j]].createBlock(i,j));
-        }
-      }*/
   }
 
   public int[][] getMap()
@@ -91,7 +72,6 @@ class Map
         }
       }
     
-    //int[] lake = {};
     int[][] pool =
     {
       {5,0,0,0,10},//ground
@@ -122,12 +102,4 @@ class Map
       }
     return out;
   }
-
-  /*void draw()
-  {
-    for(int i=0;i<MAP_SIZE;i++)
-        for(int j=0;j<MAP_SIZE;j++)
-          b[map[i][j]].drawFrame(i,j,GameLoop.getFrame());
-          //drawBlock(i,j,b[map[i][j]].getFrame(CURRENT_FRAME),b[map[i][j]].background);
-  }*/
 }

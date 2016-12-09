@@ -1,4 +1,4 @@
-int[] simLife(int template[][],int x, int y)
+/*int[] simLife(int template[][],int x, int y)
 {
   int out[] = {x,y};
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
@@ -22,4 +22,4 @@ int[] simLife(int template[][],int x, int y)
   
   out[0]=-1;
   return out;
-}
+}*/

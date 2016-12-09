@@ -1,4 +1,4 @@
-public class SceneManager implements Service
+public class SceneManager //implements Service
 {
   private String corrent_scene;
   private int trans_time;

@@ -15,16 +15,12 @@ Tile evaluateTile(int[][] template)
       map_empty[i][j]=0;
       
   for(int k = 0;k<16;k++)
-  {
-    //temp_template = iterate(temp_template,map_empty,0,0);
     temp_template = iterateTile(temp_template,map_empty);
-  }
   
   int[][][] img = new int[6][8][8];
   int[] resources = new int[5];
   for(int k = 0;k<6;k++)
   {
-    //temp_template = iterate(temp_template,map_empty,0,0);
     temp_template = iterateTile(temp_template,map_empty);
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)

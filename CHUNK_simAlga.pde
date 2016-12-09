@@ -5,7 +5,7 @@ Simulation initOrganicSpawnSim(final int[][] template,String group)
   Part[] Tiles = Game.ObjectManager.getGroup(group);
   int size = template[0].length;
 
-    //creating water table and organic_spawn
+  //creating water table and organic_spawn
   for(int i = 0; i<size; i++)
     for(int j = 0; j<size; j++)
     {

@@ -67,33 +67,6 @@ public class Game
     SceneManager = sv;
   }
 
-  /*public void add(String name, Service service)
-  {
-    switch(name)
-    {
-      case "player":
-        Player = service;
-        break;
-      case "gameLoop":
-        GameLoop = service;
-        break;
-      case "renderEngine":
-        RenderEngine = service;
-        break;
-      case "objectManager":
-        ObjectManager = service;
-        break;
-      case "sceneManager":
-        SceneManager = service;
-        break;
-      case "inputHandler":
-        InputHandler = service;
-        break;
-      default:
-        println("(!!!) TIPO in Game.add()");
-    }
-  }*/
-
   private void sendToScene(Msg msg)
   {
     int i1,i2,i3;
@@ -133,12 +106,6 @@ public class Game
       case "scene":
         sendToScene(msg);
         break;
-      /*case "render":
-        sendToRender(msg);
-        break;
-      case "object":
-        sendToObject(msg);
-        break;*/
     }
   }
 }

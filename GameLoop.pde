@@ -1,4 +1,4 @@
-public class GameLoop implements Service
+public class GameLoop //implements Service
 {
   private int length;
   private int counter;

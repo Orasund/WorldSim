@@ -1,4 +1,4 @@
-public class Player implements Service
+public class Player //implements Service
 {
   private PVector pos;
   private float dir;

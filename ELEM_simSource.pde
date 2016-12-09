@@ -44,7 +44,7 @@ int[][] simSource(final int[][] template,final int[][] temp_template_,String gro
           for(int l=0;l<2;l++)
             coord[l] += dir[k][l];
           found = true;
-          break;//return coord;
+          break;
         }
       
       if(found == false)
@@ -53,7 +53,7 @@ int[][] simSource(final int[][] template,final int[][] temp_template_,String gro
           {
             for(int l=0;l<2;l++)
               coord[l] += dir[k][l];
-            break;//return coord;
+            break;
           }
 
       if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)

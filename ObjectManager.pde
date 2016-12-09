@@ -1,4 +1,4 @@
-public class ObjectManager implements Service
+public class ObjectManager// implements Service
 {
   private Database<Part> database;
 
