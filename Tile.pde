@@ -4,9 +4,9 @@ public class Tile implements Part
   public int[] resources;
   public int background;
   public color c;
-  public Set<Boolean> types;
+  public Set<String> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, color c_,Set<Boolean> types_)
+  Tile(int[][][] img_,int[]resources_,int background_, color c_,Set<String> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -37,7 +37,7 @@ public class Tile implements Part
     for(int k = 0;k<5;k++)
       resources_[k] = 0;
     
-    types = new Set<Boolean>();
+    types = new Set<String>();
     
     background = 0;
     c = c_;
@@ -45,7 +45,7 @@ public class Tile implements Part
 
   Tile(int[][] template, color c_)
   { 
-    types = new Set<Boolean>();
+    types = new Set<String>();
 
     int[][] temp_template = new int[8][8];
     int[][] map_empty = new int[8][8];
@@ -96,7 +96,9 @@ public class Tile implements Part
 
   public Tile copy(){return new Tile(img,resources,background,c,types);}
 
-  public boolean is(String type){return false;}
+  public boolean is(String type){
+    return types.contains(type);
+  }
   
   public int[][] getFrame(int i){return img[i];}
 

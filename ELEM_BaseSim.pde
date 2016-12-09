@@ -2,7 +2,7 @@ public class BaseSim extends Simulation
 {
   BaseSim(final int[][] template,String group)
   {
-    super(0);
+    super(0, new SimulationManager());
 
     //initBaseSim(template,group);
   }

@@ -1,8 +1,9 @@
 public class OrganicSim extends Simulation
 {
-  OrganicSim(final int[][] template,String group)
+  OrganicSim(final int[][] template,String group, SimulationManager  SimulationManager_)
   {
-    super(3);
+    super(3,SimulationManager_);
+
     String[] names_ = {"organics","water","water_buffer"};
     setNames(names_);
 
@@ -39,6 +40,12 @@ public class OrganicSim extends Simulation
   //int[][]
   void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
   {
+    if(SimulationManager == null)
+    {
+      println("ERROR:SimulationManager not found");
+      return; 
+    }
+
     //return simOrganic(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
     int x,y;

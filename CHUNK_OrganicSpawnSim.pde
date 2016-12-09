@@ -1,8 +1,8 @@
 public class OrganicSpawnSim extends Simulation
 {
-  OrganicSpawnSim(final int[][] template,String group)
+  OrganicSpawnSim(final int[][] template,String group, SimulationManager SimulationManager_)
   {
-    super(2);
+    super(2, SimulationManager_);
     String[] names_ = {"water","organic_spawn"};
     setNames(names_);
     

@@ -2,7 +2,7 @@ public class LifeSim extends Simulation
 {
   LifeSim(final int[][] template,String group)
   {
-    super(0);
+    super(0, new SimulationManager());
 
     //initLifeSim(template,group);
   }

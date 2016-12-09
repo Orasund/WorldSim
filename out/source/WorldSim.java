@@ -80,9 +80,10 @@ public void keyPressed()
 }
 public class OrganicSim extends Simulation
 {
-  OrganicSim(final int[][] template,String group)
+  OrganicSim(final int[][] template,String group, SimulationManager  SimulationManager_)
   {
-    super(3);
+    super(3,SimulationManager_);
+
     String[] names_ = {"organics","water","water_buffer"};
     setNames(names_);
 
@@ -119,6 +120,12 @@ public class OrganicSim extends Simulation
   //int[][]
   public void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
   {
+    if(SimulationManager == null)
+    {
+      println("ERROR:SimulationManager not found");
+      return; 
+    }
+
     //return simOrganic(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
     int x,y;
@@ -183,9 +190,9 @@ public class OrganicSim extends Simulation
 }
 public class OrganicSpawnSim extends Simulation
 {
-  OrganicSpawnSim(final int[][] template,String group)
+  OrganicSpawnSim(final int[][] template,String group, SimulationManager SimulationManager_)
   {
-    super(2);
+    super(2, SimulationManager_);
     String[] names_ = {"water","organic_spawn"};
     setNames(names_);
     
@@ -525,8 +532,8 @@ public class Chunk implements Part
   Chunk(int[][] template_,String group_)
   { 
     SimulationManager SimulationManager = new SimulationManager();
-    SimulationManager.add("Organic",new OrganicSim(template_,group_));
-    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+    SimulationManager.add("Organic",new OrganicSim(template_,group_,SimulationManager ));
+    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_,SimulationManager ));
 
     int size = 8;
     blocks = SimulationManager.init(template_,group_);
@@ -597,7 +604,7 @@ public class BaseSim extends Simulation
 {
   BaseSim(final int[][] template,String group)
   {
-    super(0);
+    super(0, new SimulationManager());
 
     //initBaseSim(template,group);
   }
@@ -611,7 +618,7 @@ public class LifeSim extends Simulation
 {
   LifeSim(final int[][] template,String group)
   {
-    super(0);
+    super(0, new SimulationManager());
 
     //initLifeSim(template,group);
   }
@@ -625,7 +632,7 @@ public class SourceSim extends Simulation
 {
   SourceSim(final int[][] template,String group)
   {
-    super(0);
+    super(0, new SimulationManager());
 
     //initSourceSim(template,group);
   }
@@ -1214,12 +1221,12 @@ public class Msg
 }
 class Organic extends Tile
 {
-  Organic(int[][][] img_,int[]resources_,int background_, int c_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, int c_, Set<String> types_)
   {
     super(img_,resources_,background_,c_,types_);
   }
 
-  Organic(int[][][] img_,int[]resources_,int background_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, Set<String> types_)
   {
     super(img_,resources_,background_,color(0,255,0),types_);
   }
@@ -1243,12 +1250,12 @@ class Organic extends Tile
 }
 class OrganicSpawn extends Tile
 {
-  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int c_, Set<Boolean> types_)
+  OrganicSpawn(int[][][] img_,int[]resources_,int background_, int c_, Set<String> types_)
   {
     super(img_,resources_,background_,c_,types_);
   }
 
-  OrganicSpawn(int[][][] img_,int[]resources_,int background_, Set<Boolean> types_)
+  OrganicSpawn(int[][][] img_,int[]resources_,int background_, Set<String> types_)
   {
     super(img_,resources_,background_,color(0,0,255),types_);
   }
@@ -1274,12 +1281,12 @@ class OrganicSpawn extends Tile
 }
 class Water extends Tile
 {
-  Water(int[][][] img_,int[]resources_,int background_,int c_,Set<Boolean> types_)
+  Water(int[][][] img_,int[]resources_,int background_,int c_,Set<String> types_)
   {
     super(img_,resources_,background_,c_,types_);
   }
 
-  Water(int[][][] img_,int[]resources_,int background_,Set<Boolean> types_)
+  Water(int[][][] img_,int[]resources_,int background_,Set<String> types_)
   {
     super(img_,resources_,background_,color(0,0,255),types_);
   }
@@ -1295,11 +1302,11 @@ class Water extends Tile
     return out;
   }
 
-  public boolean is(String type){
+  /*public boolean is(String type){
     if(type.equals("water"))
       return true;
     return false;
-  }
+  }*/
 }
 public class ObjectManager// implements Service
 {
@@ -1799,9 +1806,9 @@ public class Simulation
   private int[][][] tables;
   private String[] names;
   private int size;
-  SimulationManager SimulationManager;
+  public SimulationManager SimulationManager;
 
-  Simulation(int n)
+  Simulation(int n, SimulationManager SimulationManager_)
   {
     size = 8;
     names = new String[n];
@@ -1812,7 +1819,7 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
-    SimulationManager = null;
+    SimulationManager = SimulationManager_;
   }
 
   //pls delete as fast as possible
@@ -1927,6 +1934,7 @@ public class SimulationManager
 
   public void deleteEntry(int x, int y)
   {
+    println("piep");
     template_buffer[x][y] = 0;
   }
 
@@ -2148,9 +2156,9 @@ public class Tile implements Part
   public int[] resources;
   public int background;
   public int c;
-  public Set<Boolean> types;
+  public Set<String> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, int c_,Set<Boolean> types_)
+  Tile(int[][][] img_,int[]resources_,int background_, int c_,Set<String> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -2181,7 +2189,7 @@ public class Tile implements Part
     for(int k = 0;k<5;k++)
       resources_[k] = 0;
     
-    types = new Set<Boolean>();
+    types = new Set<String>();
     
     background = 0;
     c = c_;
@@ -2189,7 +2197,7 @@ public class Tile implements Part
 
   Tile(int[][] template, int c_)
   { 
-    types = new Set<Boolean>();
+    types = new Set<String>();
 
     int[][] temp_template = new int[8][8];
     int[][] map_empty = new int[8][8];
@@ -2240,7 +2248,9 @@ public class Tile implements Part
 
   public Tile copy(){return new Tile(img,resources,background,c,types);}
 
-  public boolean is(String type){return false;}
+  public boolean is(String type){
+    return types.contains(type);
+  }
   
   public int[][] getFrame(int i){return img[i];}
 
@@ -2348,7 +2358,7 @@ public void draw()
 public Tile evaluateTile(int[][] template)
 {
   Tile out;
-  Set<Boolean> types = new Set<Boolean>();
+  Set<String> types = new Set<String>();
 
   //Iterate for 16 Ticks
   int[][] temp_template = new int[8][8];
@@ -2404,6 +2414,7 @@ public Tile evaluateTile(int[][] template)
       if(resources[3]>0) //OrganicSpawn
         out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
       else //water
+        types.add("water");
         out = new Water(img,resources,background,color(80,80,256),types);
       break;
 

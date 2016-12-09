@@ -3,9 +3,9 @@ public class Simulation
   private int[][][] tables;
   private String[] names;
   private int size;
-  SimulationManager SimulationManager;
+  public SimulationManager SimulationManager;
 
-  Simulation(int n)
+  Simulation(int n, SimulationManager SimulationManager_)
   {
     size = 8;
     names = new String[n];
@@ -16,7 +16,7 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
-    SimulationManager = null;
+    SimulationManager = SimulationManager_;
   }
 
   //pls delete as fast as possible
@@ -36,7 +36,7 @@ public class Simulation
     }
   }
 
-  void addManager(SimulationManager SimulationManager_)
+  public void addManager(SimulationManager SimulationManager_)
   {
     SimulationManager = SimulationManager_;
   }

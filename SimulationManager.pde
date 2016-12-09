@@ -15,7 +15,7 @@ public class SimulationManager
     sims.put(name,sim);
   }
 
-  void createEntry(int i, int x, int y)
+  public void createEntry(int i, int x, int y)
   {
     if(template_buffer[x][y] == 0)
       return;
@@ -23,7 +23,7 @@ public class SimulationManager
     template_buffer[x][y] = i;
   }
 
-  void deleteEntry(int x, int y)
+  public void deleteEntry(int x, int y)
   {
     template_buffer[x][y] = 0;
   }

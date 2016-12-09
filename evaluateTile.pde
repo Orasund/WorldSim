@@ -1,7 +1,7 @@
 Tile evaluateTile(int[][] template)
 {
   Tile out;
-  Set<Boolean> types = new Set<Boolean>();
+  Set<String> types = new Set<String>();
 
   //Iterate for 16 Ticks
   int[][] temp_template = new int[8][8];
@@ -57,6 +57,7 @@ Tile evaluateTile(int[][] template)
       if(resources[3]>0) //OrganicSpawn
         out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
       else //water
+        types.add("water");
         out = new Water(img,resources,background,color(80,80,256),types);
       break;
 

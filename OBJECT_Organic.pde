@@ -1,11 +1,11 @@
 class Organic extends Tile
 {
-  Organic(int[][][] img_,int[]resources_,int background_, color c_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, color c_, Set<String> types_)
   {
     super(img_,resources_,background_,c_,types_);
   }
 
-  Organic(int[][][] img_,int[]resources_,int background_, Set<Boolean> types_)
+  Organic(int[][][] img_,int[]resources_,int background_, Set<String> types_)
   {
     super(img_,resources_,background_,color(0,255,0),types_);
   }

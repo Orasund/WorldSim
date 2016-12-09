@@ -41,8 +41,8 @@ public class Chunk implements Part
   Chunk(int[][] template_,String group_)
   { 
     SimulationManager SimulationManager = new SimulationManager();
-    SimulationManager.add("Organic",new OrganicSim(template_,group_));
-    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+    SimulationManager.add("Organic",new OrganicSim(template_,group_,SimulationManager ));
+    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_,SimulationManager ));
 
     int size = 8;
     blocks = SimulationManager.init(template_,group_);

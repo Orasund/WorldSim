@@ -2,7 +2,7 @@ public class SourceSim extends Simulation
 {
   SourceSim(final int[][] template,String group)
   {
-    super(0);
+    super(0, new SimulationManager());
 
     //initSourceSim(template,group);
   }
