@@ -41,12 +41,6 @@ public class SimulationManager
 
   int[][] init(final int[][] template_,String group_)
   {
-    /*************************************
-    **
-    **  BUG: simulation of single tiles not working
-    **
-    *************************************/
-
     int size = SIZE;
     ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
 

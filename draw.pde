@@ -34,8 +34,9 @@ void draw()
       
   }
 
-  background(255);
-  Game.RenderEngine.drawView();
+  //background(255);
+  background(0);
+  //Game.RenderEngine.drawView();
   //RenderEngine.setRot(Player.getDir());
   
   /*translate(width/2, height/2);

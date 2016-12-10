@@ -1,28 +1,44 @@
 Chunk createGroundChunk()
 {
   int[] amount = {5,10};
-  String[] names = {"lake","bush"};
+  String[] names = {"lake1","bush"};
   return createChunk(amount,names,"tiles");
 }
 
 Chunk createWaterChunk()
 {
-  int[] amount = {70,20};
+  int[] amount = {65,20};
+  int variance = 2;
   String[] names = {"lake","alga"};
-  return createChunk(amount,names,"tiles");
+  
+  String[] names2 = {"lake0","lake1","alga0","alga1"};
+  
+  int[] amount_ = new int[amount.length*variance];
+  String[] names_ = new String[amount_.length];
+  for(int i=0; i<amount.length; i++)
+    for(int j=0; j<variance; j++)
+    {
+      amount_[i*variance+j] = amount[i];
+      String name = names[i]+j;
+      println((i*variance+j)+":"+name + "=" + names2[i*variance+j]+"["+amount_[i*variance+j]+"]");
+      names_[i*variance+j] = name;
+    }
+  //return createChunk(amount_,names_,"waterTiles");
+  println(names_[amount_.length-1]);
+  return createChunk(amount_,names2,"waterTiles");
 }
 
 Chunk createMountainChunk()
 {
   int[] amount = {5,70,10};
-  String[] names = {"lake","stone","moss"};
+  String[] names = {"lake1","stone","moss"};
   return createChunk(amount,names,"tiles");
 }
 
 Chunk createForestChunk()
 {
   int[] amount = {10,5,50};
-  String[] names = {"lake","stone","bush"};
+  String[] names = {"lake1","stone","bush"};
   return createChunk(amount,names,"tiles");
 }
 

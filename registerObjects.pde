@@ -8,20 +8,41 @@ void registerObjects()
   String[] elements = {"space","base","source","life"};
   ObjectManager.registerGroup("elements",elements);
 
+  Part obj;
   ObjectManager.registerPart("ground", createGround());
-  ObjectManager.registerPart("lake", createLake());
+  
+  for(int variance = 0; variance < 2; variance++)
+  {
+    obj = createLake();
+    if(obj.is("water") == false) obj = createLake();
+    ObjectManager.registerPart("lake"+variance, obj);
+
+    for(int i = 0; i < 5; i++)
+    {
+      obj = createAlga();
+      if(obj.is("organic_spawn")) break;
+    }
+    ObjectManager.registerPart("alga"+variance, obj);
+  }
+
+
   ObjectManager.registerPart("stone", createStone());
-  ObjectManager.registerPart("alga", createAlga());
   ObjectManager.registerPart("moss", createMoss());
-  ObjectManager.registerPart("bush", createBush());
-  String[] tiles = {"ground","lake","stone","alga","moss","bush"};
+
+  obj = createBush();
+  if(obj.is("organic") == false) obj = createBush();
+  ObjectManager.registerPart("bush", obj);
+  String[] tiles = {"ground","lake1","stone","alga1","moss","bush"};
   ObjectManager.registerGroup("tiles",tiles);
 
-  int amount = 4;
+  String[] water_tiles = {"ground","lake0","lake1","alga0","alga1"};
+  ObjectManager.registerGroup("waterTiles",water_tiles);
+
+  int variance = 4;
 
   String name = "groundChunk";
-  String[] group = new String[amount];
-  for(int i=0;i<amount;i++)
+  String[] group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createGroundChunk());
     group[i] = name+i;
@@ -29,8 +50,8 @@ void registerObjects()
   ObjectManager.registerGroup(name+"s",group);
 
   name = "waterChunk";
-  group = new String[amount];
-  for(int i=0;i<amount;i++)
+  group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createWaterChunk());
     group[i] = name+i;
@@ -38,8 +59,8 @@ void registerObjects()
   ObjectManager.registerGroup(name+"s",group);
   
   name = "mountainChunk";
-  group = new String[amount];
-  for(int i=0;i<amount;i++)
+  group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createMountainChunk());
     group[i] = name+i;
@@ -47,8 +68,8 @@ void registerObjects()
   ObjectManager.registerGroup(name+"s",group);
 
   name = "forestChunk";
-  group = new String[amount];
-  for(int i=0;i<amount;i++)
+  group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createForestChunk());
     group[i] = name+i;

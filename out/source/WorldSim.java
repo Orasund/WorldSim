@@ -21,6 +21,7 @@ int SIZE;
 Game Game;
 
 public void setup() {
+  //size(640, 640);
   
   SIZE = 8;
   int MAP_DETAIL = 4;
@@ -43,13 +44,13 @@ public void setup() {
   COUNTER = 0;
   registerObjects();
 
-  Tile[] b = new Tile[6];
+  /*Tile[] b = new Tile[6];
   b[0] = createGround();
   b[1] = createLake();
   b[2] = createStone();
   b[3] = createAlga();
   b[4] = createMoss();
-  b[5] = createBush();
+  b[5] = createBush();*/
   TEMPLATE = solidTemplate(0,10,0);
 
   Map map = new Map("chunk");
@@ -590,7 +591,12 @@ public class Database<T>
   }
 
   public void addGroup(String name, String[] group){groups.put(name,group);}
-  public String[] getGroup(String name){return groups.get(name);}
+  public String[] getGroup(String name){
+    String[] out = groups.get(name);
+    if(out == null)
+      println("WARNING: can't find Group:" + name + " @Database.getGroup");
+    return out;
+  }
   public void add(String name, T item){storage.put(name,item);}
   public T get(String name){return storage.get(name);}
   public void delete(String name){storage.remove(name);}
@@ -1955,12 +1961,6 @@ public class SimulationManager
 
   public int[][] init(final int[][] template_,String group_)
   {
-    /*************************************
-    **
-    **  BUG: simulation of single tiles not working
-    **
-    *************************************/
-
     int size = SIZE;
     ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
 
@@ -2066,28 +2066,44 @@ public class Template
 public Chunk createGroundChunk()
 {
   int[] amount = {5,10};
-  String[] names = {"lake","bush"};
+  String[] names = {"lake1","bush"};
   return createChunk(amount,names,"tiles");
 }
 
 public Chunk createWaterChunk()
 {
-  int[] amount = {70,20};
+  int[] amount = {65,20};
+  int variance = 2;
   String[] names = {"lake","alga"};
-  return createChunk(amount,names,"tiles");
+  
+  String[] names2 = {"lake0","lake1","alga0","alga1"};
+  
+  int[] amount_ = new int[amount.length*variance];
+  String[] names_ = new String[amount_.length];
+  for(int i=0; i<amount.length; i++)
+    for(int j=0; j<variance; j++)
+    {
+      amount_[i*variance+j] = amount[i];
+      String name = names[i]+j;
+      println((i*variance+j)+":"+name + "=" + names2[i*variance+j]+"["+amount_[i*variance+j]+"]");
+      names_[i*variance+j] = name;
+    }
+  //return createChunk(amount_,names_,"waterTiles");
+  println(names_[amount_.length-1]);
+  return createChunk(amount_,names_,"waterTiles");
 }
 
 public Chunk createMountainChunk()
 {
   int[] amount = {5,70,10};
-  String[] names = {"lake","stone","moss"};
+  String[] names = {"lake1","stone","moss"};
   return createChunk(amount,names,"tiles");
 }
 
 public Chunk createForestChunk()
 {
   int[] amount = {10,5,50};
-  String[] names = {"lake","stone","bush"};
+  String[] names = {"lake1","stone","bush"};
   return createChunk(amount,names,"tiles");
 }
 
@@ -2359,8 +2375,9 @@ public void draw()
       
   }
 
-  background(255);
-  Game.RenderEngine.drawView();
+  //background(255);
+  background(0);
+  //Game.RenderEngine.drawView();
   //RenderEngine.setRot(Player.getDir());
   
   /*translate(width/2, height/2);
@@ -2444,7 +2461,7 @@ public Tile evaluateTile(int[][] template)
       {
         //out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
         
-        println("a OrganicSpawn was created");
+        println("a OrganicSpawn was created:[life:"+resources[3]+"]");
         types.add("organic_spawn");
         types.add("water");
         out = new Tile(img,resources,background,color(53,80,128),types);
@@ -2479,20 +2496,41 @@ public void registerObjects()
   String[] elements = {"space","base","source","life"};
   ObjectManager.registerGroup("elements",elements);
 
+  Part obj;
   ObjectManager.registerPart("ground", createGround());
-  ObjectManager.registerPart("lake", createLake());
+  
+  for(int variance = 0; variance < 2; variance++)
+  {
+    obj = createLake();
+    if(obj.is("water") == false) obj = createLake();
+    ObjectManager.registerPart("lake"+variance, obj);
+
+    for(int i = 0; i < 5; i++)
+    {
+      obj = createAlga();
+      if(obj.is("organic_spawn")) break;
+    }
+    ObjectManager.registerPart("alga"+variance, obj);
+  }
+
+
   ObjectManager.registerPart("stone", createStone());
-  ObjectManager.registerPart("alga", createAlga());
   ObjectManager.registerPart("moss", createMoss());
-  ObjectManager.registerPart("bush", createBush());
-  String[] tiles = {"ground","lake","stone","alga","moss","bush"};
+
+  obj = createBush();
+  if(obj.is("organic") == false) obj = createBush();
+  ObjectManager.registerPart("bush", obj);
+  String[] tiles = {"ground","lake1","stone","alga1","moss","bush"};
   ObjectManager.registerGroup("tiles",tiles);
 
-  int amount = 4;
+  String[] water_tiles = {"ground","lake0","lake1","alga0","alga1"};
+  ObjectManager.registerGroup("waterTiles",water_tiles);
+
+  int variance = 4;
 
   String name = "groundChunk";
-  String[] group = new String[amount];
-  for(int i=0;i<amount;i++)
+  String[] group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createGroundChunk());
     group[i] = name+i;
@@ -2500,8 +2538,8 @@ public void registerObjects()
   ObjectManager.registerGroup(name+"s",group);
 
   name = "waterChunk";
-  group = new String[amount];
-  for(int i=0;i<amount;i++)
+  group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createWaterChunk());
     group[i] = name+i;
@@ -2509,8 +2547,8 @@ public void registerObjects()
   ObjectManager.registerGroup(name+"s",group);
   
   name = "mountainChunk";
-  group = new String[amount];
-  for(int i=0;i<amount;i++)
+  group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createMountainChunk());
     group[i] = name+i;
@@ -2518,8 +2556,8 @@ public void registerObjects()
   ObjectManager.registerGroup(name+"s",group);
 
   name = "forestChunk";
-  group = new String[amount];
-  for(int i=0;i<amount;i++)
+  group = new String[variance];
+  for(int i=0;i<variance;i++)
   {
     ObjectManager.registerPart(name+i, createForestChunk());
     group[i] = name+i;
@@ -2535,7 +2573,7 @@ public void registerObjects()
   };
   ObjectManager.registerGroup("chunk",chunk);
 }
-  public void settings() {  size(640, 640); }
+  public void settings() {  size(1024,768); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "WorldSim" };
     if (passedArgs != null) {

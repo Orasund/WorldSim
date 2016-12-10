@@ -5,7 +5,8 @@ int SIZE;
 Game Game;
 
 void setup() {
-  size(640, 640);
+  //size(640, 640);
+  size(1024,768);
   SIZE = 8;
   int MAP_DETAIL = 4;
   int MAP_SIZE = 4*MAP_DETAIL;
@@ -27,13 +28,13 @@ void setup() {
   COUNTER = 0;
   registerObjects();
 
-  Tile[] b = new Tile[6];
+  /*Tile[] b = new Tile[6];
   b[0] = createGround();
   b[1] = createLake();
   b[2] = createStone();
   b[3] = createAlga();
   b[4] = createMoss();
-  b[5] = createBush();
+  b[5] = createBush();*/
   TEMPLATE = solidTemplate(0,10,0);
 
   Map map = new Map("chunk");
