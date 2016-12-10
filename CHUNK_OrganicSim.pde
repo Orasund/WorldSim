@@ -91,8 +91,8 @@ public class OrganicSim extends Simulation
         if(getEntry("organics",i,j)==1)
         {
           //Delete
-          if(Tiles[temp_template[i][j]].is("organic"))
-            Game.SimulationManager.deleteEntry(i,j);
+          Game.SimulationManager.deleteEntry("organic",i,j);
+          //if(Tiles[temp_template[i][j]].is("organic"))
             //temp_template[i][j] = 0;
         }
 

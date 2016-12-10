@@ -172,8 +172,8 @@ public class OrganicSim extends Simulation
         if(getEntry("organics",i,j)==1)
         {
           //Delete
-          if(Tiles[temp_template[i][j]].is("organic"))
-            Game.SimulationManager.deleteEntry(i,j);
+          Game.SimulationManager.deleteEntry("organic",i,j);
+          //if(Tiles[temp_template[i][j]].is("organic"))
             //temp_template[i][j] = 0;
         }
 
@@ -265,7 +265,7 @@ public class OrganicSpawnSim extends Simulation
           
           //new spawn can be created
           //temp_template[x][y] = template[i][j];
-          Game.SimulationManager.deleteEntry(x,y);
+          Game.SimulationManager.deleteEntry("water",x,y);
           Game.SimulationManager.createEntry(template[i][j],x,y);
           setEntry("organic_spawn",x,y,1);
         }
@@ -527,9 +527,9 @@ public class Chunk implements Part
   Chunk(int[][] template_,String group_)
   { 
     int size = SIZE;
-    
+
     SimulationManager SimulationManager = Game.SimulationManager;
-    SimulationManager.clear();
+    SimulationManager.newSession(group_);
     SimulationManager.add("Organic",new OrganicSim(template_,group_));
     SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
     blocks = SimulationManager.init(template_,group_);
@@ -1916,23 +1916,26 @@ public class SimulationManager
 {
   private HashMap<String,Simulation> sims;
   private int[][] template_buffer;
+  private String group;
 
   SimulationManager()
   {
     sims = new HashMap<String,Simulation>();
     template_buffer = new int[SIZE][SIZE];
+    group = "";
+  }
+
+  public void newSession(String name)
+  {
+    sims.clear();
+    template_buffer = new int[SIZE][SIZE];
+    group = name;
   }
 
   public void add(String name, final Simulation sim)
   {
     //sim.addManager(this);
     sims.put(name,sim);
-  }
-
-  public void clear()
-  {
-    sims.clear();
-    template_buffer = new int[SIZE][SIZE];
   }
 
   public void createEntry(int i, int x, int y)
@@ -1943,9 +1946,11 @@ public class SimulationManager
     template_buffer[x][y] = i;
   }
 
-  public void deleteEntry(int x, int y)
+  public void deleteEntry(String type,int x, int y)
   {
-    template_buffer[x][y] = 0;
+    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    if(Tiles[template_buffer[x][y]].is("type"))
+      template_buffer[x][y] = 0;
   }
 
   public int[][] init(final int[][] template_,String group_)

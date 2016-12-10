@@ -2,23 +2,26 @@ public class SimulationManager
 {
   private HashMap<String,Simulation> sims;
   private int[][] template_buffer;
+  private String group;
 
   SimulationManager()
   {
     sims = new HashMap<String,Simulation>();
     template_buffer = new int[SIZE][SIZE];
+    group = "";
+  }
+
+  void newSession(String name)
+  {
+    sims.clear();
+    template_buffer = new int[SIZE][SIZE];
+    group = name;
   }
 
   void add(String name, final Simulation sim)
   {
     //sim.addManager(this);
     sims.put(name,sim);
-  }
-
-  void clear()
-  {
-    sims.clear();
-    template_buffer = new int[SIZE][SIZE];
   }
 
   public void createEntry(int i, int x, int y)
@@ -29,9 +32,11 @@ public class SimulationManager
     template_buffer[x][y] = i;
   }
 
-  public void deleteEntry(int x, int y)
+  public void deleteEntry(String type,int x, int y)
   {
-    template_buffer[x][y] = 0;
+    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    if(Tiles[template_buffer[x][y]].is("type"))
+      template_buffer[x][y] = 0;
   }
 
   int[][] init(final int[][] template_,String group_)
