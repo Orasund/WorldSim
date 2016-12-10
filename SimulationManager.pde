@@ -11,8 +11,14 @@ public class SimulationManager
 
   void add(String name, final Simulation sim)
   {
-    sim.addManager(this);
+    //sim.addManager(this);
     sims.put(name,sim);
+  }
+
+  void clear()
+  {
+    sims.clear();
+    template_buffer = new int[SIZE][SIZE];
   }
 
   public void createEntry(int i, int x, int y)
@@ -30,10 +36,16 @@ public class SimulationManager
 
   int[][] init(final int[][] template_,String group_)
   {
+    /*************************************
+    **
+    **  BUG: simulation of single tiles not working
+    **
+    *************************************/
+
     int size = SIZE;
     ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
 
-    template_buffer = new int[size][size];
+    //template_buffer = new int[size][size];
     int[][] template = new int[size][size];
     for(int i = 0;i<size;i++)
       for(int j = 0;j<size;j++)
@@ -45,8 +57,11 @@ public class SimulationManager
     for(int iter = 0; iter<16; iter++)    
     {
       for(int i=0; i<simList.size(); i++)
-        simList.get(i).sim(template,template_buffer,group_);
-        //template_buffer = 
+      {
+         //template_buffer = 
+         simList.get(i).sim(template,template_buffer,group_);
+      }
+
       
       for(int i = 0; i<size; i++)
         for(int j = 0; j<size; j++)

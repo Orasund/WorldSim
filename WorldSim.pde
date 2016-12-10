@@ -14,6 +14,7 @@ void setup() {
   Game.addInputHandler(new InputHandler());
   Game.addRenderEngine(new RenderEngine("single",1));
   Game.addObjectManager(new ObjectManager());
+  Game.addSimulationManager(new SimulationManager());
 
   GameLoop GameLoop = Game.GameLoop;
   InputHandler InputHandler = Game.InputHandler;

@@ -7,7 +7,7 @@ Chunk createGroundChunk()
 
 Chunk createWaterChunk()
 {
-  int[] amount = {70,10};
+  int[] amount = {70,20};
   String[] names = {"lake","alga"};
   return createChunk(amount,names,"tiles");
 }

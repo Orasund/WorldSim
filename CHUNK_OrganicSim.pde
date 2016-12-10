@@ -1,8 +1,9 @@
 public class OrganicSim extends Simulation
 {
-  OrganicSim(final int[][] template,String group, SimulationManager  SimulationManager_)
+  OrganicSim(final int[][] template,String group)
   {
-    super(3,SimulationManager_);
+    //super(3,SimulationManager_);
+    super(3);
 
     String[] names_ = {"organics","water","water_buffer"};
     setNames(names_);
@@ -37,16 +38,9 @@ public class OrganicSim extends Simulation
         }
   }
 
-  //int[][]
-  void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  //void
+  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
-    if(SimulationManager == null)
-    {
-      println("ERROR:SimulationManager not found");
-      return; 
-    }
-
-    //return simOrganic(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
     int x,y;
     int size = template[0].length;
@@ -59,12 +53,12 @@ public class OrganicSim extends Simulation
 
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
-        sim.setEntry("water_buffer",i,j,sim.getEntry("water",i,j));
+        setEntry("water_buffer",i,j,getEntry("water",i,j));
     
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(sim.getEntry("water",i,j)<=0)
+        if(getEntry("water",i,j)<=0)
           continue;
         
         for(int k = 0; k<4; k++)
@@ -73,38 +67,38 @@ public class OrganicSim extends Simulation
           y = j+dir[k][1];
           if(x<0 || y<0 || x>=size || y>=size)
             continue;
-          if(sim.getEntry("organics",x,y)==0)
+          if(getEntry("organics",x,y)==0)
             continue;
           
-          sim.setEntry("water",x,y,sim.getEntry("water",i,j));
-          if(sim.getEntry("water",x,y)>sim.getEntry("organics",x,y))
-            sim.setEntry("water",x,y,sim.getEntry("organics",x,y));
+          setEntry("water",x,y,getEntry("water",i,j));
+          if(getEntry("water",x,y)>getEntry("organics",x,y))
+            setEntry("water",x,y,getEntry("organics",x,y));
         }
       }
     
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(sim.getEntry("water_buffer",i,j)>0)
+        if(getEntry("water_buffer",i,j)>0)
         {
-          sim.setEntry("water",i,j,0);
-          sim.setEntry("organics",i,j,0);
+          setEntry("water",i,j,0);
+          setEntry("organics",i,j,0);
         }
 
-        if(sim.getEntry("organics",i,j)==0)
+        if(getEntry("organics",i,j)==0)
           continue;
 
-        if(sim.getEntry("organics",i,j)==1)
+        if(getEntry("organics",i,j)==1)
         {
           //Delete
           if(Tiles[temp_template[i][j]].is("organic"))
-            SimulationManager.deleteEntry(i,j);
+            Game.SimulationManager.deleteEntry(i,j);
             //temp_template[i][j] = 0;
         }
 
-        sim.setEntry("organics",i,j,sim.getEntry("organics",i,j)-1);
+        setEntry("organics",i,j,getEntry("organics",i,j)-1);
       }
 
-    //return temp_template;
+    return temp_template;
   }
 }

@@ -1,8 +1,8 @@
 public class OrganicSpawnSim extends Simulation
 {
-  OrganicSpawnSim(final int[][] template,String group, SimulationManager SimulationManager_)
+  OrganicSpawnSim(final int[][] template,String group)
   {
-    super(2, SimulationManager_);
+    super(2);//, SimulationManager_);
     String[] names_ = {"water","organic_spawn"};
     setNames(names_);
     
@@ -25,8 +25,8 @@ public class OrganicSpawnSim extends Simulation
       }
   }
 
-  //int[][]
-  void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  //void
+  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
     //return simOrganicSpawn(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
@@ -42,7 +42,7 @@ public class OrganicSpawnSim extends Simulation
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(sim.getEntry("organic_spawn",i,j)==0)
+        if(getEntry("organic_spawn",i,j)==0)
           continue;
 
         //create new spawn if possible
@@ -54,10 +54,10 @@ public class OrganicSpawnSim extends Simulation
           if(x<0 || y<0 || x>=size || y>=size)
             continue;
 
-          if(sim.getEntry("water",x,y)==0)
+          if(getEntry("water",x,y)==0)
             continue;
           
-          if(sim.getEntry("organic_spawn",x,y)==1)
+          if(getEntry("organic_spawn",x,y)==1)
             continue;
 
           //two or three waters next to it are allowed
@@ -69,7 +69,7 @@ public class OrganicSpawnSim extends Simulation
             if(x2<0 || y2<0 || x2>=size || y2>=size)
             continue;
 
-            if(sim.getEntry("water",x2,y2)==0)
+            if(getEntry("water",x2,y2)==0)
               continue;
             
             count++;
@@ -80,12 +80,12 @@ public class OrganicSpawnSim extends Simulation
           
           //new spawn can be created
           //temp_template[x][y] = template[i][j];
-          SimulationManager.deleteEntry(x,y);
-          SimulationManager.createEntry(template[i][j],x,y);
-          sim.setEntry("organic_spawn",x,y,1);
+          Game.SimulationManager.deleteEntry(x,y);
+          Game.SimulationManager.createEntry(template[i][j],x,y);
+          setEntry("organic_spawn",x,y,1);
         }
       }
 
-    //return temp_template;
+    return temp_template;
   }
 }

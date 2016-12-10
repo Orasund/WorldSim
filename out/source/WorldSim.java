@@ -30,6 +30,7 @@ public void setup() {
   Game.addInputHandler(new InputHandler());
   Game.addRenderEngine(new RenderEngine("single",1));
   Game.addObjectManager(new ObjectManager());
+  Game.addSimulationManager(new SimulationManager());
 
   GameLoop GameLoop = Game.GameLoop;
   InputHandler InputHandler = Game.InputHandler;
@@ -80,9 +81,10 @@ public void keyPressed()
 }
 public class OrganicSim extends Simulation
 {
-  OrganicSim(final int[][] template,String group, SimulationManager  SimulationManager_)
+  OrganicSim(final int[][] template,String group)
   {
-    super(3,SimulationManager_);
+    //super(3,SimulationManager_);
+    super(3);
 
     String[] names_ = {"organics","water","water_buffer"};
     setNames(names_);
@@ -117,16 +119,9 @@ public class OrganicSim extends Simulation
         }
   }
 
-  //int[][]
-  public void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  //void
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
-    if(SimulationManager == null)
-    {
-      println("ERROR:SimulationManager not found");
-      return; 
-    }
-
-    //return simOrganic(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
     int x,y;
     int size = template[0].length;
@@ -139,12 +134,12 @@ public class OrganicSim extends Simulation
 
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
-        sim.setEntry("water_buffer",i,j,sim.getEntry("water",i,j));
+        setEntry("water_buffer",i,j,getEntry("water",i,j));
     
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(sim.getEntry("water",i,j)<=0)
+        if(getEntry("water",i,j)<=0)
           continue;
         
         for(int k = 0; k<4; k++)
@@ -153,46 +148,46 @@ public class OrganicSim extends Simulation
           y = j+dir[k][1];
           if(x<0 || y<0 || x>=size || y>=size)
             continue;
-          if(sim.getEntry("organics",x,y)==0)
+          if(getEntry("organics",x,y)==0)
             continue;
           
-          sim.setEntry("water",x,y,sim.getEntry("water",i,j));
-          if(sim.getEntry("water",x,y)>sim.getEntry("organics",x,y))
-            sim.setEntry("water",x,y,sim.getEntry("organics",x,y));
+          setEntry("water",x,y,getEntry("water",i,j));
+          if(getEntry("water",x,y)>getEntry("organics",x,y))
+            setEntry("water",x,y,getEntry("organics",x,y));
         }
       }
     
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(sim.getEntry("water_buffer",i,j)>0)
+        if(getEntry("water_buffer",i,j)>0)
         {
-          sim.setEntry("water",i,j,0);
-          sim.setEntry("organics",i,j,0);
+          setEntry("water",i,j,0);
+          setEntry("organics",i,j,0);
         }
 
-        if(sim.getEntry("organics",i,j)==0)
+        if(getEntry("organics",i,j)==0)
           continue;
 
-        if(sim.getEntry("organics",i,j)==1)
+        if(getEntry("organics",i,j)==1)
         {
           //Delete
           if(Tiles[temp_template[i][j]].is("organic"))
-            SimulationManager.deleteEntry(i,j);
+            Game.SimulationManager.deleteEntry(i,j);
             //temp_template[i][j] = 0;
         }
 
-        sim.setEntry("organics",i,j,sim.getEntry("organics",i,j)-1);
+        setEntry("organics",i,j,getEntry("organics",i,j)-1);
       }
 
-    //return temp_template;
+    return temp_template;
   }
 }
 public class OrganicSpawnSim extends Simulation
 {
-  OrganicSpawnSim(final int[][] template,String group, SimulationManager SimulationManager_)
+  OrganicSpawnSim(final int[][] template,String group)
   {
-    super(2, SimulationManager_);
+    super(2);//, SimulationManager_);
     String[] names_ = {"water","organic_spawn"};
     setNames(names_);
     
@@ -215,8 +210,8 @@ public class OrganicSpawnSim extends Simulation
       }
   }
 
-  //int[][]
-  public void sim(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+  //void
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
     //return simOrganicSpawn(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
@@ -232,7 +227,7 @@ public class OrganicSpawnSim extends Simulation
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(sim.getEntry("organic_spawn",i,j)==0)
+        if(getEntry("organic_spawn",i,j)==0)
           continue;
 
         //create new spawn if possible
@@ -244,10 +239,10 @@ public class OrganicSpawnSim extends Simulation
           if(x<0 || y<0 || x>=size || y>=size)
             continue;
 
-          if(sim.getEntry("water",x,y)==0)
+          if(getEntry("water",x,y)==0)
             continue;
           
-          if(sim.getEntry("organic_spawn",x,y)==1)
+          if(getEntry("organic_spawn",x,y)==1)
             continue;
 
           //two or three waters next to it are allowed
@@ -259,7 +254,7 @@ public class OrganicSpawnSim extends Simulation
             if(x2<0 || y2<0 || x2>=size || y2>=size)
             continue;
 
-            if(sim.getEntry("water",x2,y2)==0)
+            if(getEntry("water",x2,y2)==0)
               continue;
             
             count++;
@@ -270,13 +265,13 @@ public class OrganicSpawnSim extends Simulation
           
           //new spawn can be created
           //temp_template[x][y] = template[i][j];
-          SimulationManager.deleteEntry(x,y);
-          SimulationManager.createEntry(template[i][j],x,y);
-          sim.setEntry("organic_spawn",x,y,1);
+          Game.SimulationManager.deleteEntry(x,y);
+          Game.SimulationManager.createEntry(template[i][j],x,y);
+          setEntry("organic_spawn",x,y,1);
         }
       }
 
-    //return temp_template;
+    return temp_template;
   }
 }
 /*Simulation initOrganicSpawnSim(final int[][] template,String group)
@@ -531,11 +526,12 @@ public class Chunk implements Part
 
   Chunk(int[][] template_,String group_)
   { 
-    SimulationManager SimulationManager = new SimulationManager();
-    SimulationManager.add("Organic",new OrganicSim(template_,group_,SimulationManager ));
-    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_,SimulationManager ));
-
-    int size = 8;
+    int size = SIZE;
+    
+    SimulationManager SimulationManager = Game.SimulationManager;
+    SimulationManager.clear();
+    SimulationManager.add("Organic",new OrganicSim(template_,group_));
+    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
     blocks = SimulationManager.init(template_,group_);
 
     resources = new int[size];
@@ -604,7 +600,7 @@ public class BaseSim extends Simulation
 {
   BaseSim(final int[][] template,String group)
   {
-    super(0, new SimulationManager());
+    super(0);//, new SimulationManager());
 
     //initBaseSim(template,group);
   }
@@ -618,7 +614,7 @@ public class LifeSim extends Simulation
 {
   LifeSim(final int[][] template,String group)
   {
-    super(0, new SimulationManager());
+    super(0);//, new SimulationManager());
 
     //initLifeSim(template,group);
   }
@@ -632,7 +628,7 @@ public class SourceSim extends Simulation
 {
   SourceSim(final int[][] template,String group)
   {
-    super(0, new SimulationManager());
+    super(0);//, new SimulationManager());
 
     //initSourceSim(template,group);
   }
@@ -835,12 +831,13 @@ public class Game
   ObjectManager ObjectManager;
   SceneManager SceneManager;
   InputHandler InputHandler;
+  SimulationManager SimulationManager;
 
   Game()
   {
   }
 
-  Game(Player Player_,GameLoop GameLoop_,RenderEngine RenderEngine_,ObjectManager ObjectManager_,SceneManager SceneManager_,InputHandler InputHandler_)
+  /*Game(Player Player_,GameLoop GameLoop_,RenderEngine RenderEngine_,ObjectManager ObjectManager_,SceneManager SceneManager_,InputHandler InputHandler_)
   {
     Player = Player_;
     GameLoop = GameLoop_;
@@ -848,7 +845,8 @@ public class Game
     ObjectManager = ObjectManager_;
     SceneManager = SceneManager_;
     InputHandler = InputHandler_;
-  }
+    SimulationManager = 
+  }*/
 
   private void sendToInput(Msg msg)
   {
@@ -884,6 +882,11 @@ public class Game
   public void addGameLoop(GameLoop sv)
   {
     GameLoop = sv;
+  }
+
+  public void addSimulationManager(SimulationManager sv)
+  {
+    SimulationManager = sv;
   }
 
   public void addRenderEngine(RenderEngine sv)
@@ -1255,10 +1258,11 @@ class OrganicSpawn extends Tile
     super(img_,resources_,background_,c_,types_);
   }
 
+  /*
   OrganicSpawn(int[][][] img_,int[]resources_,int background_, Set<String> types_)
   {
     super(img_,resources_,background_,color(0,0,255),types_);
-  }
+  }*/
 
   OrganicSpawn(int[][] template)
   { 
@@ -1806,9 +1810,9 @@ public class Simulation
   private int[][][] tables;
   private String[] names;
   private int size;
-  public SimulationManager SimulationManager;
+  //public SimulationManager SimulationManager;
 
-  Simulation(int n, SimulationManager SimulationManager_)
+  Simulation(int n)
   {
     size = 8;
     names = new String[n];
@@ -1819,7 +1823,7 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
-    SimulationManager = SimulationManager_;
+    //SimulationManager = SimulationManager_;
   }
 
   //pls delete as fast as possible
@@ -1839,10 +1843,10 @@ public class Simulation
     }
   }
 
-  public void addManager(SimulationManager SimulationManager_)
+  /*public void addManager(SimulationManager SimulationManager_)
   {
     SimulationManager = SimulationManager_;
-  }
+  }*/
 
   public void setNames(String[] names_)
   {
@@ -1901,10 +1905,11 @@ public class Simulation
     tables[n][x][y] = value;
   }
 
-  //int[][]
-  public void sim(final int[][] template,final int[][] temp_template_,String group)
+  //void
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
-    //return temp_template_;
+            println("piep");
+    return temp_template_;
   }
 }
 public class SimulationManager
@@ -1920,8 +1925,14 @@ public class SimulationManager
 
   public void add(String name, final Simulation sim)
   {
-    sim.addManager(this);
+    //sim.addManager(this);
     sims.put(name,sim);
+  }
+
+  public void clear()
+  {
+    sims.clear();
+    template_buffer = new int[SIZE][SIZE];
   }
 
   public void createEntry(int i, int x, int y)
@@ -1934,16 +1945,21 @@ public class SimulationManager
 
   public void deleteEntry(int x, int y)
   {
-    println("piep");
     template_buffer[x][y] = 0;
   }
 
   public int[][] init(final int[][] template_,String group_)
   {
+    /*************************************
+    **
+    **  BUG: simulation of single tiles not working
+    **
+    *************************************/
+
     int size = SIZE;
     ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
 
-    template_buffer = new int[size][size];
+    //template_buffer = new int[size][size];
     int[][] template = new int[size][size];
     for(int i = 0;i<size;i++)
       for(int j = 0;j<size;j++)
@@ -1955,8 +1971,11 @@ public class SimulationManager
     for(int iter = 0; iter<16; iter++)    
     {
       for(int i=0; i<simList.size(); i++)
-        simList.get(i).sim(template,template_buffer,group_);
-        //template_buffer = 
+      {
+         //template_buffer = 
+         simList.get(i).sim(template,template_buffer,group_);
+      }
+
       
       for(int i = 0; i<size; i++)
         for(int j = 0; j<size; j++)
@@ -2048,7 +2067,7 @@ public Chunk createGroundChunk()
 
 public Chunk createWaterChunk()
 {
-  int[] amount = {70,10};
+  int[] amount = {70,20};
   String[] names = {"lake","alga"};
   return createChunk(amount,names,"tiles");
 }
@@ -2400,7 +2419,12 @@ public Tile evaluateTile(int[][] template)
     if(mult[i]*resources[i]>mult[background]*resources[background])
       background = i;
   
-  //life
+  if(background == 0 && resources[2] != 0)
+  {
+    background = 2;
+  }
+
+  //switch
   switch(background)
   {
     //organic
@@ -2412,10 +2436,20 @@ public Tile evaluateTile(int[][] template)
     case 2:
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
-        out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
-      else //water
+      {
+        //out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
+        
+        println("a OrganicSpawn was created");
+        types.add("organic_spawn");
         types.add("water");
-        out = new Water(img,resources,background,color(80,80,256),types);
+        out = new Tile(img,resources,background,color(53,80,128),types);
+      }
+      else //water
+      {
+        types.add("water");
+        out = new Tile(img,resources,background,color(80,80,256),types);
+        //out = new Water(img,resources,background,color(80,80,256),types);
+      }
       break;
 
     //stone

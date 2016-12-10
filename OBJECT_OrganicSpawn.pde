@@ -5,10 +5,11 @@ class OrganicSpawn extends Tile
     super(img_,resources_,background_,c_,types_);
   }
 
+  /*
   OrganicSpawn(int[][][] img_,int[]resources_,int background_, Set<String> types_)
   {
     super(img_,resources_,background_,color(0,0,255),types_);
-  }
+  }*/
 
   OrganicSpawn(int[][] template)
   { 

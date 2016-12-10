@@ -3,9 +3,9 @@ public class Simulation
   private int[][][] tables;
   private String[] names;
   private int size;
-  public SimulationManager SimulationManager;
+  //public SimulationManager SimulationManager;
 
-  Simulation(int n, SimulationManager SimulationManager_)
+  Simulation(int n)
   {
     size = 8;
     names = new String[n];
@@ -16,7 +16,7 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
-    SimulationManager = SimulationManager_;
+    //SimulationManager = SimulationManager_;
   }
 
   //pls delete as fast as possible
@@ -36,10 +36,10 @@ public class Simulation
     }
   }
 
-  public void addManager(SimulationManager SimulationManager_)
+  /*public void addManager(SimulationManager SimulationManager_)
   {
     SimulationManager = SimulationManager_;
-  }
+  }*/
 
   void setNames(String[] names_)
   {
@@ -98,9 +98,10 @@ public class Simulation
     tables[n][x][y] = value;
   }
 
-  //int[][]
-  void sim(final int[][] template,final int[][] temp_template_,String group)
+  //void
+  int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
-    //return temp_template_;
+            println("piep");
+    return temp_template_;
   }
 }

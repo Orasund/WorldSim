@@ -43,7 +43,12 @@ Tile evaluateTile(int[][] template)
     if(mult[i]*resources[i]>mult[background]*resources[background])
       background = i;
   
-  //life
+  if(background == 0 && resources[2] != 0)
+  {
+    background = 2;
+  }
+
+  //switch
   switch(background)
   {
     //organic
@@ -55,10 +60,20 @@ Tile evaluateTile(int[][] template)
     case 2:
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
-        out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
-      else //water
+      {
+        //out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
+        
+        println("a OrganicSpawn was created");
+        types.add("organic_spawn");
         types.add("water");
-        out = new Water(img,resources,background,color(80,80,256),types);
+        out = new Tile(img,resources,background,color(53,80,128),types);
+      }
+      else //water
+      {
+        types.add("water");
+        out = new Tile(img,resources,background,color(80,80,256),types);
+        //out = new Water(img,resources,background,color(80,80,256),types);
+      }
       break;
 
     //stone

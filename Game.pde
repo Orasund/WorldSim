@@ -6,12 +6,13 @@ public class Game
   ObjectManager ObjectManager;
   SceneManager SceneManager;
   InputHandler InputHandler;
+  SimulationManager SimulationManager;
 
   Game()
   {
   }
 
-  Game(Player Player_,GameLoop GameLoop_,RenderEngine RenderEngine_,ObjectManager ObjectManager_,SceneManager SceneManager_,InputHandler InputHandler_)
+  /*Game(Player Player_,GameLoop GameLoop_,RenderEngine RenderEngine_,ObjectManager ObjectManager_,SceneManager SceneManager_,InputHandler InputHandler_)
   {
     Player = Player_;
     GameLoop = GameLoop_;
@@ -19,7 +20,8 @@ public class Game
     ObjectManager = ObjectManager_;
     SceneManager = SceneManager_;
     InputHandler = InputHandler_;
-  }
+    SimulationManager = 
+  }*/
 
   private void sendToInput(Msg msg)
   {
@@ -55,6 +57,11 @@ public class Game
   public void addGameLoop(GameLoop sv)
   {
     GameLoop = sv;
+  }
+
+  public void addSimulationManager(SimulationManager sv)
+  {
+    SimulationManager = sv;
   }
 
   public void addRenderEngine(RenderEngine sv)

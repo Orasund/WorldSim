@@ -40,11 +40,12 @@ public class Chunk implements Part
 
   Chunk(int[][] template_,String group_)
   { 
-    SimulationManager SimulationManager = new SimulationManager();
-    SimulationManager.add("Organic",new OrganicSim(template_,group_,SimulationManager ));
-    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_,SimulationManager ));
-
-    int size = 8;
+    int size = SIZE;
+    
+    SimulationManager SimulationManager = Game.SimulationManager;
+    SimulationManager.clear();
+    SimulationManager.add("Organic",new OrganicSim(template_,group_));
+    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
     blocks = SimulationManager.init(template_,group_);
 
     resources = new int[size];
