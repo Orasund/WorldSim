@@ -2072,7 +2072,8 @@ public Chunk createGroundChunk()
 
 public Chunk createWaterChunk()
 {
-  int[] amount = {65,20};
+  //int[] amount = {60,20};
+  int[] amount = {70,20};
   int variance = 2;
   String[] names = {"lake","alga"};
   
@@ -2083,14 +2084,14 @@ public Chunk createWaterChunk()
   for(int i=0; i<amount.length; i++)
     for(int j=0; j<variance; j++)
     {
-      amount_[i*variance+j] = amount[i];
+      amount_[i*variance+j] = floor(amount[i]/variance);
       String name = names[i]+j;
       println((i*variance+j)+":"+name + "=" + names2[i*variance+j]+"["+amount_[i*variance+j]+"]");
       names_[i*variance+j] = name;
     }
   //return createChunk(amount_,names_,"waterTiles");
   println(names_[amount_.length-1]);
-  return createChunk(amount_,names_,"waterTiles");
+  return createChunk(amount_,names2,"waterTiles");
 }
 
 public Chunk createMountainChunk()
