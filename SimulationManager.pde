@@ -3,12 +3,25 @@ public class SimulationManager
   private HashMap<String,Simulation> sims;
   private int[][] template_buffer;
   private String group;
+  private Table listeners;
+  private Table actions;
 
   SimulationManager()
   {
     sims = new HashMap<String,Simulation>();
     template_buffer = new int[SIZE][SIZE];
     group = "";
+
+    table = new Table();
+    table.addColumn("id",Table.INT);
+    table.addColumn("x", Table.INT);
+    table.addColumn("y", Table.INT);
+    table.addColumn("sim", Table.FLOAT);
+    table.addColumn("type", Table.FLOAT);
+
+    listeners = new Table();
+    listeners.addColumn("target",Table.STRING);
+    listeners.addColumn("sim",Table.STRING);
   }
 
   void newSession(String name)
@@ -16,6 +29,11 @@ public class SimulationManager
     sims.clear();
     template_buffer = new int[SIZE][SIZE];
     group = name;
+  }
+
+  void listeningTo(String target,String sim)
+  {
+
   }
 
   void add(String name, final Simulation sim)
