@@ -44,9 +44,14 @@ public class Chunk implements Part
 
     SimulationManager SimulationManager = Game.SimulationManager;
     SimulationManager.newSession(group_);
+
     SimulationManager.add("Organic",new OrganicSim(template_,group_));
+    SimulationManager.listenTo("water","Organic");
+    SimulationManager.listenTo("organic","Organic");
     SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
-    blocks = SimulationManager.init(template_,group_);
+    SimulationManager.listenTo("organic","OrganicSpawn");
+    
+    blocks = SimulationManager.init(template_);//,group_);
 
     resources = new int[size];
     for(int i = 0;i<size;i++)

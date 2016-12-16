@@ -80,6 +80,7 @@ public class OrganicSpawnSim extends Simulation
           
           //new spawn can be created
           //temp_template[x][y] = template[i][j];
+          
           Game.SimulationManager.deleteEntry("water",x,y);
           Game.SimulationManager.createEntry(template[i][j],x,y);
           setEntry("organic_spawn",x,y,1);
