@@ -118,18 +118,29 @@ public class Tile implements Part
     int[][] template = img[frame];
     Part[] elements = Game.ObjectManager.getGroup("elements");
 
+    color[][] image = new color[SIZE][SIZE];
+
+
     fill(c);
     Game.RenderEngine.drawBackground(x*8,y*8);
 
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
+    for(int i=0;i<SIZE;i++)
+      for(int j=0;j<SIZE;j++)
       {
         if(template[i][j] == 0)
-          continue;
+        {
+          image[i][j] = c;
+          //continue;
+        }
+        else
+        {
+          image[i][j] = elements[template[i][j]].getColor();
+        }  
         
-        fill(elements[template[i][j]].getColor());
-        Game.RenderEngine.drawRect(x*8+i,y*8+j);
+        //fill(elements[template[i][j]].getColor());
+        //Game.RenderEngine.drawRect(x*8+i,y*8+j);
       }
+    Game.RenderEngine.drawImg(Game.RenderEngine.createImg(image),x*8,y*8);
   }
 
   public color getColor()

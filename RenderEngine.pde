@@ -103,6 +103,49 @@ class RenderEngine// implements Service
     rect(temp_x,temp_y,temp_size,temp_size);
   }
 
+  PImage createImg(color[][] img)
+  {
+    //create the Image
+
+    int zoom = getView().getInt("size");
+    PImage out = createImage(SIZE*zoom, SIZE*zoom, RGB);
+    out.loadPixels();
+
+    for (int i = 0; i < SIZE; i++)
+      for (int j = 0; j < SIZE; j++)
+        for(int k = 0; k < zoom; k++)
+          for(int l = 0; l < zoom; l++)
+          {
+            out.pixels[(j*zoom+l)*SIZE*zoom+i*zoom+k] = img[i][j]; 
+          }
+
+    out.updatePixels();
+    return out;
+  }
+
+  void drawImg(PImage img,int x, int y)
+  {
+    noStroke();
+    float size = getView().getInt("size");
+
+    float temp_x = getView().getInt("offset_x");
+    float temp_y = getView().getInt("offset_y");
+
+    //relative Position
+    temp_x += (getView().getInt("max")*8*size)/2;
+    temp_y += (getView().getInt("max")*8*size)/2;
+
+    //position of the camera on the map
+    temp_x -=getView().getFloat("pos_x");
+    temp_y -=getView().getFloat("pos_y");
+
+    //position of the block
+    temp_x += x*size;
+    temp_y += y*size;
+
+    image(img, temp_x, temp_y);
+  }
+
   void drawRect(int x, int y)
   {
     noStroke();
