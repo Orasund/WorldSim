@@ -53,7 +53,8 @@ Tile evaluateTile(int[][] template)
   {
     //organic
     case 3:
-      out = new Organic(img,resources,background,color(0,128,0),types);
+      types.add("organic");
+      out = new Tile(img,resources,background,color(0,128,0),types);
       break;
 
     //water
@@ -63,7 +64,6 @@ Tile evaluateTile(int[][] template)
       {
         //out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
         
-        println("a OrganicSpawn was created:[life:"+resources[3]+"]");
         types.add("organic_spawn");
         types.add("water");
         out = new Tile(img,resources,background,color(53,80,128),types);

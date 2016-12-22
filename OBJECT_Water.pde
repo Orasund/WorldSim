@@ -1,4 +1,4 @@
-class Water extends Tile
+/*class Water extends Tile
 {
   Water(int[][][] img_,int[]resources_,int background_,color c_,Set<String> types_)
   {
@@ -21,9 +21,4 @@ class Water extends Tile
     return out;
   }
 
-  /*public boolean is(String type){
-    if(type.equals("water"))
-      return true;
-    return false;
-  }*/
-}
+}*/

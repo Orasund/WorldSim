@@ -1,12 +1,14 @@
 public class Tile implements Part
 {
   public int[][][] img;
+
+  public PImage[] images;
   public int[] resources;
   public int background;
   public color c;
   public Set<String> types;
 
-  Tile(int[][][] img_,int[]resources_,int background_, color c_,Set<String> types_)
+  Tile(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
   {
     img = new int[6][8][8];
     for(int i = 0;i<6;i++)
@@ -23,6 +25,10 @@ public class Tile implements Part
     background = background_;
 
     c = c_;
+
+    images = new PImage[6];
+    for(int i = 0; i<6; i++)
+      images[i] = Game.RenderEngine.createImgByIntArray(img_[i],c,"elements");
   }
 
   Tile(color c_)
@@ -41,6 +47,10 @@ public class Tile implements Part
     
     background = 0;
     c = c_;
+
+    images = new PImage[6];
+    for(int i = 0; i<6; i++)
+      images[i] = Game.RenderEngine.createImgByIntArray(img[i],c,"elements");
   }
 
   Tile(int[][] template, color c_)
@@ -92,6 +102,10 @@ public class Tile implements Part
         background = i;
     
     c = c_;
+
+    images = new PImage[6];
+    for(int i = 0; i<6; i++)
+      images[i] = Game.RenderEngine.createImgByIntArray(img[i],c,"elements");
   }
 
   public Tile copy(){return new Tile(img,resources,background,c,types);}
@@ -115,32 +129,9 @@ public class Tile implements Part
 
   public void drawFrame(int x, int y, int frame)
   {
-    int[][] template = img[frame];
-    Part[] elements = Game.ObjectManager.getGroup("elements");
-
-    color[][] image = new color[SIZE][SIZE];
-
-
-    fill(c);
-    Game.RenderEngine.drawBackground(x*8,y*8);
-
-    for(int i=0;i<SIZE;i++)
-      for(int j=0;j<SIZE;j++)
-      {
-        if(template[i][j] == 0)
-        {
-          image[i][j] = c;
-          //continue;
-        }
-        else
-        {
-          image[i][j] = elements[template[i][j]].getColor();
-        }  
-        
-        //fill(elements[template[i][j]].getColor());
-        //Game.RenderEngine.drawRect(x*8+i,y*8+j);
-      }
-    Game.RenderEngine.drawImg(Game.RenderEngine.createImg(image),x*8,y*8);
+    //PImage image = images[frame];
+    PImage image = Game.RenderEngine.createImgByIntArray(img[frame],c,"elements");
+    Game.RenderEngine.drawImg(image,x*8,y*8);
   }
 
   public color getColor()

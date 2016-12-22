@@ -1,4 +1,4 @@
-class Organic extends Tile
+/*class Organic extends Tile
 {
   Organic(int[][][] img_,int[]resources_,int background_, color c_, Set<String> types_)
   {
@@ -26,4 +26,4 @@ class Organic extends Tile
       return true;
     return false;
   }
-}
+}*/

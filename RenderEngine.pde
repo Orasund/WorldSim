@@ -103,6 +103,21 @@ class RenderEngine// implements Service
     rect(temp_x,temp_y,temp_size,temp_size);
   }
 
+  PImage createImgByIntArray(int[][] template,color c, String group)
+  {
+    color[][] out = new color[SIZE][SIZE];
+    Part[] parts = Game.ObjectManager.getGroup(group);
+    for(int i=0;i<SIZE;i++)
+      for(int j=0;j<SIZE;j++)
+      {
+        if(template[i][j] == 0)
+          out[i][j] = c;
+        else
+          out[i][j] = parts[template[i][j]].getColor();
+      }
+    return createImg(out);
+  }
+
   PImage createImg(color[][] img)
   {
     //create the Image
