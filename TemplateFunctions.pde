@@ -20,11 +20,9 @@ Chunk createWaterChunk()
     {
       amount_[i*variance+j] = floor(amount[i]/variance);
       String name = names[i]+j;
-      println((i*variance+j)+":"+name + "=" + names2[i*variance+j]+"["+amount_[i*variance+j]+"]");
       names_[i*variance+j] = name;
     }
   //return createChunk(amount_,names_,"waterTiles");
-  println(names_[amount_.length-1]);
   return createChunk(amount_,names2,"waterTiles");
 }
 

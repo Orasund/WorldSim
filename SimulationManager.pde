@@ -104,7 +104,6 @@ public class SimulationManager
       int max = actions.getRowCount();
       for(int i = 0; i<max; i++)
       {
-        println(i+":"+max);
         TableRow row = actions.getRow(i);
         int x = row.getInt("x");
         int y = row.getInt("y");
@@ -116,11 +115,6 @@ public class SimulationManager
             if(template_buffer[x][y] == 0)
             {
               template_buffer[x][y] = id;
-              println("create:"+id); 
-            }
-            else 
-            {
-              println("woooot?");
             }
             break;
 
@@ -128,7 +122,6 @@ public class SimulationManager
             Part[] Tiles = Game.ObjectManager.getGroup(group);
             if(Tiles[template_buffer[x][y]].is(type))
             {
-              println("delete:"+type); 
               template_buffer[x][y] = 0;
             }
             break;

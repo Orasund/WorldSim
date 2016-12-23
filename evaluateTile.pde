@@ -62,8 +62,6 @@ Tile evaluateTile(int[][] template)
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
       {
-        //out = new OrganicSpawn(img,resources,background,color(53,80,128),types);
-        
         types.add("organic_spawn");
         types.add("water");
         out = new Tile(img,resources,background,color(53,80,128),types);
@@ -72,7 +70,6 @@ Tile evaluateTile(int[][] template)
       {
         types.add("water");
         out = new Tile(img,resources,background,color(80,80,256),types);
-        //out = new Water(img,resources,background,color(80,80,256),types);
       }
       break;
 

@@ -28,13 +28,6 @@ void setup() {
   COUNTER = 0;
   registerObjects();
 
-  /*Tile[] b = new Tile[6];
-  b[0] = createGround();
-  b[1] = createLake();
-  b[2] = createStone();
-  b[3] = createAlga();
-  b[4] = createMoss();
-  b[5] = createBush();*/
   TEMPLATE = solidTemplate(0,10,0);
 
   Map map = new Map("chunk");

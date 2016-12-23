@@ -23,7 +23,10 @@ public class ObjectManager// implements Service
 
   public Part getPart(String name)
   {
-    return database.get(name);
+    Part out = database.get(name);
+    if(out==null)
+      println("ERROR: getPart not found: "+name);
+    return out;
   }
 
   public Part[] getGroup(String name)

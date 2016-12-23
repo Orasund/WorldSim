@@ -101,7 +101,6 @@ public class Simulation
   //void
   int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
-            println("piep");
     return temp_template_;
   }
 }
