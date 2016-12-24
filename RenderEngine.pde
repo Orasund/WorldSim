@@ -105,8 +105,10 @@ class RenderEngine// implements Service
 
   PImage createImgByIntArray(int[][] template,color c, String group)
   {
+    ObjectManager objectManager = GAME.getObjectManager();
+
     color[][] out = new color[SIZE][SIZE];
-    Part[] parts = Game.ObjectManager.getGroup(group);
+    Part[] parts = objectManager.getGroup(group);
     for(int i=0;i<SIZE;i++)
       for(int j=0;j<SIZE;j++)
       {
@@ -211,7 +213,8 @@ class RenderEngine// implements Service
 
   public void render()
   {
-    JSONObject a = new JSONObject();
-    Game.send("scene","renderArea",a);
+    SceneManager sceneManager = GAME.getSceneManager();
+    
+    sceneManager.renderArea();
   }
 }

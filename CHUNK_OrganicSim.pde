@@ -5,10 +5,12 @@ public class OrganicSim extends Simulation
     //super(3,SimulationManager_);
     super(3);
 
+    ObjectManager objectManager = GAME.getObjectManager();
+
     String[] names_ = {"organics","water","water_buffer"};
     setNames(names_);
 
-    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    Part[] Tiles = objectManager.getGroup(group);
     int size = template[0].length;
 
     for(int i = 0; i<size; i++)
@@ -38,13 +40,43 @@ public class OrganicSim extends Simulation
         }
   }
 
-  //void
+  /*
+  * Input
+  *   template ... a array of the last iteration
+  *   temp_template ... a array with updates to the template
+  *   group ... name of the group of Parts for the template
+  *   sim ... a simulationObject that helps with keeping data stored
+  *
+  * Output
+  *   temp_template ... the same array but with new updates
+  *
+  * Algorithm
+  *   1.)create food&water-table and a water_buffer-table
+  *   2.)set food to amount of life-parts in Tile
+  *   3.)set water to 100 for each water Tile
+  *   4.)iterate 16 times
+  *     A.)water_buffer = water
+  *     B.)for each waterEntry >0
+  *       a.)for each foodEntry next to waterEntry
+  *         i.)water.foodEntry += waterEntry.value [max at foodEntry.value]
+  *     C.)for each water_bufferEntry
+  *       a.)set waterEntry = 0
+  *       b.)set foodEntry = 0
+  *     D.)for each food
+  *       a.)if foodEntry = 1 delete
+  *       b.)WaterEntry-=1
+  *   5.)for each waterEntry
+  *     A.) delete
+  */
   int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
+    SimulationManager simulationManager = GAME.getSimulationManager();
+    ObjectManager objectManager = GAME.getObjectManager();
+
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
     int x,y;
     int size = template[0].length;
-    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    Part[] Tiles = objectManager.getGroup(group);
 
     int[][] temp_template = new int[size][size];
     for(int i = 0; i<size; i++)
@@ -75,7 +107,7 @@ public class OrganicSim extends Simulation
             setEntry("water",x,y,getEntry("organics",x,y));
         }
       }
-    
+  
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
@@ -91,7 +123,7 @@ public class OrganicSim extends Simulation
         if(getEntry("organics",i,j)==1)
         {
           //Delete
-          Game.SimulationManager.deleteEntry("organic",i,j);
+          simulationManager.deleteEntry("organic",i,j);
           //if(Tiles[temp_template[i][j]].is("organic"))
             //temp_template[i][j] = 0;
         }

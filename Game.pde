@@ -1,118 +1,88 @@
 public class Game
 {
-  Player Player;
-  GameLoop GameLoop;
-  RenderEngine RenderEngine;
-  ObjectManager ObjectManager;
-  SceneManager SceneManager;
-  InputHandler InputHandler;
-  SimulationManager SimulationManager;
+  private Player player;
+  private GameLoop gameLoop;
+  private RenderEngine renderEngine;
+  private ObjectManager objectManager;
+  private SceneManager sceneManager;
+  private InputHandler inputHandler;
+  private SimulationManager simulationManager;
 
   Game()
   {
   }
 
-  /*Game(Player Player_,GameLoop GameLoop_,RenderEngine RenderEngine_,ObjectManager ObjectManager_,SceneManager SceneManager_,InputHandler InputHandler_)
-  {
-    Player = Player_;
-    GameLoop = GameLoop_;
-    RenderEngine = RenderEngine_;
-    ObjectManager = ObjectManager_;
-    SceneManager = SceneManager_;
-    InputHandler = InputHandler_;
-    SimulationManager = 
-  }*/
-
-  private void sendToInput(Msg msg)
-  {
-    switch(msg.msg)
-    {
-      case "drop":
-        InputHandler.dropInput(msg.a.getString("a1"));
-        break;
-      case "register":
-        InputHandler.registerInput(msg.a.getString("a1"));
-        break;
-      case "check":
-        InputHandler.checkInputs();
-        break;
-    }
-  }
-
   public void addInputHandler(InputHandler sv)
   {
-    InputHandler = sv;
+    inputHandler = sv;
+  }
+
+  public InputHandler getInputHandler()
+  {
+    if(inputHandler == null)
+    {
+      println("ERROR:");
+    }
+    return inputHandler;
   }
 
   public void addObjectManager(ObjectManager sv)
   {
-    ObjectManager = sv;
+    objectManager = sv;
+  }
+
+  public ObjectManager getObjectManager()
+  {
+    return objectManager;
   }
 
   public void addPlayer(Player sv)
   {
-    Player = sv;
+    player = sv;
+  }
+
+  public Player getPlayer()
+  {
+    return player;
   }
 
   public void addGameLoop(GameLoop sv)
   {
-    GameLoop = sv;
+    gameLoop = sv;
+  }
+
+  public GameLoop getGameLoop()
+  {
+    return gameLoop;
   }
 
   public void addSimulationManager(SimulationManager sv)
   {
-    SimulationManager = sv;
+    simulationManager = sv;
+  }
+
+  public SimulationManager getSimulationManager()
+  {
+    return simulationManager;
   }
 
   public void addRenderEngine(RenderEngine sv)
   {
-    RenderEngine = sv;
+    renderEngine = sv;
+  }
+
+  public RenderEngine getRenderEngine()
+  {
+    return renderEngine;
   }
 
   public void addSceneManager(SceneManager sv)
   {
-    SceneManager = sv;
+    sceneManager = sv;
   }
 
-  private void sendToScene(Msg msg)
+  public SceneManager getSceneManager()
   {
-    int i1,i2,i3;
-    float f1;
-    String s1;
-    switch(msg.msg)
-    {
-      case "moveTo":
-        i1 = msg.a.getInt("a1");
-        i2 = msg.a.getInt("a2");
-        i3 = msg.a.getInt("a3");
-        SceneManager.moveTo(i1, i2, i3);
-        break;
-      case "rotateTo":
-        f1 = msg.a.getFloat("a1");
-        i2 = msg.a.getInt("a2");
-        SceneManager.rotateTo(f1,i2);
-        break;
-      case "renderArea":
-        SceneManager.renderArea();
-        break;
-      case "chanceScene":
-        s1 = msg.a.getString("a1");
-        SceneManager.chanceScene(s1);
-        break;
-    }
-  }
-
-  public void send(String adress_,String msg_,JSONObject attributes_)
-  {
-    Msg msg = new Msg(adress_,msg_,attributes_);
-    switch(msg.adress)
-    {
-      case "input":
-        sendToInput(msg);
-        break;
-      case "scene":
-        sendToScene(msg);
-        break;
-    }
+    return sceneManager;
   }
 }

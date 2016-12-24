@@ -16,7 +16,6 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
-    //SimulationManager = SimulationManager_;
   }
 
   //pls delete as fast as possible
@@ -35,11 +34,6 @@ public class Simulation
           tables[i][j][k] = 0;
     }
   }
-
-  /*public void addManager(SimulationManager SimulationManager_)
-  {
-    SimulationManager = SimulationManager_;
-  }*/
 
   void setNames(String[] names_)
   {

@@ -26,7 +26,9 @@ public class SceneManager //implements Service
 
   public void moveTo(int x, int y, int time)
   {
-    trans_location = Game.RenderEngine.calcPos(x, y);
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
+    trans_location = renderEngine.calcPos(x, y);
     trans_time = time;
   }
 
@@ -58,20 +60,22 @@ public class SceneManager //implements Service
 
   public void renderArea()
   {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
     if(trans_time != 0)
     {
-      PVector location = new PVector(Game.RenderEngine.getX(),Game.RenderEngine.getY());
+      PVector location = new PVector(renderEngine.getX(),renderEngine.getY());
       PVector target = trans_location;
       PVector difference = PVector.sub(target,location);
       difference.setMag(difference.mag()/trans_time);
       location.add(difference);
-      Game.RenderEngine.setAbsPos(location.x,location.y);
+      renderEngine.setAbsPos(location.x,location.y);
       trans_time--;
     }
 
     if(rot_time != 0)
     {
-      float rot = Game.RenderEngine.getRot();
+      float rot = renderEngine.getRot();
       float difference = rot_location-rot;
       
       if(difference > PI)
@@ -80,7 +84,7 @@ public class SceneManager //implements Service
         difference += TWO_PI;
 
       difference /= rot_time;
-      Game.RenderEngine.setRot(rot+difference);
+      renderEngine.setRot(rot+difference);
       
       rot_time--;
     }

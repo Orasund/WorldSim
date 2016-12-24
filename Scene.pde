@@ -42,11 +42,15 @@ public class Scene
 
   public void renderArea()
   {
-    Game.RenderEngine.rotateScene();
-    Part[] Tiles = Game.ObjectManager.getGroup(group_name);
+    RenderEngine renderEngine = GAME.getRenderEngine();
+    ObjectManager objectManager = GAME.getObjectManager();
+    GameLoop gameLoop = GAME.getGameLoop();
+
+    renderEngine.rotateScene();
+    Part[] Tiles = objectManager.getGroup(group_name);
 
     for(int i=0;i<map.length;i++)
       for(int j=0;j<map[0].length;j++)
-        Tiles[map[i][j]].drawFrame(i,j,Game.GameLoop.getFrame());
+        Tiles[map[i][j]].drawFrame(i,j,gameLoop.getFrame());
   }
 }

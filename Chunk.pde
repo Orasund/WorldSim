@@ -42,16 +42,16 @@ public class Chunk implements Part
   { 
     int size = SIZE;
 
-    SimulationManager SimulationManager = Game.SimulationManager;
-    SimulationManager.newSession(group_);
+    SimulationManager simulationManager = GAME.getSimulationManager();
 
-    SimulationManager.add("Organic",new OrganicSim(template_,group_));
-    SimulationManager.listenTo("water","Organic");
-    SimulationManager.listenTo("organic","Organic");
-    SimulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
-    SimulationManager.listenTo("organic","OrganicSpawn");
+    simulationManager.newSession(group_);
+    simulationManager.add("Organic",new OrganicSim(template_,group_));
+    simulationManager.listenTo("water","Organic");
+    simulationManager.listenTo("organic","Organic");
+    simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+    simulationManager.listenTo("organic","OrganicSpawn");
     
-    blocks = SimulationManager.init(template_);//,group_);
+    blocks = simulationManager.init(template_);//,group_);
 
     resources = new int[size];
     for(int i = 0;i<size;i++)
@@ -90,7 +90,9 @@ public class Chunk implements Part
 
   public void drawFrame(int x, int y, int frame)
   {
-    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    ObjectManager objectManager = GAME.getObjectManager();
+
+    Part[] Tiles = objectManager.getGroup(group);
 
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)

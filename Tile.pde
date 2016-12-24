@@ -10,6 +10,8 @@ public class Tile implements Part
 
   Tile(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
   {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
     resources = new int[5];
     for(int i = 0;i<5;i++)
       resources[i] = resources_[i];
@@ -26,7 +28,8 @@ public class Tile implements Part
         for(int k = 0;k<8;k++)
           img[i][j][k] = img_[i][j][k];
       
-      images[i] = Game.RenderEngine.createImgByIntArray(img[i],c,"elements");
+      images[i] = renderEngine.createImgByIntArray(img[i],c,"elements").copy();
+
     }
   }
 
@@ -45,9 +48,11 @@ public class Tile implements Part
 
   public void drawFrame(int x, int y, int frame)
   {
-    images[frame] = Game.RenderEngine.createImgByIntArray(img[frame],c,"elements");
-    PImage image = images[frame].copy();
-    Game.RenderEngine.drawImg(image,x*8,y*8);
+    RenderEngine renderEngine = GAME.getRenderEngine();
+    
+    images[frame] = renderEngine.createImgByIntArray(img[frame],c,"elements");
+    PImage image = images[frame];
+    renderEngine.drawImg(image,x*8,y*8);
   }
 
   public color getColor()

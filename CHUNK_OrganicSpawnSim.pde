@@ -3,10 +3,13 @@ public class OrganicSpawnSim extends Simulation
   OrganicSpawnSim(final int[][] template,String group)
   {
     super(2);//, SimulationManager_);
+
+    ObjectManager objectManager = GAME.getObjectManager();
+
     String[] names_ = {"water","organic_spawn"};
     setNames(names_);
     
-    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    Part[] Tiles = objectManager.getGroup(group);
     int size = template[0].length;
 
     //creating water table and organic_spawn
@@ -28,11 +31,14 @@ public class OrganicSpawnSim extends Simulation
   //void
   int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {
+    ObjectManager objectManager = GAME.getObjectManager();
+    SimulationManager simulationManager = GAME.getSimulationManager();
+
     //return simOrganicSpawn(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
     int x,y,x2,y2;
     int size = template[0].length;
-    Part[] Tiles = Game.ObjectManager.getGroup(group);
+    Part[] Tiles = objectManager.getGroup(group);
 
     int[][] temp_template = new int[size][size];
     for(int i = 0; i<size; i++)
@@ -81,8 +87,8 @@ public class OrganicSpawnSim extends Simulation
           //new spawn can be created
           //temp_template[x][y] = template[i][j];
           
-          Game.SimulationManager.deleteEntry("water",x,y);
-          Game.SimulationManager.createEntry(template[i][j],x,y);
+          simulationManager.deleteEntry("water",x,y);
+          simulationManager.createEntry(template[i][j],x,y);
           setEntry("organic_spawn",x,y,1);
         }
       }

@@ -2,7 +2,7 @@
 int[][] TEMPLATE;
 int COUNTER;
 int SIZE;
-Game Game;
+Game GAME;
 
 void setup() {
   //size(640, 640);
@@ -10,20 +10,20 @@ void setup() {
   SIZE = 8;
   int MAP_DETAIL = 4;
   int MAP_SIZE = 4*MAP_DETAIL;
-  Game = new Game();
-  Game.addGameLoop(new GameLoop(60,60,6));
-  Game.addInputHandler(new InputHandler());
-  Game.addRenderEngine(new RenderEngine("single",1));
-  Game.addObjectManager(new ObjectManager());
-  Game.addSimulationManager(new SimulationManager());
+  GAME = new Game();
+  GAME.addGameLoop(new GameLoop(60,60,6));
+  GAME.addInputHandler(new InputHandler());
+  GAME.addRenderEngine(new RenderEngine("single",1));
+  GAME.addObjectManager(new ObjectManager());
+  GAME.addSimulationManager(new SimulationManager());
 
-  GameLoop GameLoop = Game.GameLoop;
-  InputHandler InputHandler = Game.InputHandler;
-  RenderEngine RenderEngine = Game.RenderEngine;
-  ObjectManager ObjectManager = Game.ObjectManager;
+  GameLoop gameLoop = GAME.gameLoop;
+  InputHandler inputHandler = GAME.getInputHandler();
+  RenderEngine renderEngine = GAME.getRenderEngine();
+  ObjectManager objectManager = GAME.getObjectManager();
   
   
-  RenderEngine.addView("map",4*MAP_DETAIL);
+  renderEngine.addView("map",4*MAP_DETAIL);
 
   COUNTER = 0;
   registerObjects();
@@ -35,25 +35,29 @@ void setup() {
   int POS_Y = MAP_SIZE/2;
   float DIR = 0;
   
-  Game.addPlayer(new Player(POS_X,POS_Y));
-  Player Player = Game.Player;
+  GAME.addPlayer(new Player(POS_X,POS_Y));
+  Player player = GAME.getPlayer();
 
-  Game.addSceneManager(new SceneManager("main",map.getMap(),"chunk"));
-  SceneManager SceneManager = Game.SceneManager;
-  SceneManager.addScene("template",TEMPLATE,"tiles");
-  SceneManager.chanceScene("template");
+  GAME.addSceneManager(new SceneManager("main",map.getMap(),"chunk"));
+  SceneManager sceneManager = GAME.getSceneManager();
+  sceneManager.addScene("template",TEMPLATE,"tiles");
+  sceneManager.chanceScene("template");
 }
 
 void keyReleased()
 {
+  InputHandler inputHandler = GAME.getInputHandler();
+
   char k[] = {key};
   String out = new String(k);
-  Game.InputHandler.dropInput(out);
+  inputHandler.dropInput(out);
 }
 
 void keyPressed()
 {
+  InputHandler inputHandler = GAME.getInputHandler();
+
   char k[] = {key};
   String out = new String(k);
-  Game.InputHandler.registerInput(out);
+  inputHandler.registerInput(out);
 }

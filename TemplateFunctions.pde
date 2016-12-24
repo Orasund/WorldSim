@@ -22,7 +22,6 @@ Chunk createWaterChunk()
       String name = names[i]+j;
       names_[i*variance+j] = name;
     }
-  //return createChunk(amount_,names_,"waterTiles");
   return createChunk(amount_,names2,"waterTiles");
 }
 
@@ -49,7 +48,9 @@ Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
 
 Chunk createChunk(int[] amount, String[] names, String group_name)
 {
-  String[] group = Game.ObjectManager.getNamesByGroup(group_name);
+  ObjectManager objectManager = GAME.getObjectManager();
+
+  String[] group = objectManager.getNamesByGroup(group_name);
   int[] adresses = new int[names.length];
   int size = 8;
 

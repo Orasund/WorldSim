@@ -1,8 +1,15 @@
 void draw()
 {
-  Game.send("input","check",new JSONObject());
+  //Game.send("input","check",new JSONObject());
+  InputHandler inputHandler = GAME.getInputHandler();
+  GameLoop gameLoop = GAME.getGameLoop();
+  RenderEngine renderEngine = GAME.getRenderEngine();
+  Player player = GAME.getPlayer();
+  SceneManager sceneManager = GAME.getSceneManager();
 
-  if(Game.GameLoop.tick())
+  inputHandler.checkInputs();
+
+  if(gameLoop.tick())
   {
 
     COUNTER++;
@@ -13,12 +20,10 @@ void draw()
     
     if(COUNTER == 16)
     {
-      Game.RenderEngine.setView("map");
-      PVector pos = Game.Player.getPos();
-      Game.RenderEngine.setPos(int(pos.x), int(pos.y));
-      JSONObject a = new JSONObject();
-      a.setString("a1","main");
-      Game.send("scene","chanceScene",a);
+      renderEngine.setView("map");
+      PVector pos = player.getPos();
+      renderEngine.setPos(int(pos.x), int(pos.y));
+      sceneManager.chanceScene("main");
     }
 
     if(COUNTER<16)
@@ -28,8 +33,8 @@ void draw()
         for(int j=0;j<8;j++)
           map_empty[i][j]=0;
       
-      int[][] map = Game.SceneManager.getMap();
-      Game.SceneManager.setMap(iterateTile(map,map_empty));
+      int[][] map = sceneManager.getMap();
+      sceneManager.setMap(iterateTile(map,map_empty));
     }
       
   }
@@ -52,6 +57,6 @@ void draw()
   }
   else
   {
-    Game.SceneManager.renderArea();
+    sceneManager.renderArea();
   }
 }

@@ -26,8 +26,10 @@ class Map
 
   int[][] genMap()
   {
-    int size = 8;
-    Part[] Tiles = Game.ObjectManager.getGroup(group_name);
+    ObjectManager objectManager = GAME.getObjectManager();
+
+    int size = SIZE;
+    Part[] Tiles = objectManager.getGroup(group_name);
     int[][] map_layout = new int[size][size];
     int[] layout_pool = {50,20,10,20};
     int diversity = 2;

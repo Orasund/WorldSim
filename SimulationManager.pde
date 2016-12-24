@@ -17,7 +17,6 @@ public class SimulationManager
     actions.addColumn("x", Table.INT);
     actions.addColumn("y", Table.INT);
     actions.addColumn("action", Table.STRING);
-    //table.addColumn("sim", Table.STRING);
     actions.addColumn("type", Table.STRING);
 
     listeners = new Table();
@@ -41,16 +40,11 @@ public class SimulationManager
 
   void add(String name, final Simulation sim)
   {
-    //sim.addManager(this);
     sims.put(name,sim);
   }
 
   public void createEntry(int i, int x, int y)
   {
-    /*if(template_buffer[x][y] == 0)
-      return;
-
-    template_buffer[x][y] = i;*/
     TableRow newRow = actions.addRow();
     newRow.setInt("id", i);
     newRow.setInt("x", x);
@@ -61,30 +55,18 @@ public class SimulationManager
 
   public void deleteEntry(String type,int x, int y)
   {
-    /*Part[] Tiles = Game.ObjectManager.getGroup(group);
-    if(Tiles[template_buffer[x][y]].is(type))
-      template_buffer[x][y] = 0;*/
     TableRow newRow = actions.addRow();
     newRow.setInt("id", 0);
     newRow.setInt("x", x);
     newRow.setInt("y", y);
     newRow.setString("action", "delete");
     newRow.setString("type", type);
-
-    /*for(int i = 0; i<actions.getRowCount(); i++)
-    {
-      TableRow row = actions.getRow(i);
-      if(row.getString("target") == type)
-      {
-        
-      }
-    }*/
-
   }
 
-  //,String group_)
   int[][] init(final int[][] template_)
   {
+    ObjectManager objectManager = GAME.getObjectManager();
+
     int size = SIZE;
     ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
 
@@ -119,7 +101,7 @@ public class SimulationManager
             break;
 
           case "delete":
-            Part[] Tiles = Game.ObjectManager.getGroup(group);
+            Part[] Tiles = objectManager.getGroup(group);
             if(Tiles[template_buffer[x][y]].is(type))
             {
               template_buffer[x][y] = 0;
