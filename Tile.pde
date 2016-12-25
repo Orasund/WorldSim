@@ -63,7 +63,7 @@ public class Tile implements Part
     //images[frame].save("img.png");
     PImage image = images[frame];
     //image.save("img.png");
-    image.set(0,0,color(255));
+    //image.set(0,0,color(255));
     renderEngine.drawImg(image,x*8,y*8);
   }
 

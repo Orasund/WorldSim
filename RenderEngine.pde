@@ -1,15 +1,18 @@
 class RenderEngine// implements Service
 {
   String corrent_view;
+  int max;
   HashMap<String,Camera> cameras;
   RenderEngine(String name, int max_)
   {
     cameras = new HashMap<String,Camera>();
+    max = max_;
     corrent_view = name;
-    addView(name,max_);
+    addView(name);
   }
 
-  void addView(String name,int max)
+  //please remove if possible
+  void addView(String name)
   {
     cameras.put(name,new Camera(max));
   }

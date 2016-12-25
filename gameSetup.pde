@@ -6,17 +6,19 @@ void gameSetup()
   GAME = new Game();
   GAME.addGameLoop(new GameLoop(60,60,6));
   GAME.addInputHandler(new InputHandler());
-  GAME.addRenderEngine(new RenderEngine("single",1));
+  GAME.addRenderEngine(new RenderEngine("single",4*MAP_DETAIL));
+  RenderEngine renderEngine = GAME.getRenderEngine();
+  renderEngine.addView("map");
   GAME.addObjectManager(new ObjectManager());
   GAME.addSimulationManager(new SimulationManager());
 
   GameLoop gameLoop = GAME.gameLoop;
   InputHandler inputHandler = GAME.getInputHandler();
-  RenderEngine renderEngine = GAME.getRenderEngine();
+  
   ObjectManager objectManager = GAME.getObjectManager();
   
   
-  renderEngine.addView("map",4*MAP_DETAIL);
+
 
   COUNTER = 0;
   registerObjects();

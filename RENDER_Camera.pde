@@ -15,8 +15,8 @@ public class Camera
 
 
 
-    //size = height/(max_*8);
-    size=6;
+    size = height/(max_*8);
+    //size=6;
 
 
     offset_x = (width-max_*8*size)/2;
