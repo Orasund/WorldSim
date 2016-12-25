@@ -49,6 +49,8 @@ public class Scene
     renderEngine.rotateScene();
     Part[] Tiles = objectManager.getGroup(group_name);
 
+    /*int i = 0;
+    int j = 0;*/
     for(int i=0;i<map.length;i++)
       for(int j=0;j<map[0].length;j++)
         Tiles[map[i][j]].drawFrame(i,j,gameLoop.getFrame());
