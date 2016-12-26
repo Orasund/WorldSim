@@ -97,4 +97,8 @@ public class Simulation
   {
     return temp_template_;
   }
+
+  void callEvent(String type, String event, int x, int y, int id)
+  {
+  }
 }

@@ -63,9 +63,11 @@ public class SimulationManager
     newRow.setString("type", type);
   }
 
-  public void tellListeners(String type)
+  public void tellListeners(String type, String event, int x, int y, int id)
   {
-    //TODO!!!------------------------------------------------------------------------
+    for (TableRow row : listeners.findRows(type,"target")) {
+      sims.get(row.getString("sim")).callEvent(type,event,x,y,id);
+    }
   }
 
   int[][] init(final int[][] template_)
@@ -108,7 +110,7 @@ public class SimulationManager
 
               String[] types = tiles[template_buffer[x][y]].getTypes();
               for(int j=0; j< types.length; j++)
-                tellListeners(types[j]);
+                tellListeners(types[j],"create",x,y,id);
             }
             break;
 
@@ -116,6 +118,7 @@ public class SimulationManager
             if(tiles[template_buffer[x][y]].is(type))
             {
               template_buffer[x][y] = 0;
+              tellListeners(type,"delete",x,y,0);
             }
             break;
         }
@@ -129,5 +132,10 @@ public class SimulationManager
     }
     
     return template;
+  }
+
+  String getGroup()
+  {
+    return group;
   }
 }

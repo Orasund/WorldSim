@@ -40,6 +40,39 @@ public class OrganicSim extends Simulation
         }
   }
 
+  void callEvent(String type, String event, int x, int y, int id)
+  {
+    String group = GAME.getSimulationManager().getGroup();
+    Part[] tiles = GAME.getObjectManager().getGroup(group);
+    switch(type)
+    {
+      case "water":
+        switch(event)
+        {
+          case "create":
+            setEntry("water",x,y,100);
+            break;
+          case "delete":
+            setEntry("water",x,y,0);
+            break;
+        }
+        break;
+
+      case "organic":
+        switch(event)
+        {
+          case "create":
+            setEntry("organics",x,y,tiles[id].getResources()[3]);
+            break;
+          case "delete":
+            setEntry("organics",x,y,0);
+            break;
+        }
+        break;
+    }
+    
+  }
+
   /*
   * Input
   *   template ... a array of the last iteration

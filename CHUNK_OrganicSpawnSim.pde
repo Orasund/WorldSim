@@ -28,6 +28,39 @@ public class OrganicSpawnSim extends Simulation
       }
   }
 
+  void callEvent(String type, String event, int x, int y, int id)
+  {
+    String group = GAME.getSimulationManager().getGroup();
+    Part[] tiles = GAME.getObjectManager().getGroup(group);
+    switch(type)
+    {
+      case "water":
+        switch(event)
+        {
+          case "create":
+            setEntry("water",x,y,1);
+            break;
+          case "delete":
+            setEntry("water",x,y,0);
+            break;
+        }
+        break;
+      
+      case "organic_spawn":
+        switch(event)
+        {
+          case "create":
+            setEntry("organic_spawn",x,y,1);
+            break;
+          case "delete":
+            setEntry("organic_spawn",x,y,0);
+            break;
+        }
+        break;
+    }
+    
+  }
+
   //void
   int[][] sim(final int[][] template,final int[][] temp_template_,String group)
   {

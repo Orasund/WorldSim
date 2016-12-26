@@ -49,7 +49,8 @@ public class Chunk implements Part
     simulationManager.listenTo("water","Organic");
     simulationManager.listenTo("organic","Organic");
     simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
-    simulationManager.listenTo("organic","OrganicSpawn");
+    simulationManager.listenTo("water","OrganicSpawn");
+    simulationManager.listenTo("organic_spawn","OrganicSpawn");
     
     blocks = simulationManager.init(template_);//,group_);
 
