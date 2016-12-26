@@ -88,6 +88,11 @@ public class Chunk implements Part
     return group;
   }
 
+  public String[] getTypes()
+  {
+    return new String[0];
+  }
+
   public void drawFrame(int x, int y, int frame)
   {
     ObjectManager objectManager = GAME.getObjectManager();

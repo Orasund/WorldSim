@@ -42,6 +42,13 @@ public class Tile implements Part
   {
     return types.contains(type);
   }
+
+  public String[] getTypes()
+  {
+    ArrayList<String> list = types.toArrayList();
+    String[] out = list.toArray(new String[0]);
+    return out;
+  }
   
   public int[][] getFrame(int i)
   {
@@ -67,18 +74,7 @@ public class Tile implements Part
     renderEngine.drawImg(image,x*8,y*8);
   }
 
-  public color getColor()
-  {
-    return c;
-  }
-
-  public int[] getResources()
-  {
-    return resources;
-  }
-
-  public String getGroupName()
-  {
-    return "elements";
-  }
+  public color getColor(){return c;}
+  public int[] getResources(){return resources;}
+  public String getGroupName(){return "elements";}
 }

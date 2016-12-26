@@ -63,9 +63,15 @@ public class SimulationManager
     newRow.setString("type", type);
   }
 
+  public void tellListeners(String type)
+  {
+    //TODO!!!------------------------------------------------------------------------
+  }
+
   int[][] init(final int[][] template_)
   {
     ObjectManager objectManager = GAME.getObjectManager();
+    Part[] tiles = objectManager.getGroup(group);
 
     int size = SIZE;
     ArrayList<Simulation> simList = new ArrayList<Simulation>(sims.values());
@@ -80,9 +86,11 @@ public class SimulationManager
     
     for(int iter = 0; iter<16; iter++)    
     {
+      //set actions
       for(int i=0; i<simList.size(); i++)
         simList.get(i).sim(template,template_buffer,group);
 
+      //process actions
       int max = actions.getRowCount();
       for(int i = 0; i<max; i++)
       {
@@ -97,12 +105,15 @@ public class SimulationManager
             if(template_buffer[x][y] == 0)
             {
               template_buffer[x][y] = id;
+
+              String[] types = tiles[template_buffer[x][y]].getTypes();
+              for(int j=0; j< types.length; j++)
+                tellListeners(types[j]);
             }
             break;
 
           case "delete":
-            Part[] Tiles = objectManager.getGroup(group);
-            if(Tiles[template_buffer[x][y]].is(type))
+            if(tiles[template_buffer[x][y]].is(type))
             {
               template_buffer[x][y] = 0;
             }

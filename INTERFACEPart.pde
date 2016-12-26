@@ -6,5 +6,6 @@ public interface Part
   public String getGroupName();
   public Part copy();
   public boolean is(String type);
+  public String[] getTypes();
   public void drawFrame(int x, int y, int frame);
 }

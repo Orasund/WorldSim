@@ -31,6 +31,11 @@ public class Element implements Part
 
   public boolean is(String type){return false;}
 
+  public String[] getTypes()
+  {
+    return new String[0];
+  }
+
   public int[] getResources()
   {
     int[] out = new int[8];
