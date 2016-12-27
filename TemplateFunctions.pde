@@ -11,7 +11,8 @@ Chunk createWaterChunk()
   int variance = 2;
   String[] names = {"lake","alga"};
   
-  String[] names2 = {"lake0","lake1","alga0","alga1"};
+  //please remove as fast as possible
+  String[] names2 = {"lake0","lake1","alga0","alga1","bush"};
   
   int[] amount_ = new int[amount.length*variance];
   String[] names_ = new String[amount_.length];

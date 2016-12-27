@@ -9,14 +9,16 @@ public class OrganicSpawnSim extends Simulation
     ObjectManager objectManager = GAME.getObjectManager();
     organic_parts = new IntList();
 
+    Part[] tiles = objectManager.getGroup(group);
+    for(int i = 1; i < tiles.length; i++)
+      if(tiles[i].is("organic"))
+        organic_parts.append(i); 
+
+
     String[] names_ = {"water","organic_spawn"};
     setNames(names_);
     
-    Part[] tiles = objectManager.getGroup(group);
-    for(int i = 0; i < tiles.length; i++)
-      if(tiles[i].is("organic"))
-        organic_parts.append(i); //ERROR this comand does not execute ------------------------------------------
-
+    
     int size = template[0].length;
 
     //creating water table and organic_spawn
@@ -124,6 +126,9 @@ public class OrganicSpawnSim extends Simulation
           //two or three waters next to it are allowed
           if(count == 1)
           {
+            if(template[i][j] != 0)
+              continue;
+
             if(organic_parts.size()==0)
               continue;
 

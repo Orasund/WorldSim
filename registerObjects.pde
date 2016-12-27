@@ -36,7 +36,7 @@ void registerObjects()
   String[] tiles = {"ground","lake1","stone","alga1","moss","bush"};
   objectManager.registerGroup("tiles",tiles);
 
-  String[] water_tiles = {"ground","lake0","lake1","alga0","alga1"};
+  String[] water_tiles = {"ground","lake0","lake1","alga0","alga1","bush"};
   objectManager.registerGroup("waterTiles",water_tiles);
 
   int variance = 4;
