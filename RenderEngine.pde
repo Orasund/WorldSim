@@ -111,9 +111,7 @@ class RenderEngine// implements Service
   PImage createImg(final color[][] img)
   {
     //create the Image
-    //BUG
     int zoom = getCamera().getSize();
-    //int zoom = 6;
     PImage out = createImage(SIZE*zoom, SIZE*zoom, RGB);
     out.loadPixels();
 

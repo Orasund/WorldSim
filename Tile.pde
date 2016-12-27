@@ -63,14 +63,7 @@ public class Tile implements Part
   public void drawFrame(int x, int y, int frame)
   {
     RenderEngine renderEngine = GAME.getRenderEngine();
-
-    //images[frame].save("img"+frame+".png");
-    
-    //images[frame] = renderEngine.createImgByIntArray(img[frame],c,"elements");
-    //images[frame].save("img.png");
     PImage image = images[frame];
-    //image.save("img.png");
-    //image.set(0,0,color(255));
     renderEngine.drawImg(image,x*8,y*8);
   }
 

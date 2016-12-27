@@ -1,27 +1,34 @@
 public class OrganicSpawnSim extends Simulation
 {
+  private IntList organic_parts;
+
   OrganicSpawnSim(final int[][] template,String group)
   {
     super(2);//, SimulationManager_);
 
     ObjectManager objectManager = GAME.getObjectManager();
+    organic_parts = new IntList();
 
     String[] names_ = {"water","organic_spawn"};
     setNames(names_);
     
-    Part[] Tiles = objectManager.getGroup(group);
+    Part[] tiles = objectManager.getGroup(group);
+    for(int i = 0; i < tiles.length; i++)
+      if(tiles[i].is("organic"))
+        organic_parts.append(i); //ERROR this comand does not execute ------------------------------------------
+
     int size = template[0].length;
 
     //creating water table and organic_spawn
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(Tiles[template[i][j]].is("water"))
+        if(tiles[template[i][j]].is("water"))
         {
           setEntry("water",i,j, 1);
         }
 
-        if(Tiles[template[i][j]].is("organic_spawn"))
+        if(tiles[template[i][j]].is("organic_spawn"))
         {
           setEntry("organic_spawn",i,j, 1);
         }
@@ -66,12 +73,12 @@ public class OrganicSpawnSim extends Simulation
   {
     ObjectManager objectManager = GAME.getObjectManager();
     SimulationManager simulationManager = GAME.getSimulationManager();
+    Part[] tiles = objectManager.getGroup(group);
 
     //return simOrganicSpawn(template,temp_template_,group,sim);
     int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
     int x,y,x2,y2;
     int size = template[0].length;
-    Part[] Tiles = objectManager.getGroup(group);
 
     int[][] temp_template = new int[size][size];
     for(int i = 0; i<size; i++)
@@ -99,7 +106,6 @@ public class OrganicSpawnSim extends Simulation
           if(getEntry("organic_spawn",x,y)==1)
             continue;
 
-          //two or three waters next to it are allowed
           int count = 0;
           for(int l = 0; l<4; l++)
           {
@@ -114,12 +120,22 @@ public class OrganicSpawnSim extends Simulation
             count++;
           }
 
-          if(count>3 || count <2)
+
+          //two or three waters next to it are allowed
+          if(count == 1)
+          {
+            if(organic_parts.size()==0)
+              continue;
+
+            //by one try to create an organic Part
+            int my_id = x+y;
+            int index = my_id % organic_parts.size();
+            simulationManager.createEntry(organic_parts.get(index),x,y);
+          }  
+          else if(count>3 || count <2)
             continue;
           
           //new spawn can be created
-          //temp_template[x][y] = template[i][j];
-          
           simulationManager.deleteEntry("water",x,y);
           simulationManager.createEntry(template[i][j],x,y);
           setEntry("organic_spawn",x,y,1);
