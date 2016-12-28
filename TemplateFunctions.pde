@@ -10,20 +10,16 @@ Chunk createWaterChunk()
   int[] amount = {70,20};
   int variance = 2;
   String[] names = {"lake","alga"};
-  
-  //please remove as fast as possible
-  String[] names2 = {"lake0","lake1","alga0","alga1","bush"};
-  
+
   int[] amount_ = new int[amount.length*variance];
   String[] names_ = new String[amount_.length];
   for(int i=0; i<amount.length; i++)
     for(int j=0; j<variance; j++)
     {
       amount_[i*variance+j] = floor(amount[i]/variance);
-      String name = names[i]+j;
-      names_[i*variance+j] = name;
+      names_[i*variance+j] = names[i]+j;
     }
-  return createChunk(amount_,names2,"waterTiles");
+  return createChunk(amount_,names_,"waterTiles");
 }
 
 Chunk createMountainChunk()
@@ -47,7 +43,7 @@ Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
 Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
 Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
 
-Chunk createChunk(int[] amount, String[] names, String group_name)
+Chunk createChunk(int[] amount, final String[] names, String group_name)
 {
   ObjectManager objectManager = GAME.getObjectManager();
 
@@ -57,7 +53,7 @@ Chunk createChunk(int[] amount, String[] names, String group_name)
 
   for(int i=0;i<names.length;i++)
     for(int j=1;j<group.length;j++)
-      if(group[j]==names[i])
+      if(group[j].equals(names[i]))
       {
         adresses[i] = j;
         break;

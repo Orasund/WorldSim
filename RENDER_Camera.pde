@@ -54,8 +54,6 @@ public class Camera
 
   void setPos(int x, int y)
   {
-    println("{"+x+","+y+"}");
-
     PVector pos = calcPos(x,y); 
     pos_x = floor(pos.x);
     pos_y = floor(pos.y);
