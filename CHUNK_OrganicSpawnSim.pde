@@ -102,6 +102,19 @@ public class OrganicSpawnSim extends Simulation
           if(x<0 || y<0 || x>=size || y>=size)
             continue;
 
+          if(template[x][y] == 0)
+          {
+
+            if(organic_parts.size()==0)
+              continue;
+
+            //by one try to create an organic Part
+            int my_id = x+y;
+            int index = my_id % organic_parts.size();
+            simulationManager.createEntry(organic_parts.get(index),x,y);
+            continue;
+          } 
+
           if(getEntry("water",x,y)==0)
             continue;
           
@@ -121,23 +134,7 @@ public class OrganicSpawnSim extends Simulation
             
             count++;
           }
-
-
-          //two or three waters next to it are allowed
-          if(count == 1)
-          {
-            if(template[i][j] != 0)
-              continue;
-
-            if(organic_parts.size()==0)
-              continue;
-
-            //by one try to create an organic Part
-            int my_id = x+y;
-            int index = my_id % organic_parts.size();
-            simulationManager.createEntry(organic_parts.get(index),x,y);
-          }  
-          else if(count>3 || count <2)
+          if(count>3 || count <2)
             continue;
           
           //new spawn can be created

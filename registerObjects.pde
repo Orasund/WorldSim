@@ -54,7 +54,16 @@ void registerObjects()
   group = new String[variance];
   for(int i=0;i<variance;i++)
   {
-    objectManager.registerPart(name+i, createWaterChunk());
+    objectManager.registerPart(name+i, createSwampChunk());
+    group[i] = name+i;
+  }
+  objectManager.registerGroup(name+"s",group);
+
+  name = "seaChunk";
+  group = new String[variance];
+  for(int i=0;i<variance;i++)
+  {
+    objectManager.registerPart(name+i, createSeaChunk());
     group[i] = name+i;
   }
   objectManager.registerGroup(name+"s",group);

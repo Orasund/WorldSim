@@ -1,25 +1,24 @@
 Chunk createGroundChunk()
 {
-  int[] amount = {5,10};
-  String[] names = {"lake1","bush"};
+  int[] amount = {3,10,2};
+  String[] names = {"lake1","bush","alga1"};
   return createChunk(amount,names,"tiles");
 }
 
-Chunk createWaterChunk()
+Chunk createSwampChunk()
 {
-  int[] amount = {70,20};
+  int[] amount = {50,5};
   int variance = 2;
   String[] names = {"lake","alga"};
+  return createChunkByVariance(amount,variance,names,"waterTiles");
+}
 
-  int[] amount_ = new int[amount.length*variance];
-  String[] names_ = new String[amount_.length];
-  for(int i=0; i<amount.length; i++)
-    for(int j=0; j<variance; j++)
-    {
-      amount_[i*variance+j] = floor(amount[i]/variance);
-      names_[i*variance+j] = names[i]+j;
-    }
-  return createChunk(amount_,names_,"waterTiles");
+Chunk createSeaChunk()
+{
+  int[] amount = {70,1};
+  int variance = 2;
+  String[] names = {"lake","alga"};
+  return createChunkByVariance(amount,variance,names,"waterTiles");
 }
 
 Chunk createMountainChunk()
@@ -42,6 +41,20 @@ Tile createGround(){return evaluateTile(groundTemplate(10,0,0));}
 Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
 Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
 Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
+
+Chunk createChunkByVariance(int[] amount, int variance, String[] names, String group)
+{
+  int[] amount_ = new int[amount.length*variance];
+  String[] names_ = new String[amount_.length];
+  for(int i=0; i<amount.length; i++)
+    for(int j=0; j<variance; j++)
+    {
+      amount_[i*variance+j] = floor(amount[i]/variance);
+      names_[i*variance+j] = names[i]+j;
+    }
+  
+  return createChunk(amount_,names_,group);
+}
 
 Chunk createChunk(int[] amount, final String[] names, String group_name)
 {
