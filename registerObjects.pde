@@ -10,28 +10,38 @@ void registerObjects()
   objectManager.registerGroup("elements",elements);
 
   Part obj;
-  objectManager.registerPart("ground", createGround());
+  //objectManager.registerPart("ground", createGround());
+  objectManager.registerPart("ground", createTile("Ground"));
   
   for(int variance = 0; variance < 2; variance++)
   {
-    obj = createLake();
-    if(obj.is("water") == false) obj = createLake();
+    //obj = createLake();
+    obj = createTile("Lake");
+    if(obj.is("water") == false)
+      //obj = createLake();
+      obj = createTile("Lake");
     objectManager.registerPart("lake"+variance, obj);
 
     for(int i = 0; i < 5; i++)
     {
-      obj = createAlga();
+      //obj = createAlga();
+      obj = obj = createTile("Alga");
       if(obj.is("organic_spawn")) break;
     }
     objectManager.registerPart("alga"+variance, obj);
   }
 
 
-  objectManager.registerPart("stone", createStone());
-  objectManager.registerPart("moss", createMoss());
+  //objectManager.registerPart("stone", createStone());
+  objectManager.registerPart("stone", createTile("Stone"));
+  //objectManager.registerPart("moss", createMoss());
+  objectManager.registerPart("moss", createTile("Moss"));
 
-  obj = createBush();
-  if(obj.is("organic") == false) obj = createBush();
+  //obj = createBush();
+  obj = createTile("Bush");
+  if(obj.is("organic") == false)
+    //obj = createBush();
+    obj = createTile("Bush");
   objectManager.registerPart("bush", obj);
   String[] tiles = {"ground","lake1","stone","alga1","moss","bush"};
   objectManager.registerGroup("tiles",tiles);

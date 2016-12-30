@@ -35,12 +35,79 @@ Chunk createForestChunk()
   return createChunk(amount,names,"tiles");
 }
 
-Tile createBush(){return evaluateTile(plantTemplate(0,10,10));}
+/*Tile createBush(){return evaluateTile(plantTemplate(0,10,10));}
 Tile createMoss(){return evaluateTile(solidTemplate(50,20,10));}
 Tile createGround(){return evaluateTile(groundTemplate(10,0,0));}
 Tile createLake(){return evaluateTile(groundTemplate(0,50,0));}
 Tile createStone(){return evaluateTile(solidTemplate(80,1,0));}
 Tile createAlga(){return evaluateTile(groundTemplate(0,20,4));}
+Tile createGravel(){return evaluateTile(groundTemplate(20,0,0));}
+*/
+
+Tile createTile(String name)
+{
+  println(name);
+  JSONObject json = loadJSONObject("elements.json");
+  JSONObject tile;
+  String template_type;
+  JSONArray elem;
+  int[][] template;
+  int[] arr = new int[4];
+
+  tile = json.getJSONObject(name);
+  template_type = tile.getString("template_type");
+  elem = tile.getJSONArray("elements");
+  for(int i=0; i<4; i++)
+    arr[i] = elem.getInt(i);
+
+  switch(template_type)
+  {
+    case "plant":
+      template = plantTemplate(arr[0], arr[1], arr[2]);
+      break;
+    case "solid":
+      template = solidTemplate(arr[0], arr[1], arr[2]);
+      break;
+    default:
+      template = groundTemplate(arr[0], arr[1], arr[2]);
+      break;
+  }
+  return evaluateTile(template);
+}
+
+/*void createTilesByJSON()
+{
+  JSONArray json = loadJSONArray("elements.json");
+  JSONObject tile;
+  String name;
+  String template_type;
+  int[] elements;
+  int[][] template;
+  Tile object;
+
+  int size = json.size();
+  for(int i=0; i<sie; i++)
+  {
+    tile = json.getJSONObject(i);
+    name = tile.getString("name");
+    template_type = tile.getString("template_type");
+    elements = tile.getIntArray("elements");
+    switch(template_type)
+    {
+      case "plant":
+        template = plantTemplate(int stone, int water, int life);
+        break;
+      case "solid":
+        template = solidTemplate(int stone, int water, int life);
+        break;
+      default:
+        template = groundTemplate(int stone, int water, int life);
+        break;
+    }
+    object = evaluateTile(template);
+    objectManager.registerPart(name, object);
+  }
+}*/
 
 Chunk createChunkByVariance(int[] amount, int variance, String[] names, String group)
 {
