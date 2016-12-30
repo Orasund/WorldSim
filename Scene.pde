@@ -54,19 +54,18 @@ public class Scene
 
     Part[] tiles = objectManager.getGroup(group_name);
 
-    //TODO!!!!!!!!
-    /*for(int i=0;i<5;i++)
+    for(int i=0;i<5;i++)
       for(int j=0;j<5;j++)
       {
         int x2 = x+i-2;
-        int y2 = x+j-2;
+        int y2 = y+j-2;
         if(x2<0 || y2<0 || x2>=SIZE || y2>=SIZE)
           continue;
 
         tiles[map[x2][y2]].drawFrame(x2,y2,gameLoop.getFrame());
-      }*/
-    for(int i=0;i<SIZE;i++)
+      }
+    /*for(int i=0;i<SIZE;i++)
       for(int j=0;j<SIZE;j++)
-        tiles[map[i][j]].drawFrame(i,j,gameLoop.getFrame());
+        tiles[map[i][j]].drawFrame(i,j,gameLoop.getFrame());*/
   }
 }
