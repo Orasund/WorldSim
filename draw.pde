@@ -16,7 +16,7 @@ void draw()
       COUNTER++;
 
       //disabling the template Scene
-      if(COUNTER<16)
+      if(COUNTER <16)
         COUNTER = 16;
       
       if(COUNTER == 16)
@@ -27,7 +27,7 @@ void draw()
         sceneManager.chanceScene("main");
       }
 
-      if(COUNTER<16)
+      if(COUNTER <16)
       {
         int[][] map_empty = new int[8][8];
         for(int i=0;i<8;i++)
@@ -40,16 +40,9 @@ void draw()
         
     }
 
-    //background(255);
     background(0);
-    //Game.RenderEngine.drawView();
-    //RenderEngine.setRot(Player.getDir());
-    
-    /*translate(width/2, height/2);
-    rotate((TWO_PI*(60*CURRENT_FRAME+tick))/(60*6));
-    translate(-width/2, -height/2);*/
 
-    if(COUNTER<16)
+    if(COUNTER <16)
     {
       //Needs a system to display the iterations like drawTemplate
       //drawBlock(0,0,TEMPLATE,0);
@@ -58,6 +51,7 @@ void draw()
     }
     else
     {
+      //draw the area around the player
       sceneManager.renderArea();
     }    
   }

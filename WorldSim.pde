@@ -14,7 +14,8 @@ void setup() {
   catch (Exception e)
   {
     println("!!!ERROR:"+e.getMessage());
-    exit();
+    e.printStackTrace();
+    //exit();
   }
 }
 

@@ -36,6 +36,7 @@ void registerObjects()
   objectManager.registerPart("stone", createTile("Stone"));
   //objectManager.registerPart("moss", createMoss());
   objectManager.registerPart("moss", createTile("Moss"));
+  objectManager.registerPart("gravel",createTile("Gravel"));
 
   //obj = createBush();
   obj = createTile("Bush");
@@ -43,7 +44,7 @@ void registerObjects()
     //obj = createBush();
     obj = createTile("Bush");
   objectManager.registerPart("bush", obj);
-  String[] tiles = {"ground","lake1","stone","alga1","moss","bush"};
+  String[] tiles = {"ground","lake1","stone","alga1","moss","bush","gravel"};
   objectManager.registerGroup("tiles",tiles);
 
   String[] water_tiles = {"ground","lake0","lake1","alga0","alga1","bush"};

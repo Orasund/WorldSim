@@ -42,7 +42,7 @@ public class Camera
     temp_y += (max*SIZE*size)/2;
   }
 
-  float getTempX(int x)
+  /*float getTempX(int x)
   {
     return temp_x -pos_x + x*size;
   }
@@ -50,7 +50,25 @@ public class Camera
   float getTempY(int y)
   {
     return temp_y -pos_y + y*size;
+  }*/
+
+  PVector getTempPos(PVector pos)
+  {
+    PVector out = new PVector();
+    out.x = temp_x - pos_x + pos.x*size;
+    out.y = temp_y - pos_y + pos.y*size;
+    return out;
   }
+
+  /*PVector calcRelPos(PVector pos)
+  {
+    float x = pos.x;
+    float y = pos.y;
+    PVector out = new PVector();
+    out.x = (x - temp_x + pos_x)/size;
+    out.y = (y - temp_y + pos_y)/size;
+    return out;
+  }*/
 
   void setPos(int x, int y)
   {

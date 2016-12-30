@@ -90,11 +90,10 @@ public class OrganicSpawnSim extends Simulation
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(getEntry("organic_spawn",i,j)==0)
+        if(getEntry("organic_spawn",i,j)!=1)
           continue;
 
         //create new spawn if possible
-
         for(int k = 0; k<4; k++)
         {
           x = i+dir[k][0];
@@ -108,12 +107,12 @@ public class OrganicSpawnSim extends Simulation
             if(organic_parts.size()==0)
               continue;
 
-            //by one try to create an organic Part
+            //try to create an organic Part
             int my_id = x+y;
             int index = my_id % organic_parts.size();
             simulationManager.createEntry(organic_parts.get(index),x,y);
             continue;
-          } 
+          }
 
           if(getEntry("water",x,y)==0)
             continue;
@@ -140,7 +139,7 @@ public class OrganicSpawnSim extends Simulation
           //new spawn can be created
           simulationManager.deleteEntry("water",x,y);
           simulationManager.createEntry(template[i][j],x,y);
-          setEntry("organic_spawn",x,y,1);
+          //setEntry("organic_spawn",x,y,1);
         }
       }
 

@@ -121,7 +121,17 @@ class RenderEngine// implements Service
     return out;
   }
 
-  float getTempX(int x)
+  /*PVector calcRelPos(PVector pos)
+  {
+    return getCamera().calcRelPos(pos);
+  }*/
+
+  PVector getTempPos(PVector pos)
+  {
+    return getCamera().getTempPos(pos);
+  }
+
+  /*float getTempX(int x)
   {
     return getCamera().getTempX(x);
   }
@@ -129,16 +139,15 @@ class RenderEngine// implements Service
   float getTempY(int y)
   {
     return getCamera().getTempY(y);
-  }
+  }*/
 
   void drawImg(PImage img,int x, int y)
   {
     noStroke();
 
-    float temp_x = getTempX(x);
-    float temp_y = getTempY(y);
+    PVector temp_pos = getTempPos(new PVector(x,y));
 
-    image(img, temp_x, temp_y);
+    image(img, temp_pos.x, temp_pos.y);
   }
 
   public void render()
