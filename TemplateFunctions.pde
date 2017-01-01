@@ -1,4 +1,4 @@
-Chunk createGroundChunk()
+/*Chunk createGroundChunk()
 {
   int[] amount = {3,10,2};
   String[] names = {"lake1","bush","alga1"};
@@ -33,20 +33,37 @@ Chunk createForestChunk()
   int[] amount = {10,5,50};
   String[] names = {"lake1","stone","bush"};
   return createChunk(amount,names,"tiles");
+}*/
+
+Chunk createChunk(String name)
+{
+  JSONObject json = loadJSONObject("chunk.json");
+  JSONObject chunk = json.getJSONObject(name);
+  JSONArray arr1 = chunk.getJSONArray("names");
+  JSONArray arr2 = chunk.getJSONArray("amounts");
+  String[] names = new String[arr1.size()];
+  int[] amounts = new int[arr2.size()];
+
+  for(int i=0; i<arr1.size(); i++)
+  {
+    names[i] = arr1.getString(i);
+    amounts[i] = arr2.getInt(i);
+  }
+
+  int variance = chunk.getInt("variance");
+  String group = chunk.getString("group");
+  return createChunkByVariance(amounts,variance,names,group);
 }
 
 Tile createTile(String name)
 {
-  JSONObject json = loadJSONObject("elements.json");
-  JSONObject tile;
-  String template_type;
-  JSONArray elem;
+  JSONObject json = loadJSONObject("templates.json");
   int[][] template;
   int[] arr = new int[4];
 
-  tile = json.getJSONObject(name);
-  template_type = tile.getString("template_type");
-  elem = tile.getJSONArray("elements");
+  JSONObject tile = json.getJSONObject(name);
+  String template_type = tile.getString("template_type");
+  JSONArray elem = tile.getJSONArray("elements");
   for(int i=0; i<4; i++)
     arr[i] = elem.getInt(i);
 
@@ -65,21 +82,54 @@ Tile createTile(String name)
   return evaluateTile(template);
 }
 
-Chunk createChunkByVariance(int[] amount, int variance, String[] names, String group)
+Chunk createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
 {
-  int[] amount_ = new int[amount.length*variance];
-  String[] names_ = new String[amount_.length];
-  for(int i=0; i<amount.length; i++)
+  int[] amount = new int[amount_.length*variance];
+  String[] names = new String[amount.length];
+  for(int i=0; i<amount_.length; i++)
     for(int j=0; j<variance; j++)
     {
-      amount_[i*variance+j] = floor(amount[i]/variance);
-      names_[i*variance+j] = names[i]+j;
+      amount[i*variance+j] = floor(amount_[i]/variance);
+      names[i*variance+j] = names_[i]+j;
     }
-  
-  return createChunk(amount_,names_,group);
+
+  ObjectManager objectManager = GAME.getObjectManager();
+
+  String[] group = objectManager.getNamesByGroup(group_name);
+  int[] adresses = new int[names.length];
+  int size = 8;
+
+  for(int i=0;i<names.length;i++)
+    for(int j=1;j<group.length;j++)
+      if(group[j].equals(names[i]))
+      {
+        adresses[i] = j;
+        break;
+      }
+
+  int[][] out = new int[size][size];
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
+    {
+      float rand = random(100);
+
+      int type = 0;
+      for(int k=0;k<amount.length;k++)
+      {
+        if(rand<amount[k])
+        {
+          type = adresses[k];
+          break;
+        }
+        rand-=amount[k];
+      }
+      out[i][j] = type;
+    }
+
+  return new Chunk(out,group_name);
 }
 
-Chunk createChunk(int[] amount, final String[] names, String group_name)
+/*Chunk createChunk(int[] amount, final String[] names, String group_name)
 {
   ObjectManager objectManager = GAME.getObjectManager();
 
@@ -115,7 +165,7 @@ Chunk createChunk(int[] amount, final String[] names, String group_name)
     }
   Chunk ch = new Chunk(out,group_name);
   return ch;
-}
+}*/
 
 int[][] plantTemplate(int stone, int water, int life)
 {

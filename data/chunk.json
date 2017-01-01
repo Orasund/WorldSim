@@ -1,0 +1,37 @@
+{
+  "Ground":
+  {
+    "names":["lake","bush","alga"],
+    "amounts":[3,10,2],
+    "variance":1,
+    "group":"tiles"
+  },
+  "Swamp":
+  {
+    "names":["lake","alga"],
+    "amounts":[50,5],
+    "variance":2,
+    "group":"waterTiles"
+  },
+  "Sea":
+  {
+    "names":["lake","alga"],
+    "amounts":[70,1],
+    "variance":2,
+    "group":"waterTiles"
+  },
+  "Mountain":
+  {
+    "names":["lake","stone","moss","gravel"],
+    "amounts":[5,60,5,20],
+    "variance":1,
+    "group":"tiles"
+  },
+  "Forest":
+  {
+    "names":["lake","stone","bush"],
+    "amounts":[10,5,50],
+    "variance":1,
+    "group":"tiles"
+  },
+}
