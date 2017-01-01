@@ -1,40 +1,3 @@
-/*Chunk createGroundChunk()
-{
-  int[] amount = {3,10,2};
-  String[] names = {"lake1","bush","alga1"};
-  return createChunk(amount,names,"tiles");
-}
-
-Chunk createSwampChunk()
-{
-  int[] amount = {50,5};
-  int variance = 2;
-  String[] names = {"lake","alga"};
-  return createChunkByVariance(amount,variance,names,"waterTiles");
-}
-
-Chunk createSeaChunk()
-{
-  int[] amount = {70,1};
-  int variance = 2;
-  String[] names = {"lake","alga"};
-  return createChunkByVariance(amount,variance,names,"waterTiles");
-}
-
-Chunk createMountainChunk()
-{
-  int[] amount = {5,60,5,20};
-  String[] names = {"lake1","stone","moss","gravel"};
-  return createChunk(amount,names,"tiles");
-}
-
-Chunk createForestChunk()
-{
-  int[] amount = {10,5,50};
-  String[] names = {"lake1","stone","bush"};
-  return createChunk(amount,names,"tiles");
-}*/
-
 Chunk createChunk(String name)
 {
   JSONObject json = loadJSONObject("chunk.json");
@@ -128,44 +91,6 @@ Chunk createChunkByVariance(int[] amount_, int variance, String[] names_, String
 
   return new Chunk(out,group_name);
 }
-
-/*Chunk createChunk(int[] amount, final String[] names, String group_name)
-{
-  ObjectManager objectManager = GAME.getObjectManager();
-
-  String[] group = objectManager.getNamesByGroup(group_name);
-  int[] adresses = new int[names.length];
-  int size = 8;
-
-  for(int i=0;i<names.length;i++)
-    for(int j=1;j<group.length;j++)
-      if(group[j].equals(names[i]))
-      {
-        adresses[i] = j;
-        break;
-      }
-
-  int[][] out = new int[size][size];
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
-    {
-      float rand = random(100);
-
-      int type = 0;
-      for(int k=0;k<amount.length;k++)
-      {
-        if(rand<amount[k])
-        {
-          type = adresses[k];
-          break;
-        }
-        rand-=amount[k];
-      }
-      out[i][j] = type;
-    }
-  Chunk ch = new Chunk(out,group_name);
-  return ch;
-}*/
 
 int[][] plantTemplate(int stone, int water, int life)
 {
