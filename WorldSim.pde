@@ -6,7 +6,8 @@ Game GAME;
 
 void setup() {
   //size(640, 640);
-  size(1024,768);
+  //size(1024,768);
+  size(1024,768,P2D);
   try
   {
     gameSetup();

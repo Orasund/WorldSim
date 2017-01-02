@@ -24,23 +24,22 @@ public class InputHandler// implements Service
     {
       case "w":
         pos = player.lookingAt();
-        sceneManager.moveTo(int(pos.x), int(pos.y), 10);
+        sceneManager.moveTo(int(pos.x), int(pos.y), 20);
         player.setPos(pos);
         break;
-
       case "s":
         pos = player.infrontOf();
-        sceneManager.moveTo(int(pos.x), int(pos.y), 10);
+        sceneManager.moveTo(int(pos.x), int(pos.y), 20);
         player.setPos(pos);
         break;
       case "d":
         dir = player.getDir()-PI/2;
-        sceneManager.rotateTo(dir,10);
+        sceneManager.rotateTo(dir,20);
         player.setDir(dir);
         break;
       case "a":
         dir = player.getDir()+PI/2;
-        sceneManager.rotateTo(dir,10);
+        sceneManager.rotateTo(dir,20);
         player.setDir(dir);
         break;
     }
