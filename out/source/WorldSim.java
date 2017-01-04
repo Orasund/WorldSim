@@ -888,7 +888,6 @@ public class InputHandler// implements Service
         sceneManager.moveTo(PApplet.parseInt(pos.x), PApplet.parseInt(pos.y), 20);
         player.setPos(pos);
         break;
-
       case "s":
         pos = player.infrontOf();
         sceneManager.moveTo(PApplet.parseInt(pos.x), PApplet.parseInt(pos.y), 20);
@@ -1994,55 +1993,35 @@ public class Template
     return out;
   }
 }
-public Chunk createGroundChunk()
+public Chunk createChunk(String name)
 {
-  int[] amount = {3,10,2};
-  String[] names = {"lake1","bush","alga1"};
-  return createChunk(amount,names,"tiles");
-}
+  JSONObject json = loadJSONObject("chunk.json");
+  JSONObject chunk = json.getJSONObject(name);
+  JSONArray arr1 = chunk.getJSONArray("names");
+  JSONArray arr2 = chunk.getJSONArray("amounts");
+  String[] names = new String[arr1.size()];
+  int[] amounts = new int[arr2.size()];
 
-public Chunk createSwampChunk()
-{
-  int[] amount = {50,5};
-  int variance = 2;
-  String[] names = {"lake","alga"};
-  return createChunkByVariance(amount,variance,names,"waterTiles");
-}
+  for(int i=0; i<arr1.size(); i++)
+  {
+    names[i] = arr1.getString(i);
+    amounts[i] = arr2.getInt(i);
+  }
 
-public Chunk createSeaChunk()
-{
-  int[] amount = {70,1};
-  int variance = 2;
-  String[] names = {"lake","alga"};
-  return createChunkByVariance(amount,variance,names,"waterTiles");
-}
-
-public Chunk createMountainChunk()
-{
-  int[] amount = {5,60,5,20};
-  String[] names = {"lake1","stone","moss","gravel"};
-  return createChunk(amount,names,"tiles");
-}
-
-public Chunk createForestChunk()
-{
-  int[] amount = {10,5,50};
-  String[] names = {"lake1","stone","bush"};
-  return createChunk(amount,names,"tiles");
+  int variance = chunk.getInt("variance");
+  String group = chunk.getString("group");
+  return createChunkByVariance(amounts,variance,names,group);
 }
 
 public Tile createTile(String name)
 {
-  JSONObject json = loadJSONObject("elements.json");
-  JSONObject tile;
-  String template_type;
-  JSONArray elem;
+  JSONObject json = loadJSONObject("templates.json");
   int[][] template;
   int[] arr = new int[4];
 
-  tile = json.getJSONObject(name);
-  template_type = tile.getString("template_type");
-  elem = tile.getJSONArray("elements");
+  JSONObject tile = json.getJSONObject(name);
+  String template_type = tile.getString("template_type");
+  JSONArray elem = tile.getJSONArray("elements");
   for(int i=0; i<4; i++)
     arr[i] = elem.getInt(i);
 
@@ -2061,22 +2040,17 @@ public Tile createTile(String name)
   return evaluateTile(template);
 }
 
-public Chunk createChunkByVariance(int[] amount, int variance, String[] names, String group)
+public Chunk createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
 {
-  int[] amount_ = new int[amount.length*variance];
-  String[] names_ = new String[amount_.length];
-  for(int i=0; i<amount.length; i++)
+  int[] amount = new int[amount_.length*variance];
+  String[] names = new String[amount.length];
+  for(int i=0; i<amount_.length; i++)
     for(int j=0; j<variance; j++)
     {
-      amount_[i*variance+j] = floor(amount[i]/variance);
-      names_[i*variance+j] = names[i]+j;
+      amount[i*variance+j] = floor(amount_[i]/variance);
+      names[i*variance+j] = names_[i]+j;
     }
-  
-  return createChunk(amount_,names_,group);
-}
 
-public Chunk createChunk(int[] amount, final String[] names, String group_name)
-{
   ObjectManager objectManager = GAME.getObjectManager();
 
   String[] group = objectManager.getNamesByGroup(group_name);
@@ -2109,8 +2083,8 @@ public Chunk createChunk(int[] amount, final String[] names, String group_name)
       }
       out[i][j] = type;
     }
-  Chunk ch = new Chunk(out,group_name);
-  return ch;
+
+  return new Chunk(out,group_name);
 }
 
 public int[][] plantTemplate(int stone, int water, int life)
@@ -2428,99 +2402,71 @@ public void registerObjects()
   objectManager.registerGroup("elements",elements);
 
   Part obj;
-  //objectManager.registerPart("ground", createGround());
-  objectManager.registerPart("ground", createTile("Ground"));
+  objectManager.registerPart("ground0", createTile("Ground"));
   
   for(int variance = 0; variance < 2; variance++)
   {
-    //obj = createLake();
     obj = createTile("Lake");
     if(obj.is("water") == false)
-      //obj = createLake();
       obj = createTile("Lake");
     objectManager.registerPart("lake"+variance, obj);
 
+    obj = createTile("Bush");
+    if(obj.is("organic") == false)
+      obj = createTile("Bush");
+    objectManager.registerPart("bush"+variance, obj);
+
     for(int i = 0; i < 5; i++)
     {
-      //obj = createAlga();
       obj = obj = createTile("Alga");
       if(obj.is("organic_spawn")) break;
     }
     objectManager.registerPart("alga"+variance, obj);
   }
 
+  objectManager.registerPart("stone0", createTile("Stone"));
+  objectManager.registerPart("moss0", createTile("Moss"));
+  objectManager.registerPart("gravel0",createTile("Gravel"));
 
-  //objectManager.registerPart("stone", createStone());
-  objectManager.registerPart("stone", createTile("Stone"));
-  //objectManager.registerPart("moss", createMoss());
-  objectManager.registerPart("moss", createTile("Moss"));
-  objectManager.registerPart("gravel",createTile("Gravel"));
-
-  //obj = createBush();
-  obj = createTile("Bush");
-  if(obj.is("organic") == false)
-    //obj = createBush();
-    obj = createTile("Bush");
-  objectManager.registerPart("bush", obj);
-  String[] tiles = {"ground","lake1","stone","alga1","moss","bush","gravel"};
+  String[] tiles = {"ground0","lake0","stone0","alga0","moss0","bush0","gravel0"};
   objectManager.registerGroup("tiles",tiles);
 
-  String[] water_tiles = {"ground","lake0","lake1","alga0","alga1","bush"};
+  String[] water_tiles = 
+  {
+    "ground0",
+    "lake0","lake1","alga0","alga1","bush0","bush1"
+  };
   objectManager.registerGroup("waterTiles",water_tiles);
 
-  int variance = 4;
+  String[] forest_tiles = 
+  {
+    "ground0",
+    "alga0","alga1","stone0","bush0","bush1"
+  };
+  objectManager.registerGroup("forestTiles",forest_tiles);
 
-  String name = "groundChunk";
+  int variance = 2;
+
+  String[] names = {"Ground","Swamp","Sea","Mountain","Forest"};
+  String name;
   String[] group = new String[variance];
-  for(int i=0;i<variance;i++)
+  for(int i=0; i<names.length; i++)
   {
-    objectManager.registerPart(name+i, createGroundChunk());
-    group[i] = name+i;
+    name = names[i]+"Chunk";
+    for(int j=0; j<variance; j++)
+    {
+      objectManager.registerPart(name+j, createChunk(names[i]));
+      group[j] = name+j;
+    }
+    objectManager.registerGroup(name+"s",group);
   }
-  objectManager.registerGroup(name+"s",group);
-
-  name = "waterChunk";
-  group = new String[variance];
-  for(int i=0;i<variance;i++)
-  {
-    objectManager.registerPart(name+i, createSwampChunk());
-    group[i] = name+i;
-  }
-  objectManager.registerGroup(name+"s",group);
-
-  name = "seaChunk";
-  group = new String[variance];
-  for(int i=0;i<variance;i++)
-  {
-    objectManager.registerPart(name+i, createSeaChunk());
-    group[i] = name+i;
-  }
-  objectManager.registerGroup(name+"s",group);
-  
-  name = "mountainChunk";
-  group = new String[variance];
-  for(int i=0;i<variance;i++)
-  {
-    objectManager.registerPart(name+i, createMountainChunk());
-    group[i] = name+i;
-  }
-  objectManager.registerGroup(name+"s",group);
-
-  name = "forestChunk";
-  group = new String[variance];
-  for(int i=0;i<variance;i++)
-  {
-    objectManager.registerPart(name+i, createForestChunk());
-    group[i] = name+i;
-  }
-  objectManager.registerGroup(name+"s",group);
 
   String[] chunk = 
   {
-    "groundChunk1","groundChunk2",
-    "waterChunk1","waterChunk2",
-    "mountainChunk1","mountainChunk2",
-    "forestChunk1","forestChunk2",
+    "GroundChunk1","GroundChunk0",
+    "SeaChunk1","SwampChunk0",
+    "MountainChunk1","MountainChunk0",
+    "ForestChunk1","ForestChunk0",
   };
   objectManager.registerGroup("chunk",chunk);
 }

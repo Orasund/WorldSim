@@ -3,8 +3,8 @@
   {
     "names":["lake","bush","alga"],
     "amounts":[3,10,2],
-    "variance":1,
-    "group":"tiles"
+    "variance":2,
+    "group":"waterTiles"
   },
   "Swamp":
   {
@@ -29,9 +29,9 @@
   },
   "Forest":
   {
-    "names":["lake","stone","bush"],
+    "names":["alga","stone","bush"],
     "amounts":[10,5,50],
-    "variance":1,
-    "group":"tiles"
+    "variance":2,
+    "group":"forestTiles"
   },
 }

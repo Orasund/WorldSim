@@ -19,6 +19,11 @@ void registerObjects()
       obj = createTile("Lake");
     objectManager.registerPart("lake"+variance, obj);
 
+    obj = createTile("Bush");
+    if(obj.is("organic") == false)
+      obj = createTile("Bush");
+    objectManager.registerPart("bush"+variance, obj);
+
     for(int i = 0; i < 5; i++)
     {
       obj = obj = createTile("Alga");
@@ -31,16 +36,22 @@ void registerObjects()
   objectManager.registerPart("moss0", createTile("Moss"));
   objectManager.registerPart("gravel0",createTile("Gravel"));
 
-  obj = createTile("Bush");
-  if(obj.is("organic") == false)
-    obj = createTile("Bush");
-  objectManager.registerPart("bush0", obj);
-
   String[] tiles = {"ground0","lake0","stone0","alga0","moss0","bush0","gravel0"};
   objectManager.registerGroup("tiles",tiles);
 
-  String[] water_tiles = {"ground0","lake0","lake1","alga0","alga1","bush0"};
+  String[] water_tiles = 
+  {
+    "ground0",
+    "lake0","lake1","alga0","alga1","bush0","bush1"
+  };
   objectManager.registerGroup("waterTiles",water_tiles);
+
+  String[] forest_tiles = 
+  {
+    "ground0",
+    "alga0","alga1","stone0","bush0","bush1"
+  };
+  objectManager.registerGroup("forestTiles",forest_tiles);
 
   int variance = 2;
 
