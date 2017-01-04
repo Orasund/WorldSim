@@ -20,7 +20,7 @@ Chunk createChunk(String name)
 
 Tile createTile(String name)
 {
-  JSONObject json = loadJSONObject("templates.json");
+  JSONObject json = loadJSONObject("tile.json");
   int[][] template;
   int[] arr = new int[4];
 
@@ -33,13 +33,13 @@ Tile createTile(String name)
   switch(template_type)
   {
     case "plant":
-      template = plantTemplate(arr[0], arr[1], arr[2]);
+      template = plantTemplate(arr[0], arr[1], arr[2], arr[3]);
       break;
     case "solid":
-      template = solidTemplate(arr[0], arr[1], arr[2]);
+      template = solidTemplate(arr[0], arr[1], arr[2], arr[3]);
       break;
     default:
-      template = groundTemplate(arr[0], arr[1], arr[2]);
+      template = groundTemplate(arr[0], arr[1], arr[2], arr[3]);
       break;
   }
   return evaluateTile(template);
@@ -92,9 +92,9 @@ Chunk createChunkByVariance(int[] amount_, int variance, String[] names_, String
   return new Chunk(out,group_name);
 }
 
-int[][] plantTemplate(int stone, int water, int life)
+int[][] plantTemplate(int stone, int water, int life, int energy)
 {
-  int[][] out = randTemplate(stone,water,life);
+  int[][] out = randTemplate(stone,water,life,energy);
   
   for(int i=0;i<2;i++)
     for(int j=0;j<2;j++)
@@ -112,15 +112,15 @@ int[][] plantTemplate(int stone, int water, int life)
   return out;
 }
 
-int[][] groundTemplate(int stone, int water, int life)
+int[][] groundTemplate(int stone, int water, int life, int energy)
 {
-  int[][] out = randTemplate(stone,water,life);
+  int[][] out = randTemplate(stone,water,life,energy);
   return out;
 }
 
-int[][] solidTemplate(int stone, int water, int life)
+int[][] solidTemplate(int stone, int water, int life, int energy)
 {
-  int[][] out = randTemplate(stone,water,life);
+  int[][] out = randTemplate(stone,water,life,energy);
   
   for(int i=0;i<8;i++)
   {

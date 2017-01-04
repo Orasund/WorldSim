@@ -350,7 +350,7 @@ public class OrganicSpawnSim extends Simulation
             x2 = x+dir[l][0];
             y2 = y+dir[l][1];
             if(x2<0 || y2<0 || x2>=size || y2>=size)
-            continue;
+              continue;
 
             if(getEntry("water",x2,y2)==0)
               continue;
@@ -512,6 +512,18 @@ public class BaseSim extends Simulation
     return simBase(template,temp_template_,group,this);
   }
 }
+public class EnergySim extends Simulation
+{
+  EnergySim(final int[][] template,String group)
+  {
+    super(0);
+  }
+
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simEnergy(template,temp_template_,group,this);
+  }
+}
 public class LifeSim extends Simulation
 {
   LifeSim(final int[][] template,String group)
@@ -562,6 +574,105 @@ public int[][] simBase(final int[][] template,final int[][] temp_template_,Strin
     
   return temp_template;
 }
+public Simulation initEnergySim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
+
+/****************************
+*
+* if Entry is next to Life
+*   chance Life to Energy, create Energy oposit of Life
+*
+* if Entry has no Energy and no Life next to it
+*   chance Entry to Void
+*
+* if Entry has more then 1 Energy next to it
+*   chance to Life
+*
+* if Entry has exactly one Energy next to it
+*   create Energy on oposit side.
+*   if not possible
+*     chance to Life
+*
+****************************/
+public int[][] simEnergy(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  //int size = SIZE;
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
+
+  int[][] temp_template = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+      temp_template[i][j]=temp_template_[i][j];
+  
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+    {
+      if(template[i][j] != 4)
+        continue;
+
+      temp_template[i][j]=0;
+
+      int[] coord = {-1,-1}; //bullshit
+      int[] neighbors = new int[4];
+      int friend = 0;
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(x<0 || y<0 || x>=SIZE || y>=SIZE)
+        {
+          neighbors[k] = 1;
+          continue;
+        }
+        
+        neighbors[k] = template[x][y];
+        if(template[x][y] == 4)
+          friend++;
+        if(template[x][y] == 4 || template[x][y] == 3)
+        {
+          temp_template[i][j]=3;
+        }
+      }
+
+      for(int k=0;k<4;k++)
+      {
+        if(neighbors[k] == 3 && neighbors[(k+2)%4] == 0)
+        {
+          x = i+dir[k][0];
+          y = j+dir[k][1];
+          temp_template[x][y]=4;
+          x = i+dir[(k+2)%4][0];
+          y = j+dir[(k+2)%4][1];
+          temp_template[x][y]=4;
+        }
+      }
+      
+      if(friend > 1)
+        temp_template[i][j]=3;
+      else
+        temp_template[i][j]=4;
+      
+      if(friend == 1)
+      for(int k=0;k<4;k++)
+      {
+        if(neighbors[k] != 4)
+          continue;
+        
+        if(neighbors[(k+2)%4] != 0)
+          break;
+        
+        x = i+dir[(k+2)%4][0];
+        y = j+dir[(k+2)%4][1];
+        temp_template[x][y]=4;
+      }
+    }
+
+  return temp_template;
+}
 public Simulation initLifeSim(final int[][] template,String group)
 {
   String[] names = {};
@@ -604,9 +715,10 @@ public int[][] simLife(final int[][] template,final int[][] temp_template_,Strin
       if(coord[0]>0 && coord[1]>0)
       {
         temp_template[coord[0]][coord[1]]=3;
-        temp_template[i][j]=3;
+        if(temp_template[i][j]!=4)
+          temp_template[i][j]=3;
       }
-      else
+      else if(temp_template[i][j]!=4)
         temp_template[i][j]=2;
     }
 
@@ -1283,7 +1395,7 @@ public class Camera
     pos_y = y;
   }
 }
-public int[][] randTemplate(int stone, int water, int life)
+public int[][] randTemplate(int stone, int water, int life, int energy)
 {
   int template[][] = new int[8][8];
   for(int i=0;i<8;i++)
@@ -1294,15 +1406,15 @@ public int[][] randTemplate(int stone, int water, int life)
     for(int j=0;j<8;j++)
     {
       float rand = random(100);
-      int type;
-      if(rand<life)
-        type = 3;
-      else if(rand<water+life)
-        type = 2;
-      else if(rand<water+stone+life)
-        type = 1;
-      else
-        type = 0;
+      int[] elements = {stone,water,life,energy};
+      int type = 4;
+      for(int k=0;k<4;k++)
+      {
+        rand -= elements[3-k];
+        if(rand<0)
+          break;
+        type--;
+      }
       template[i][j]=type;
     }
   return template;
@@ -1963,7 +2075,9 @@ public int[][] iterateTile(final int[][] template, final int[][] temp_template_)
   Simulation lifeSim = initLifeSim(template,group);
   Simulation sourceSim = initSourceSim(template,group);
   Simulation baseSim = initBaseSim(template,group);
+  Simulation energySim = initEnergySim(template,group);
   
+  temp_template = simEnergy(template,temp_template,group,energySim);
   temp_template = simLife(template,temp_template,group,lifeSim);
   temp_template = simSource(template,temp_template,group,sourceSim);
   temp_template = simBase(template,temp_template,group,baseSim);
@@ -2022,7 +2136,7 @@ public Chunk createChunk(String name)
 
 public Tile createTile(String name)
 {
-  JSONObject json = loadJSONObject("templates.json");
+  JSONObject json = loadJSONObject("tile.json");
   int[][] template;
   int[] arr = new int[4];
 
@@ -2035,13 +2149,13 @@ public Tile createTile(String name)
   switch(template_type)
   {
     case "plant":
-      template = plantTemplate(arr[0], arr[1], arr[2]);
+      template = plantTemplate(arr[0], arr[1], arr[2], arr[3]);
       break;
     case "solid":
-      template = solidTemplate(arr[0], arr[1], arr[2]);
+      template = solidTemplate(arr[0], arr[1], arr[2], arr[3]);
       break;
     default:
-      template = groundTemplate(arr[0], arr[1], arr[2]);
+      template = groundTemplate(arr[0], arr[1], arr[2], arr[3]);
       break;
   }
   return evaluateTile(template);
@@ -2094,9 +2208,9 @@ public Chunk createChunkByVariance(int[] amount_, int variance, String[] names_,
   return new Chunk(out,group_name);
 }
 
-public int[][] plantTemplate(int stone, int water, int life)
+public int[][] plantTemplate(int stone, int water, int life, int energy)
 {
-  int[][] out = randTemplate(stone,water,life);
+  int[][] out = randTemplate(stone,water,life,energy);
   
   for(int i=0;i<2;i++)
     for(int j=0;j<2;j++)
@@ -2114,15 +2228,15 @@ public int[][] plantTemplate(int stone, int water, int life)
   return out;
 }
 
-public int[][] groundTemplate(int stone, int water, int life)
+public int[][] groundTemplate(int stone, int water, int life, int energy)
 {
-  int[][] out = randTemplate(stone,water,life);
+  int[][] out = randTemplate(stone,water,life,energy);
   return out;
 }
 
-public int[][] solidTemplate(int stone, int water, int life)
+public int[][] solidTemplate(int stone, int water, int life, int energy)
 {
-  int[][] out = randTemplate(stone,water,life);
+  int[][] out = randTemplate(stone,water,life,energy);
   
   for(int i=0;i<8;i++)
   {
@@ -2352,7 +2466,10 @@ public Tile evaluateTile(int[][] template)
 
     //ground
     default:
-      out = new Tile(img,resources,background,color(80,255,80),types);
+      if(resources[0]==SIZE*SIZE)
+        out = new Tile(img,resources,background,color(0,0,0),types);
+      else
+        out = new Tile(img,resources,background,color(80,255,80),types);
   }
 
   return out;
@@ -2382,7 +2499,7 @@ public void gameSetup()
   COUNTER = 0;
   registerObjects();
 
-  TEMPLATE = solidTemplate(0,10,0);
+  TEMPLATE = solidTemplate(0,10,0,0);
 
   Map map = new Map("chunk");
   int POS_X = MAP_SIZE/2;
@@ -2399,16 +2516,19 @@ public void gameSetup()
 }
 public void registerObjects()
 {
+  /* Register Parts */
   ObjectManager objectManager = GAME.getObjectManager();
 
   objectManager.registerPart("space", new Element(color(0,0,0)));
   objectManager.registerPart("base", new Element(color(40,40,40)));
   objectManager.registerPart("source", new Element(color(0,0,255)));
   objectManager.registerPart("life", new Element(color(0,80,0)));
-  String[] elements = {"space","base","source","life"};
+  objectManager.registerPart("energy", new Element(color(255,40,40)));
+  String[] elements = {"space","base","source","life","energy"};
   objectManager.registerGroup("elements",elements);
 
   Part obj;
+  objectManager.registerPart("void",createTile("Void"));
   objectManager.registerPart("ground0", createTile("Ground"));
   
   for(int variance = 0; variance < 2; variance++)
@@ -2435,6 +2555,25 @@ public void registerObjects()
   objectManager.registerPart("moss0", createTile("Moss"));
   objectManager.registerPart("gravel0",createTile("Gravel"));
 
+  JSONObject json = loadJSONObject("template.json");
+  String[] template_names = {"custom1","custom2","floor"};
+  int[][] template;
+  JSONArray table,row;
+  Tile tile;
+  for(int i=0; i<template_names.length; i++)
+  {
+    template = new int[SIZE][SIZE];
+    table = json.getJSONArray(template_names[i]);
+    for(int j=0; j<SIZE; j++)
+    {
+      row = table.getJSONArray(j);
+      for(int k=0; k<SIZE; k++)
+        template[k][j] = row.getInt(k);
+    }
+    objectManager.registerPart(template_names[i],evaluateTile(template));
+  }
+
+  /* register Groups */
   String[] tiles = {"ground0","lake0","stone0","alga0","moss0","bush0","gravel0"};
   objectManager.registerGroup("tiles",tiles);
 
@@ -2454,12 +2593,14 @@ public void registerObjects()
 
   String[] ship_tiles = 
   {
-    "ground0","stone0"
+    //"gravel0","stone0","void"
+    "floor","custom2","void"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
 
   int variance = 2;
 
+  /*register chunks*/
   String[] names = {"Ground","Swamp","Sea","Mountain","Forest"};
   String name;
   String[] group = new String[variance];
@@ -2484,7 +2625,7 @@ public void registerObjects()
   objectManager.registerGroup("chunk",chunk);
 
   //ship
-  JSONObject json = loadJSONObject("ship.json");
+  json = loadJSONObject("ship.json");
   JSONArray ship_front = json.getJSONArray("front");
   JSONArray ship_back = json.getJSONArray("back");
   int[][] ship_template1 = new int[SIZE][SIZE];

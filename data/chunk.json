@@ -1,8 +1,8 @@
 {
   "Ground":
   {
-    "names":["lake","bush","alga"],
-    "amounts":[3,20,2],
+    "names":["lake","bush","stone"],
+    "amounts":[4,40,1],
     "variance":2,
     "group":"waterTiles"
   },

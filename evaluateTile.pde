@@ -80,7 +80,10 @@ Tile evaluateTile(int[][] template)
 
     //ground
     default:
-      out = new Tile(img,resources,background,color(80,255,80),types);
+      if(resources[0]==SIZE*SIZE)
+        out = new Tile(img,resources,background,color(0,0,0),types);
+      else
+        out = new Tile(img,resources,background,color(80,255,80),types);
   }
 
   return out;

@@ -126,7 +126,7 @@ public class OrganicSpawnSim extends Simulation
             x2 = x+dir[l][0];
             y2 = y+dir[l][1];
             if(x2<0 || y2<0 || x2>=size || y2>=size)
-            continue;
+              continue;
 
             if(getEntry("water",x2,y2)==0)
               continue;

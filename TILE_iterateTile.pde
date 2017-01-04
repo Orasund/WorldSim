@@ -9,7 +9,9 @@ int[][] iterateTile(final int[][] template, final int[][] temp_template_)
   Simulation lifeSim = initLifeSim(template,group);
   Simulation sourceSim = initSourceSim(template,group);
   Simulation baseSim = initBaseSim(template,group);
+  Simulation energySim = initEnergySim(template,group);
   
+  temp_template = simEnergy(template,temp_template,group,energySim);
   temp_template = simLife(template,temp_template,group,lifeSim);
   temp_template = simSource(template,temp_template,group,sourceSim);
   temp_template = simBase(template,temp_template,group,baseSim);

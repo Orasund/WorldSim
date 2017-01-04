@@ -23,7 +23,7 @@ void gameSetup()
   COUNTER = 0;
   registerObjects();
 
-  TEMPLATE = solidTemplate(0,10,0);
+  TEMPLATE = solidTemplate(0,10,0,0);
 
   Map map = new Map("chunk");
   int POS_X = MAP_SIZE/2;

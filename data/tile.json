@@ -1,8 +1,13 @@
 {
+  "Void":
+  {
+    "template_type":"ground",
+    "elements":[0,0,0,0]
+  },
   "Bush":
   {
     "template_type":"plant",
-    "elements":[0,10,10,0]
+    "elements":[0,10,10,5]
   },
   "Moss":
   {

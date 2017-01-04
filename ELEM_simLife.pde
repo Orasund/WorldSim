@@ -40,9 +40,10 @@ int[][] simLife(final int[][] template,final int[][] temp_template_,String group
       if(coord[0]>0 && coord[1]>0)
       {
         temp_template[coord[0]][coord[1]]=3;
-        temp_template[i][j]=3;
+        if(temp_template[i][j]!=4)
+          temp_template[i][j]=3;
       }
-      else
+      else if(temp_template[i][j]!=4)
         temp_template[i][j]=2;
     }
 
