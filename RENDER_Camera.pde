@@ -11,28 +11,13 @@ public class Camera
   private float temp_y;
   Camera(int max_)
   {
-    //JSONObject view = new JSONObject();
-
-
-
     size = height/(max_*8);
-    //size=6;
-
-
     offset_x = (width-max_*8*size)/2;
     offset_y = (height-max_*8*size)/2;
-    //view.setInt("max",max_);
     max = max_;
-    //view.setInt("size",size);
-    //view.setInt("offset_x",offset_x);
-    //view.setInt("offset_y",offset_y);
     pos_x = 0;
     pos_y = 0;
-    //view.setFloat("pos_x",0);//(10*8*size)/2);
-    //view.setFloat("pos_y",0);//(10*8*size)/2);
-    //view.setFloat("rotation",0);
     rotation = 0;
-    //Views.setJSONObject(name, view);
 
     temp_x = offset_x;
     temp_y = offset_y;
@@ -42,16 +27,6 @@ public class Camera
     temp_y += (max*SIZE*size)/2;
   }
 
-  /*float getTempX(int x)
-  {
-    return temp_x -pos_x + x*size;
-  }
-
-  float getTempY(int y)
-  {
-    return temp_y -pos_y + y*size;
-  }*/
-
   PVector getTempPos(PVector pos)
   {
     PVector out = new PVector();
@@ -59,16 +34,6 @@ public class Camera
     out.y = temp_y - pos_y + pos.y*size;
     return out;
   }
-
-  /*PVector calcRelPos(PVector pos)
-  {
-    float x = pos.x;
-    float y = pos.y;
-    PVector out = new PVector();
-    out.x = (x - temp_x + pos_x)/size;
-    out.y = (y - temp_y + pos_y)/size;
-    return out;
-  }*/
 
   void setPos(int x, int y)
   {

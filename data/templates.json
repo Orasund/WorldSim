@@ -32,6 +32,6 @@
   "Gravel":
   {
     "template_type":"ground",
-    "elements":[20,0,0,0]
+    "elements":[30,0,0,0]
   }
 }
