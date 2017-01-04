@@ -2,7 +2,7 @@
   "Ground":
   {
     "names":["lake","bush","alga"],
-    "amounts":[3,10,2],
+    "amounts":[3,20,2],
     "variance":2,
     "group":"waterTiles"
   },
@@ -30,8 +30,8 @@
   "Forest":
   {
     "names":["alga","stone","bush"],
-    "amounts":[10,5,50],
+    "amounts":[10,5,40],
     "variance":2,
     "group":"forestTiles"
-  },
+  }
 }

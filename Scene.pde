@@ -53,19 +53,26 @@ public class Scene
     renderEngine.rotateScene();
 
     Part[] tiles = objectManager.getGroup(group_name);
+    Part[] ship = objectManager.getGroup("ship");
 
     for(int i=0;i<5;i++)
       for(int j=0;j<5;j++)
       {
         int x2 = x+i-2;
         int y2 = y+j-2;
+        if(x2==3 && y2 == -2)
+        	ship[0].drawFrame(x2,y2,gameLoop.getFrame());
+        if(x2==3 && y2 == -1)
+          ship[2].drawFrame(x2,y2,gameLoop.getFrame());
+        if(x2==4 && y2 == -2)
+          ship[1].drawFrame(x2,y2,gameLoop.getFrame());
+        if(x2==4 && y2 == -1)
+          ship[3].drawFrame(x2,y2,gameLoop.getFrame());
+
         if(x2<0 || y2<0 || x2>=SIZE || y2>=SIZE)
           continue;
 
         tiles[map[x2][y2]].drawFrame(x2,y2,gameLoop.getFrame());
       }
-    /*for(int i=0;i<SIZE;i++)
-      for(int j=0;j<SIZE;j++)
-        tiles[map[i][j]].drawFrame(i,j,gameLoop.getFrame());*/
   }
 }

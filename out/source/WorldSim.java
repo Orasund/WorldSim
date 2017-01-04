@@ -1521,20 +1521,27 @@ public class Scene
     renderEngine.rotateScene();
 
     Part[] tiles = objectManager.getGroup(group_name);
+    Part[] ship = objectManager.getGroup("ship");
 
     for(int i=0;i<5;i++)
       for(int j=0;j<5;j++)
       {
         int x2 = x+i-2;
         int y2 = y+j-2;
+        if(x2==3 && y2 == -2)
+        	ship[0].drawFrame(x2,y2,gameLoop.getFrame());
+        if(x2==3 && y2 == -1)
+          ship[2].drawFrame(x2,y2,gameLoop.getFrame());
+        if(x2==4 && y2 == -2)
+          ship[1].drawFrame(x2,y2,gameLoop.getFrame());
+        if(x2==4 && y2 == -1)
+          ship[3].drawFrame(x2,y2,gameLoop.getFrame());
+
         if(x2<0 || y2<0 || x2>=SIZE || y2>=SIZE)
           continue;
 
         tiles[map[x2][y2]].drawFrame(x2,y2,gameLoop.getFrame());
       }
-    /*for(int i=0;i<SIZE;i++)
-      for(int j=0;j<SIZE;j++)
-        tiles[map[i][j]].drawFrame(i,j,gameLoop.getFrame());*/
   }
 }
 public class SceneManager //implements Service
@@ -2445,6 +2452,12 @@ public void registerObjects()
   };
   objectManager.registerGroup("forestTiles",forest_tiles);
 
+  String[] ship_tiles = 
+  {
+    "ground0","stone0"
+  };
+  objectManager.registerGroup("shipTiles",ship_tiles);
+
   int variance = 2;
 
   String[] names = {"Ground","Swamp","Sea","Mountain","Forest"};
@@ -2469,6 +2482,46 @@ public void registerObjects()
     "ForestChunk1","ForestChunk0",
   };
   objectManager.registerGroup("chunk",chunk);
+
+  //ship
+  JSONObject json = loadJSONObject("ship.json");
+  JSONArray ship_front = json.getJSONArray("front");
+  JSONArray ship_back = json.getJSONArray("back");
+  int[][] ship_template1 = new int[SIZE][SIZE];
+  int[][] ship_template2 = new int[SIZE][SIZE];
+  int[][] ship_template3 = new int[SIZE][SIZE];
+  int[][] ship_template4 = new int[SIZE][SIZE];
+  JSONArray array_front, array_back;
+  int num;
+  for(int i=0; i<SIZE; i++)
+  {
+    array_front = ship_front.getJSONArray(i);
+    array_back = ship_back.getJSONArray(i);
+    for(int j=0; j<SIZE; j++)
+    {
+      num = array_front.getInt(j);
+      ship_template1[j][i] = num;
+      ship_template2[SIZE-1-j][i] = num;
+      num = array_back.getInt(j);
+      ship_template3[j][i] = num;
+      ship_template4[SIZE-1-j][i] = num;
+    }
+  }
+    
+  Chunk ship_chunk = new Chunk(ship_template1,"shipTiles");
+  objectManager.registerPart("ship_1", ship_chunk);
+  ship_chunk = new Chunk(ship_template2,"shipTiles");
+  objectManager.registerPart("ship_2", ship_chunk);
+  ship_chunk = new Chunk(ship_template3,"shipTiles");
+  objectManager.registerPart("ship_3", ship_chunk);
+  ship_chunk = new Chunk(ship_template4,"shipTiles");
+  objectManager.registerPart("ship_4", ship_chunk);
+  String[] ship = 
+  {
+    "ship_1","ship_2",
+    "ship_3","ship_4"
+  };
+  objectManager.registerGroup("ship",ship);
 }
   public void settings() {  size(1024,768,P2D); }
   static public void main(String[] passedArgs) {
