@@ -3,11 +3,11 @@ void registerObjects()
   /* Register Parts */
   ObjectManager objectManager = GAME.getObjectManager();
 
-  objectManager.registerPart("space", new Element(color(0,0,0)));
-  objectManager.registerPart("base", new Element(color(40,40,40)));
-  objectManager.registerPart("source", new Element(color(0,0,255)));
-  objectManager.registerPart("life", new Element(color(0,80,0)));
-  objectManager.registerPart("energy", new Element(color(255,40,40)));
+  objectManager.registerPart("space", new Element(color(0,0,0),"space"));
+  objectManager.registerPart("base", new Element(color(40,40,40),"base"));
+  objectManager.registerPart("source", new Element(color(0,0,255),"source"));
+  objectManager.registerPart("life", new Element(color(0,80,0),"life"));
+  objectManager.registerPart("energy", new Element(color(255,40,40),"energy"));
   String[] elements = {"space","base","source","life","energy"};
   objectManager.registerGroup("elements",elements);
 

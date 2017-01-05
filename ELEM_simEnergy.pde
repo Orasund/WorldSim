@@ -23,7 +23,6 @@ Simulation initEnergySim(final int[][] template,String group)
 ****************************/
 int[][] simEnergy(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
-  //int size = SIZE;
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y;
 

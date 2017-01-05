@@ -40,7 +40,7 @@ public class Chunk implements Part
 
   Chunk(int[][] template_,String group_)
   { 
-    int size = SIZE;
+    //int size = SIZE;
 
     SimulationManager simulationManager = GAME.getSimulationManager();
 
@@ -52,14 +52,14 @@ public class Chunk implements Part
     simulationManager.listenTo("water","OrganicSpawn");
     simulationManager.listenTo("organic_spawn","OrganicSpawn");
     
-    blocks = simulationManager.init(template_);//,group_);
+    blocks = simulationManager.init(template_);
 
-    resources = new int[size];
-    for(int i = 0;i<size;i++)
+    resources = new int[SIZE];
+    for(int i = 0;i<SIZE;i++)
       resources[i] = 0;
 
-    for(int j = 0;j<size;j++)
-      for(int k = 0;k<size;k++)
+    for(int j = 0;j<SIZE;j++)
+      for(int k = 0;k<SIZE;k++)
         resources[blocks[j][k]]++;
     
     group = group_;

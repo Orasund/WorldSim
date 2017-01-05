@@ -13,9 +13,23 @@ Tile evaluateTile(int[][] template)
   for(int i=0;i<8;i++)
     for(int j=0;j<8;j++)
       map_empty[i][j]=0;
-      
+  
+  /* OLD */
   for(int k = 0;k<16;k++)
     temp_template = iterateTile(temp_template,map_empty);
+  /**/
+
+  /* NEW */
+  /*SimulationManager simulationManager = GAME.getSimulationManager();
+  String group = "elements";
+
+  simulationManager.newSession(group);
+  //simulationManager.add("Energy",new EnergySim(template,group));
+  //simulationManager.add("Life",new LifeSim(template,group));
+  simulationManager.add("Source",new SourceSim(template,group));
+
+  temp_template = simulationManager.init(template);*/
+  /**/
   
   int[][][] img = new int[6][8][8];
   int[] resources = new int[5];
