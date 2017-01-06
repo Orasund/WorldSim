@@ -1564,11 +1564,34 @@ class RenderEngine// implements Service
 
   public void drawImg(PImage img,int x, int y)
   {
-    noStroke();
+
 
     PVector temp_pos = getTempPos(new PVector(x,y));
 
     image(img, temp_pos.x, temp_pos.y);
+  }
+
+  public void drawPart(int[][] img, int x, int y, int background, String group)
+  {
+    ObjectManager objectManager = GAME.getObjectManager();
+    Part[] parts = objectManager.getGroup(group);
+
+    int c;
+    for(int i=0;i<SIZE;i++)
+      for(int j=0;j<SIZE;j++)
+      {
+        if(img[i][j] == 0)
+          c = background;
+        else
+          c = parts[img[i][j]].getColor();
+
+        PVector temp_pos = getTempPos(new PVector(x,y));
+        int size = getCamera().getSize();
+        int offset_x = (size*i);
+        int offset_y = (size*j);
+        fill(c);
+        rect(temp_pos.x + offset_x,temp_pos.y + offset_y,size,size);
+      }
   }
 
   public void render()
@@ -2315,6 +2338,7 @@ public class Tile implements Part
     RenderEngine renderEngine = GAME.getRenderEngine();
     PImage image = images[frame];
     renderEngine.drawImg(image,x*8,y*8);
+    //renderEngine.drawPart(img[frame],x*SIZE,y*SIZE,c,"elements");
   }
 
   public int getColor(){return c;}
@@ -2476,6 +2500,7 @@ public Tile evaluateTile(int[][] template)
 }
 public void gameSetup()
 {
+  noStroke();
   SIZE = 8;
   int MAP_DETAIL = 4;
   int MAP_SIZE = 4*MAP_DETAIL;

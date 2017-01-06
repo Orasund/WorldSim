@@ -1,5 +1,6 @@
 void gameSetup()
 {
+  noStroke();
   SIZE = 8;
   int MAP_DETAIL = 4;
   int MAP_SIZE = 4*MAP_DETAIL;

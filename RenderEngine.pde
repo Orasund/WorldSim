@@ -143,11 +143,34 @@ class RenderEngine// implements Service
 
   void drawImg(PImage img,int x, int y)
   {
-    noStroke();
+
 
     PVector temp_pos = getTempPos(new PVector(x,y));
 
     image(img, temp_pos.x, temp_pos.y);
+  }
+
+  void drawPart(int[][] img, int x, int y, color background, String group)
+  {
+    ObjectManager objectManager = GAME.getObjectManager();
+    Part[] parts = objectManager.getGroup(group);
+
+    color c;
+    for(int i=0;i<SIZE;i++)
+      for(int j=0;j<SIZE;j++)
+      {
+        if(img[i][j] == 0)
+          c = background;
+        else
+          c = parts[img[i][j]].getColor();
+
+        PVector temp_pos = getTempPos(new PVector(x,y));
+        int size = getCamera().getSize();
+        int offset_x = (size*i);
+        int offset_y = (size*j);
+        fill(c);
+        rect(temp_pos.x + offset_x,temp_pos.y + offset_y,size,size);
+      }
   }
 
   public void render()
