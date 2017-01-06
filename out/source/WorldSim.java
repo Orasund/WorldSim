@@ -554,7 +554,8 @@ public class SourceSim extends Simulation
   *   move to oposite direction if possible
   *
   * (2)if next to more then one source or base
-  *   look clockwise for open space and move there
+  *   create source in all directions next to it
+  *   delete
   *
   * (3)if touching borders
   *   delete
@@ -663,19 +664,16 @@ public Simulation initEnergySim(final int[][] template,String group)
 
 /****************************
 *
-* if Entry is next to Life
-*   chance Life to Energy, create Energy oposit of Life
+* (1)if next to Life
+*   chance Life to Energy
 *
-* if Entry has no Energy and no Life next to it
-*   chance Entry to Void
-*
-* if Entry has more then 1 Energy next to it
-*   chance to Life
-*
-* if Entry has exactly one Energy next to it
+* (2)if exactly one Energy is next to it
 *   create Energy on oposit side.
 *   if not possible
 *     chance to Life
+*
+* (3)else
+*   chance to life
 *
 ****************************/
 public int[][] simEnergy(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
@@ -694,11 +692,9 @@ public int[][] simEnergy(final int[][] template,final int[][] temp_template_,Str
       if(template[i][j] != 4)
         continue;
 
-      temp_template[i][j]=0;
-
-      int[] coord = {-1,-1}; //bullshit
       int[] neighbors = new int[4];
-      int friend = 0;
+      int friends = 0;
+      int sources = 0;
       for(int k=0;k<4;k++)
       {
         x = i+dir[k][0];
@@ -711,44 +707,52 @@ public int[][] simEnergy(final int[][] template,final int[][] temp_template_,Str
         
         neighbors[k] = template[x][y];
         if(template[x][y] == 4)
-          friend++;
-        if(template[x][y] == 4 || template[x][y] == 3)
-        {
-          temp_template[i][j]=3;
-        }
+          friends++;
+        
+        if(template[x][y] == 3)
+          sources++;
       }
 
-      for(int k=0;k<4;k++)
+      //(2)
+      if(friends == 1)
       {
-        if(neighbors[k] == 3 && neighbors[(k+2)%4] == 0)
+        for(int k=0;k<4;k++)
         {
-          x = i+dir[k][0];
-          y = j+dir[k][1];
-          temp_template[x][y]=4;
+          if(neighbors[k] != 4)
+            continue;
+          
+          if(neighbors[(k+2)%4] != 0)
+          {
+            temp_template[i][j]=3;
+            break;
+          }
+
           x = i+dir[(k+2)%4][0];
           y = j+dir[(k+2)%4][1];
+          if(x<0 || y<0 || x>=SIZE || y>=SIZE)
+            break;
           temp_template[x][y]=4;
         }
+        //continue;
       }
-      
-      if(friend > 1)
-        temp_template[i][j]=3;
-      else
-        temp_template[i][j]=4;
-      
-      if(friend == 1)
-      for(int k=0;k<4;k++)
+
+      //(1)
+      if(sources != 0)
       {
-        if(neighbors[k] != 4)
-          continue;
-        
-        if(neighbors[(k+2)%4] != 0)
-          break;
-        
-        x = i+dir[(k+2)%4][0];
-        y = j+dir[(k+2)%4][1];
-        temp_template[x][y]=4;
+        for(int k=0;k<4;k++)
+        {
+          if(neighbors[k] == 3)
+          {
+            x = i+dir[k][0];
+            y = j+dir[k][1];
+            temp_template[x][y]=4;
+          }
+        }
+        continue;
       }
+      
+      //(3)
+      temp_template[i][j]=3;
     }
 
   return temp_template;
@@ -759,47 +763,71 @@ public Simulation initLifeSim(final int[][] template,String group)
   return new Simulation(names);
 }
 
+/*
+*
+* (1) if source next to it
+*   chance source to life
+* 
+* (2) if no source next to it
+*   chance to source
+*
+*/
 public int[][] simLife(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
-  int size = 8;
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y;
 
-  int[][] temp_template = new int[size][size];
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
+  int[][] temp_template = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
       temp_template[i][j]=temp_template_[i][j];
   
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
     {
       if(template[i][j] != 3)
         continue;
 
-      int[] coord = {-1,-1};
+      int friends = 0;
       for(int k=0;k<4;k++)
       {
         x = i+dir[k][0];
         y = j+dir[k][1];
-        if(x<0 || y<0 || x>7 || y>7)
+        if(x<0 || y<0 || x>=SIZE || y>=SIZE)
           continue;
         
-        if(template[x][y] == 2)
-        {
-          coord[0] = x;
-          coord[1] = y;
-          break;
-        }
+        if(template[x][y] != 2)
+          continue;
+        
+        friends++;
+        //simulationManager.deleteEntry("source",x,y);
+        if(temp_template[x][y]==2)
+          temp_template[x][y]=0;
+        //simulationManager.createEntry(3,x,y);
+        if(temp_template[x][y]==0)
+          temp_template[x][y]=3;
+        //break;
       }
 
-      if(coord[0]>0 && coord[1]>0)
+      //(2)
+      if(friends == 0)
+      {
+        //simulationManager.deleteEntry("life",i,j);
+        if(temp_template[i][j]==3)
+          temp_template[i][j]=0;
+        //simulationManager.createEntry(2,i,j);
+        if(temp_template[i][j]==0)
+          temp_template[i][j]=2;
+      }
+
+      /*if(coord[0]>0 && coord[1]>0)
       {
         temp_template[coord[0]][coord[1]]=3;
         if(temp_template[i][j]!=4)
           temp_template[i][j]=3;
       }
       else if(temp_template[i][j]!=4)
-        temp_template[i][j]=2;
+        temp_template[i][j]=2;*/
     }
 
   return temp_template;
@@ -816,6 +844,7 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
   for(int i=0;i<8;i++)
     for(int j=0;j<8;j++)
       temp_template[i][j]=temp_template_[i][j];
+
   int x,y;
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
 
@@ -867,7 +896,7 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
           //simulationManager.createEntry(2,x,y);
           if(temp_template[x][y]==0)
             temp_template[x][y]=2;
-          break;
+          //break;
         }
         continue;
       }
@@ -886,7 +915,7 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
         //simulationManager.createEntry(2,x,y);
         if(temp_template[x][y]==0)
             temp_template[x][y]=2;
-        break;
+        //break;
       }
     }
   return temp_template;
@@ -1159,25 +1188,28 @@ public class InputHandler// implements Service
 
     switch(input)
     {
-      case "w":
+      case "w": //up
         pos = player.lookingAt();
         sceneManager.moveTo(PApplet.parseInt(pos.x), PApplet.parseInt(pos.y), 20);
         player.setPos(pos);
         break;
-      case "s":
+      case "s": //down
         pos = player.infrontOf();
         sceneManager.moveTo(PApplet.parseInt(pos.x), PApplet.parseInt(pos.y), 20);
         player.setPos(pos);
         break;
-      case "d":
+      case "d": //rotate right
         dir = player.getDir()-PI/2;
         sceneManager.rotateTo(dir,20);
         player.setDir(dir);
         break;
-      case "a":
+      case "a": //rotate left
         dir = player.getDir()+PI/2;
         sceneManager.rotateTo(dir,20);
         player.setDir(dir);
+        break;
+      case "e": //zoom
+        sceneManager.zoom(50);
         break;
     }
   }
@@ -1475,6 +1507,7 @@ public class Camera
   private float rotation;
   private float temp_x;
   private float temp_y;
+  private float zoom;
   Camera(int max_)
   {
     size = height/(max_*8);
@@ -1484,6 +1517,7 @@ public class Camera
     pos_x = 0;
     pos_y = 0;
     rotation = 0;
+    zoom = 1;
 
     temp_x = offset_x;
     temp_y = offset_y;
@@ -1496,8 +1530,8 @@ public class Camera
   public PVector getTempPos(PVector pos)
   {
     PVector out = new PVector();
-    out.x = temp_x - pos_x + pos.x*size;
-    out.y = temp_y - pos_y + pos.y*size;
+    out.x = temp_x - pos_x*zoom + pos.x*size*zoom;
+    out.y = temp_y - pos_y*zoom + pos.y*size*zoom;
     return out;
   }
 
@@ -1536,6 +1570,16 @@ public class Camera
   public float getRot()
   {
     return rotation;
+  }
+
+  public float getZoom()
+  {
+    return zoom;
+  }
+
+  public void setZoom(float zoom_)
+  {
+    zoom = zoom_;
   }
 
   public int getSize()
@@ -1647,6 +1691,16 @@ class RenderEngine// implements Service
     getCamera().setRot(rot_);
   }
 
+  public float getZoom()
+  {
+    return getCamera().getZoom();
+  }
+
+  public void setZoom(float zoom)
+  {
+    getCamera().setZoom(zoom);
+  }
+
   public void rotateScene()
   {
     getCamera().rotateScene();
@@ -1731,8 +1785,9 @@ class RenderEngine// implements Service
     noStroke();
 
     PVector temp_pos = getTempPos(new PVector(x,y));
-
-    image(img, temp_pos.x, temp_pos.y);
+    PImage out = img;
+    out.resize(SIZE*6*SIZE,0);
+    image(out, temp_pos.x, temp_pos.y);
   }
 
   public void render()
@@ -1827,6 +1882,8 @@ public class SceneManager //implements Service
   private PVector trans_location;
   private float rot_location;
   private float rot_time;
+  private float zoom_time;
+  private int zoom_level;
 
   private Database<Scene> database;
 
@@ -1842,6 +1899,9 @@ public class SceneManager //implements Service
 
     rot_time = 0;
     rot_location = 0;
+
+    zoom_time = 0;
+    zoom_level = 0;
 
     addScene(name,map,tiles);
   }
@@ -1863,6 +1923,19 @@ public class SceneManager //implements Service
 
     rot_location = rot;
     rot_time = time;
+  }
+
+  public void zoom(int time)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+    
+    zoom_time = time;
+    if(renderEngine.getZoom()<SIZE/2)
+    {
+      zoom_level = 1;
+    }
+    else
+      zoom_level = 0;
   }
 
   public void addScene(String name, int[][] map, String tiles)
@@ -1909,6 +1982,16 @@ public class SceneManager //implements Service
       renderEngine.setRot(rot+difference);
       
       rot_time--;
+    }
+
+    if(zoom_time != 0)
+    {
+      float zoom = renderEngine.getZoom();
+      float factor = pow(SIZE,zoom_level);
+      
+      float difference = (factor-zoom)/zoom_time;
+      renderEngine.setZoom(zoom+difference);
+      zoom_time--;
     }
 
     getCorrentScene().renderArea();
@@ -2606,7 +2689,8 @@ public Tile evaluateTile(int[][] template)
   // 1 stone = 4 void
   // 1 source = 3 stone = 12 void
   // 1 life = 2.66 source = 5 stone = 20 void
-  int[] mult = {1,4,12,20,1};
+
+  int[] mult = {1,4,12,20,40};
   int background = 0;
   for(int i=1;i<5;i++)
     if(mult[i]*resources[i]>mult[background]*resources[background])
@@ -2620,10 +2704,24 @@ public Tile evaluateTile(int[][] template)
   //switch
   switch(background)
   {
+    //moving
+    case 4:
+      types.add("moving");
+      out = new Tile(img,resources,background,color(255,80,61),types);
+      break; 
     //organic
     case 3:
-      types.add("organic");
-      out = new Tile(img,resources,background,color(0,128,0),types);
+      
+      if(resources[1]>0) //cell
+      {
+        types.add("solid");
+        types.add("organic");
+        out = new Tile(img,resources,background,color(127,178,127),types);
+      }
+      else
+      {
+        out = new Tile(img,resources,background,color(0,128,0),types);
+      }
       break;
 
     //water
@@ -2644,6 +2742,7 @@ public Tile evaluateTile(int[][] template)
 
     //stone
     case 1:
+      types.add("solid");
       out = new Tile(img,resources,background,color(127,127,127),types);
       break;
 
@@ -2701,6 +2800,7 @@ public void registerObjects()
 {
   /* Register Parts */
   ObjectManager objectManager = GAME.getObjectManager();
+  int fails = 0;
 
   objectManager.registerPart("space", new Element(color(0,0,0),"space"));
   objectManager.registerPart("base", new Element(color(40,40,40),"base"));
@@ -2718,18 +2818,26 @@ public void registerObjects()
   {
     obj = createTile("Lake");
     if(obj.is("water") == false)
+    {
       obj = createTile("Lake");
+      fails++;
+    }
     objectManager.registerPart("lake"+variance, obj);
 
     obj = createTile("Bush");
     if(obj.is("organic") == false)
+    {
       obj = createTile("Bush");
+      fails++;    
+    }
+
     objectManager.registerPart("bush"+variance, obj);
 
     for(int i = 0; i < 5; i++)
     {
       obj = obj = createTile("Alga");
       if(obj.is("organic_spawn")) break;
+      fails++;
     }
     objectManager.registerPart("alga"+variance, obj);
   }
@@ -2737,6 +2845,7 @@ public void registerObjects()
   objectManager.registerPart("stone0", createTile("Stone"));
   objectManager.registerPart("moss0", createTile("Moss"));
   objectManager.registerPart("gravel0",createTile("Gravel"));
+  objectManager.registerPart("fuel0",createTile("Fuel"));
 
   JSONObject json = loadJSONObject("template.json");
   String[] template_names = {"custom1","custom2","floor"};
@@ -2755,6 +2864,8 @@ public void registerObjects()
     }
     objectManager.registerPart(template_names[i],evaluateTile(template));
   }
+
+  println("fails in registerObjects:"+fails);
 
   /* register Groups */
   String[] tiles = {"ground0","lake0","stone0","alga0","moss0","bush0","gravel0"};
@@ -2776,8 +2887,7 @@ public void registerObjects()
 
   String[] ship_tiles = 
   {
-    //"gravel0","stone0","void"
-    "floor","custom2","void"
+    "floor","custom2","void","fuel0"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
 

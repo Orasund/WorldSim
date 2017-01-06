@@ -10,6 +10,7 @@ int[][] simSource(final int[][] template,final int[][] temp_template_,String gro
   for(int i=0;i<8;i++)
     for(int j=0;j<8;j++)
       temp_template[i][j]=temp_template_[i][j];
+
   int x,y;
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
 
@@ -61,7 +62,7 @@ int[][] simSource(final int[][] template,final int[][] temp_template_,String gro
           //simulationManager.createEntry(2,x,y);
           if(temp_template[x][y]==0)
             temp_template[x][y]=2;
-          break;
+          //break;
         }
         continue;
       }
@@ -80,7 +81,7 @@ int[][] simSource(final int[][] template,final int[][] temp_template_,String gro
         //simulationManager.createEntry(2,x,y);
         if(temp_template[x][y]==0)
             temp_template[x][y]=2;
-        break;
+        //break;
       }
     }
   return temp_template;

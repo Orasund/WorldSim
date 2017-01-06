@@ -5,6 +5,8 @@ public class SceneManager //implements Service
   private PVector trans_location;
   private float rot_location;
   private float rot_time;
+  private float zoom_time;
+  private int zoom_level;
 
   private Database<Scene> database;
 
@@ -20,6 +22,9 @@ public class SceneManager //implements Service
 
     rot_time = 0;
     rot_location = 0;
+
+    zoom_time = 0;
+    zoom_level = 0;
 
     addScene(name,map,tiles);
   }
@@ -41,6 +46,19 @@ public class SceneManager //implements Service
 
     rot_location = rot;
     rot_time = time;
+  }
+
+  public void zoom(int time)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+    
+    zoom_time = time;
+    if(renderEngine.getZoom()<SIZE/2)
+    {
+      zoom_level = 1;
+    }
+    else
+      zoom_level = 0;
   }
 
   public void addScene(String name, int[][] map, String tiles)
@@ -87,6 +105,16 @@ public class SceneManager //implements Service
       renderEngine.setRot(rot+difference);
       
       rot_time--;
+    }
+
+    if(zoom_time != 0)
+    {
+      float zoom = renderEngine.getZoom();
+      float factor = pow(SIZE,zoom_level);
+      
+      float difference = (factor-zoom)/zoom_time;
+      renderEngine.setZoom(zoom+difference);
+      zoom_time--;
     }
 
     getCorrentScene().renderArea();

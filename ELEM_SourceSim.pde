@@ -16,7 +16,8 @@ public class SourceSim extends Simulation
   *   move to oposite direction if possible
   *
   * (2)if next to more then one source or base
-  *   look clockwise for open space and move there
+  *   create source in all directions next to it
+  *   delete
   *
   * (3)if touching borders
   *   delete

@@ -22,25 +22,28 @@ public class InputHandler// implements Service
 
     switch(input)
     {
-      case "w":
+      case "w": //up
         pos = player.lookingAt();
         sceneManager.moveTo(int(pos.x), int(pos.y), 20);
         player.setPos(pos);
         break;
-      case "s":
+      case "s": //down
         pos = player.infrontOf();
         sceneManager.moveTo(int(pos.x), int(pos.y), 20);
         player.setPos(pos);
         break;
-      case "d":
+      case "d": //rotate right
         dir = player.getDir()-PI/2;
         sceneManager.rotateTo(dir,20);
         player.setDir(dir);
         break;
-      case "a":
+      case "a": //rotate left
         dir = player.getDir()+PI/2;
         sceneManager.rotateTo(dir,20);
         player.setDir(dir);
+        break;
+      case "e": //zoom
+        sceneManager.zoom(50);
         break;
     }
   }
