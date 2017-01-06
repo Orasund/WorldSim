@@ -12,10 +12,10 @@ public class SourceSim extends Simulation
 
   /*
   *
-  * (1)if entry next to one source
+  * (1)if entry next to one source or base
   *   move to oposite direction if possible
   *
-  * (2)if next to more then one source
+  * (2)if next to more then one source or base
   *   look clockwise for open space and move there
   *
   * (3)if touching borders
@@ -48,7 +48,7 @@ public class SourceSim extends Simulation
           x = i+dir[k][0];
           y = j+dir[k][1];
           neighbors[k] = template[x][y];
-          if(template[x][y] == 2)
+          if(template[x][y] == 2 || template[x][y] == 1)
             friends++;
         }
 
@@ -62,7 +62,7 @@ public class SourceSim extends Simulation
           {
             x = i+dir[k][0];
             y = j+dir[k][1];
-            if(template[x][y] != 2)
+            if(template[x][y] != 2 && template[x][y] != 1)
               continue;
             
             x = i+dir[(k+2)%4][0];

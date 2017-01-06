@@ -35,7 +35,7 @@ int[][] simSource(final int[][] template,final int[][] temp_template_,String gro
         x = i+dir[k][0];
         y = j+dir[k][1];
         neighbors[k] = template[x][y];
-        if(template[x][y] == 2)
+        if(template[x][y] == 2 || template[x][y] == 1)
           friends++;
       }
 
@@ -49,7 +49,7 @@ int[][] simSource(final int[][] template,final int[][] temp_template_,String gro
         {
           x = i+dir[k][0];
           y = j+dir[k][1];
-          if(template[x][y] != 2)
+          if(template[x][y] != 2 && template[x][y] != 1)
             continue;
           
           x = i+dir[(k+2)%4][0];
