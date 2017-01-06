@@ -110,7 +110,7 @@ public class SceneManager //implements Service
     if(zoom_time != 0)
     {
       float zoom = renderEngine.getZoom();
-      float factor = pow(SIZE,zoom_level);
+      float factor = pow(SIZE*2,zoom_level);
       
       float difference = (factor-zoom)/zoom_time;
       renderEngine.setZoom(zoom+difference);

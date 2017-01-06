@@ -43,7 +43,8 @@ public class InputHandler// implements Service
         player.setDir(dir);
         break;
       case "e": //zoom
-        sceneManager.zoom(50);
+        sceneManager.zoom(20);
+        sceneManager.rotateTo(0,20);
         break;
     }
   }

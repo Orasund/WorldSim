@@ -156,9 +156,7 @@ class RenderEngine// implements Service
 
 
     PVector temp_pos = getTempPos(new PVector(x,y));
-    PImage out = img;
-    out.resize(SIZE*6*SIZE,0);
-    image(out, temp_pos.x, temp_pos.y);
+    image(img, temp_pos.x, temp_pos.y);
   }
 
   void drawPart(int[][] img, int x, int y, color background, String group)
@@ -176,9 +174,9 @@ class RenderEngine// implements Service
           c = parts[img[i][j]].getColor();
 
         PVector temp_pos = getTempPos(new PVector(x,y));
-        int size = getCamera().getSize();
-        int offset_x = (size*i);
-        int offset_y = (size*j);
+        float size = getCamera().getSize()*getCamera().getZoom();
+        float offset_x = (size*i);
+        float offset_y = (size*j);
         fill(c);
         rect(temp_pos.x + offset_x,temp_pos.y + offset_y,size,size);
       }
