@@ -9,6 +9,7 @@ public class Camera
   private float rotation;
   private float temp_x;
   private float temp_y;
+  private float zoom;
   Camera(int max_)
   {
     size = height/(max_*8);
@@ -18,6 +19,7 @@ public class Camera
     pos_x = 0;
     pos_y = 0;
     rotation = 0;
+    zoom = 1;
 
     temp_x = offset_x;
     temp_y = offset_y;
@@ -30,8 +32,8 @@ public class Camera
   PVector getTempPos(PVector pos)
   {
     PVector out = new PVector();
-    out.x = temp_x - pos_x + pos.x*size;
-    out.y = temp_y - pos_y + pos.y*size;
+    out.x = temp_x - pos_x*zoom + pos.x*size*zoom;
+    out.y = temp_y - pos_y*zoom + pos.y*size*zoom;
     return out;
   }
 
@@ -70,6 +72,16 @@ public class Camera
   float getRot()
   {
     return rotation;
+  }
+
+  float getZoom()
+  {
+    return zoom;
+  }
+
+  void setZoom(float zoom_)
+  {
+    zoom = zoom_;
   }
 
   int getSize()

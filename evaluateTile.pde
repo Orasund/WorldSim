@@ -13,9 +13,23 @@ Tile evaluateTile(int[][] template)
   for(int i=0;i<8;i++)
     for(int j=0;j<8;j++)
       map_empty[i][j]=0;
-      
+  
+  /* OLD */
   for(int k = 0;k<16;k++)
     temp_template = iterateTile(temp_template,map_empty);
+  /**/
+
+  /* NEW */
+  /*SimulationManager simulationManager = GAME.getSimulationManager();
+  String group = "elements";
+
+  simulationManager.newSession(group);
+  //simulationManager.add("Energy",new EnergySim(template,group));
+  //simulationManager.add("Life",new LifeSim(template,group));
+  simulationManager.add("Source",new SourceSim(template,group));
+
+  temp_template = simulationManager.init(template);*/
+  /**/
   
   int[][][] img = new int[6][8][8];
   int[] resources = new int[5];
@@ -37,7 +51,8 @@ Tile evaluateTile(int[][] template)
   // 1 stone = 4 void
   // 1 source = 3 stone = 12 void
   // 1 life = 2.66 source = 5 stone = 20 void
-  int[] mult = {1,4,12,20,1};
+
+  int[] mult = {1,4,12,20,40};
   int background = 0;
   for(int i=1;i<5;i++)
     if(mult[i]*resources[i]>mult[background]*resources[background])
@@ -51,10 +66,24 @@ Tile evaluateTile(int[][] template)
   //switch
   switch(background)
   {
+    //moving
+    case 4:
+      types.add("moving");
+      out = new Tile(img,resources,background,color(255,80,61),types);
+      break; 
     //organic
     case 3:
-      types.add("organic");
-      out = new Tile(img,resources,background,color(0,128,0),types);
+      
+      if(resources[1]>0) //cell
+      {
+        types.add("solid");
+        types.add("organic");
+        out = new Tile(img,resources,background,color(127,178,127),types);
+      }
+      else
+      {
+        out = new Tile(img,resources,background,color(0,128,0),types);
+      }
       break;
 
     //water
@@ -75,6 +104,7 @@ Tile evaluateTile(int[][] template)
 
     //stone
     case 1:
+      types.add("solid");
       out = new Tile(img,resources,background,color(127,127,127),types);
       break;
 

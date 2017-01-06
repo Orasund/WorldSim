@@ -2,12 +2,13 @@ void registerObjects()
 {
   /* Register Parts */
   ObjectManager objectManager = GAME.getObjectManager();
+  int fails = 0;
 
-  objectManager.registerPart("space", new Element(color(0,0,0)));
-  objectManager.registerPart("base", new Element(color(40,40,40)));
-  objectManager.registerPart("source", new Element(color(0,0,255)));
-  objectManager.registerPart("life", new Element(color(0,80,0)));
-  objectManager.registerPart("energy", new Element(color(255,40,40)));
+  objectManager.registerPart("space", new Element(color(0,0,0),"space"));
+  objectManager.registerPart("base", new Element(color(40,40,40),"base"));
+  objectManager.registerPart("source", new Element(color(0,0,255),"source"));
+  objectManager.registerPart("life", new Element(color(0,80,0),"life"));
+  objectManager.registerPart("energy", new Element(color(255,40,40),"energy"));
   String[] elements = {"space","base","source","life","energy"};
   objectManager.registerGroup("elements",elements);
 
@@ -19,18 +20,26 @@ void registerObjects()
   {
     obj = createTile("Lake");
     if(obj.is("water") == false)
+    {
       obj = createTile("Lake");
+      fails++;
+    }
     objectManager.registerPart("lake"+variance, obj);
 
     obj = createTile("Bush");
     if(obj.is("organic") == false)
+    {
       obj = createTile("Bush");
+      fails++;    
+    }
+
     objectManager.registerPart("bush"+variance, obj);
 
     for(int i = 0; i < 5; i++)
     {
       obj = obj = createTile("Alga");
       if(obj.is("organic_spawn")) break;
+      fails++;
     }
     objectManager.registerPart("alga"+variance, obj);
   }
@@ -38,6 +47,7 @@ void registerObjects()
   objectManager.registerPart("stone0", createTile("Stone"));
   objectManager.registerPart("moss0", createTile("Moss"));
   objectManager.registerPart("gravel0",createTile("Gravel"));
+  objectManager.registerPart("fuel0",createTile("Fuel"));
 
   JSONObject json = loadJSONObject("template.json");
   String[] template_names = {"custom1","custom2","floor"};
@@ -56,6 +66,8 @@ void registerObjects()
     }
     objectManager.registerPart(template_names[i],evaluateTile(template));
   }
+
+  println("fails in registerObjects:"+fails);
 
   /* register Groups */
   String[] tiles = {"ground0","lake0","stone0","alga0","moss0","bush0","gravel0"};
@@ -77,8 +89,7 @@ void registerObjects()
 
   String[] ship_tiles = 
   {
-    //"gravel0","stone0","void"
-    "floor","custom2","void"
+    "floor","custom2","void","fuel0"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
 

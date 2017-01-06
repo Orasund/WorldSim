@@ -7,12 +7,17 @@
   "Bush":
   {
     "template_type":"plant",
+    "elements":[0,10,10,0]
+  },
+  "Fuel":
+  {
+    "template_type":"plant",
     "elements":[0,10,10,5]
   },
   "Moss":
   {
     "template_type":"solid",
-    "elements":[30,20,10,0]
+    "elements":[30,20,20,0]
   },
   "Ground":
   {

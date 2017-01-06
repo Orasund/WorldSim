@@ -62,6 +62,16 @@ class RenderEngine// implements Service
     getCamera().setRot(rot_);
   }
 
+  float getZoom()
+  {
+    return getCamera().getZoom();
+  }
+
+  void setZoom(float zoom)
+  {
+    getCamera().setZoom(zoom);
+  }
+
   void rotateScene()
   {
     getCamera().rotateScene();
@@ -146,8 +156,9 @@ class RenderEngine// implements Service
 
 
     PVector temp_pos = getTempPos(new PVector(x,y));
-
-    image(img, temp_pos.x, temp_pos.y);
+    PImage out = img;
+    out.resize(SIZE*6*SIZE,0);
+    image(out, temp_pos.x, temp_pos.y);
   }
 
   void drawPart(int[][] img, int x, int y, color background, String group)

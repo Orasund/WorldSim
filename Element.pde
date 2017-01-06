@@ -1,15 +1,17 @@
 public class Element implements Part
 {
   private color c;
+  String name;
 
-  Element(final color c_)
+  Element(final color c_,String name_)
   {
     c = c_;
+    name = name_;
   }
 
   public Part copy()
   {
-    return new Element(c);
+    return new Element(c,name);
   }
 
   public void drawFrame(int x, int y, int frame){}
@@ -29,7 +31,10 @@ public class Element implements Part
     return c;
   }
 
-  public boolean is(String type){return false;}
+  public boolean is(String type)
+  {
+    return type.equals(name);
+  }
 
   public String[] getTypes()
   {

@@ -3,11 +3,12 @@ public class Simulation
   private int[][][] tables;
   private String[] names;
   private int size;
+  int[][] dir;
   //public SimulationManager SimulationManager;
 
   Simulation(int n)
   {
-    size = 8;
+    size = SIZE;
     names = new String[n];
     tables = new int[n][size][size];
     for(int i = 0; i < n; i++)
@@ -16,12 +17,14 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+    int[][] dir_ = {{-1,0},{0,-1},{1,0},{0,1}};
+    dir = dir_;
   }
 
   //pls delete as fast as possible
   Simulation(final String[] names_)
   {
-    size = 8;
+    size = SIZE;
     int n = names_.length;
     names = new String[n];
     tables = new int[n][size][size];
@@ -33,6 +36,8 @@ public class Simulation
         for(int k = 0; k < size; k++)
           tables[i][j][k] = 0;
     }
+    int[][] dir_ = {{-1,0},{0,-1},{1,0},{0,1}};
+    dir = dir_;
   }
 
   void setNames(String[] names_)
