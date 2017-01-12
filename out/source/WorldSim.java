@@ -53,6 +53,13 @@ public void keyPressed()
   String out = new String(k);
   inputHandler.registerInput(out);
 }
+public class Block extends Tile
+{
+  Block(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_)
+  {
+    super(img_, resources_, background_, c_, types_);
+  }
+}
 public class OrganicSim extends Simulation
 {
   OrganicSim(final int[][] template,String group)
@@ -468,13 +475,14 @@ public class Chunk implements Part
 
   public void drawFrame(int x, int y, int frame)
   {
-    ObjectManager objectManager = GAME.getObjectManager();
+    drawPartGrid(x,y,frame,blocks,group);
+    /*ObjectManager objectManager = GAME.getObjectManager();
 
     Part[] Tiles = objectManager.getGroup(group);
 
     for(int i=0;i<8;i++)
       for(int j=0;j<8;j++)
-        Tiles[blocks[i][j]].drawFrame(x*8+i,y*8+j,frame);
+        Tiles[blocks[i][j]].drawFrame(x*8+i,y*8+j,frame);*/
   }
 }
 public class Database<T>
@@ -1164,6 +1172,80 @@ public interface Part
   public String[] getTypes();
   public void drawFrame(int x, int y, int frame);
 }
+
+/*public class Part
+{
+  private int[][][] img;
+  private PImage[] images;
+  private int[] resources;
+  private int background;
+  private color c;
+  private Set<String> types;
+  private String group;
+
+  Part(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
+    resources = new int[5];
+    for(int i = 0;i<5;i++)
+      resources[i] = resources_[i];
+    
+    types = types_.copy();
+    background = background_;
+    c = c_;
+    
+    images = new PImage[6];
+    img = new int[6][SIZE][SIZE];
+    int[][] temp_img;
+    for(int i = 0;i<6;i++)
+    {
+      temp_img = new int[SIZE][SIZE];
+      for(int j = 0;j<SIZE;j++)
+        for(int k = 0;k<SIZE;k++)
+          temp_img[j][k] = img_[i][j][k];
+      
+      img[i] = temp_img;
+
+      images[i] = renderEngine.createImgByIntArray(temp_img,c,"elements");
+    }
+    
+    group = "elements";
+  }
+
+  public Part copy(){return new Part(img,resources,background,c,types);}
+
+  public boolean is(String type)
+  {
+    return types.contains(type);
+  }
+
+  public String[] getTypes()
+  {
+    ArrayList<String> list = types.toArrayList();
+    String[] out = list.toArray(new String[0]);
+    return out;
+  }
+  
+  public int[][] getFrame(int i)
+  {
+    return img[i];
+  }
+
+  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
+  {
+    return iterateTile(template,temp_template);
+  }
+
+  public void drawFrame(int x, int y, int frame)
+  {
+    drawPart(x,y,images[frame],img[frame],c,group);
+  }
+
+  public color getColor(){return c;}
+  public int[] getResources(){return resources;}
+  public String getGroupName(){return group;}
+}*/
 public class InputHandler// implements Service
 {
   private int buffer;
@@ -1604,6 +1686,37 @@ public class Camera
     pos_y = y;
   }
 }
+public void drawPart(int x, int y, PImage image, int[][] img, int c, String group)
+{
+  RenderEngine renderEngine = GAME.getRenderEngine();
+  if(renderEngine.getCamera().getZoom()==1)
+  {
+    renderEngine.drawImg(image,x*8,y*8);
+  }
+  else
+    renderEngine.drawPart(img,x*SIZE,y*SIZE,c,group);
+}
+public void drawPartGrid(int x, int y, int frame, int[][] blocks, String group)
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+
+  Part[] Tiles = objectManager.getGroup(group);
+
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      Tiles[blocks[i][j]].drawFrame(x*8+i,y*8+j,frame);
+}
+
+/*public void drawFrame(int x, int y, int frame)
+  {
+    ObjectManager objectManager = GAME.getObjectManager();
+
+    Part[] Tiles = objectManager.getGroup(group);
+
+    for(int i=0;i<8;i++)
+      for(int j=0;j<8;j++)
+        Tiles[blocks[i][j]].drawFrame(x*8+i,y*8+j,frame);
+  }*/
 public int[][] randTemplate(int stone, int water, int life, int energy)
 {
   int template[][] = new int[8][8];
@@ -2586,14 +2699,16 @@ public class Tile implements Part
 
   public void drawFrame(int x, int y, int frame)
   {
-    RenderEngine renderEngine = GAME.getRenderEngine();
+    drawPart(x,y,images[frame],img[frame],c,"elements");
+    
+    /*RenderEngine renderEngine = GAME.getRenderEngine();
     if(renderEngine.getCamera().getZoom()==1)
     {
       PImage image = images[frame];
       renderEngine.drawImg(image,x*8,y*8);
     }
     else
-      renderEngine.drawPart(img[frame],x*SIZE,y*SIZE,c,"elements");
+      renderEngine.drawPart(img[frame],x*SIZE,y*SIZE,c,"elements");*/
   }
 
   public int getColor(){return c;}

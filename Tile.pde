@@ -62,14 +62,16 @@ public class Tile implements Part
 
   public void drawFrame(int x, int y, int frame)
   {
-    RenderEngine renderEngine = GAME.getRenderEngine();
+    drawPart(x,y,images[frame],img[frame],c,"elements");
+    
+    /*RenderEngine renderEngine = GAME.getRenderEngine();
     if(renderEngine.getCamera().getZoom()==1)
     {
       PImage image = images[frame];
       renderEngine.drawImg(image,x*8,y*8);
     }
     else
-      renderEngine.drawPart(img[frame],x*SIZE,y*SIZE,c,"elements");
+      renderEngine.drawPart(img[frame],x*SIZE,y*SIZE,c,"elements");*/
   }
 
   public color getColor(){return c;}
