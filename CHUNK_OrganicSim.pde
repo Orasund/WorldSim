@@ -4,6 +4,7 @@ public class OrganicSim extends Simulation
   {
     //super(3,SimulationManager_);
     super(3);
+    println("call OrganicSim@OrganicSim");
 
     ObjectManager objectManager = GAME.getObjectManager();
 

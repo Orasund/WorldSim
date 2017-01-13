@@ -66,6 +66,7 @@ public class OrganicSim extends Simulation
   {
     //super(3,SimulationManager_);
     super(3);
+    println("call OrganicSim@OrganicSim");
 
     ObjectManager objectManager = GAME.getObjectManager();
 
@@ -417,7 +418,7 @@ public class Chunk implements Part
     c = c_;
   }
 
-  Chunk(int[][] template_,String group_)
+  Chunk(final int[][] template_,String group_)
   { 
     //int size = SIZE;
 
@@ -427,9 +428,9 @@ public class Chunk implements Part
     simulationManager.add("Organic",new OrganicSim(template_,group_));
     simulationManager.listenTo("water","Organic");
     simulationManager.listenTo("organic","Organic");
-    simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+    /*simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
     simulationManager.listenTo("water","OrganicSpawn");
-    simulationManager.listenTo("organic_spawn","OrganicSpawn");
+    simulationManager.listenTo("organic_spawn","OrganicSpawn");*/
     
     blocks = simulationManager.init(template_);
 
@@ -2367,6 +2368,8 @@ public class SimulationManager
 
   public void deleteEntry(String type,int x, int y)
   {
+    println("call deleteEntry@SimulationManager");
+
     TableRow newRow = actions.addRow();
     newRow.setInt("id", 0);
     newRow.setInt("x", x);
@@ -2377,6 +2380,8 @@ public class SimulationManager
 
   public void tellListeners(String type, String event, int x, int y, int id)
   {
+    println("call tellListeners@SimulationManager");
+
     for (TableRow row : listeners.findRows(type,"target")) {
       sims.get(row.getString("sim")).callEvent(type,event,x,y,id);
     }
@@ -2851,17 +2856,18 @@ public Tile evaluateTile(int[][] template)
       types.add("moving");
       out = new Tile(img,resources,background,color(255,80,61),types);
       break; 
+
     //organic
     case 3:
-      
       if(resources[1]>0) //cell
       {
         types.add("solid");
         types.add("organic");
         out = new Tile(img,resources,background,color(127,178,127),types);
       }
-      else
+      else //organic
       {
+        types.add("organic");
         out = new Tile(img,resources,background,color(0,128,0),types);
       }
       break;

@@ -71,17 +71,18 @@ Tile evaluateTile(int[][] template)
       types.add("moving");
       out = new Tile(img,resources,background,color(255,80,61),types);
       break; 
+
     //organic
     case 3:
-      
       if(resources[1]>0) //cell
       {
         types.add("solid");
         types.add("organic");
         out = new Tile(img,resources,background,color(127,178,127),types);
       }
-      else
+      else //organic
       {
+        types.add("organic");
         out = new Tile(img,resources,background,color(0,128,0),types);
       }
       break;

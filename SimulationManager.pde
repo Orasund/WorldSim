@@ -55,6 +55,8 @@ public class SimulationManager
 
   public void deleteEntry(String type,int x, int y)
   {
+    println("call deleteEntry@SimulationManager");
+
     TableRow newRow = actions.addRow();
     newRow.setInt("id", 0);
     newRow.setInt("x", x);
@@ -65,6 +67,8 @@ public class SimulationManager
 
   public void tellListeners(String type, String event, int x, int y, int id)
   {
+    println("call tellListeners@SimulationManager");
+
     for (TableRow row : listeners.findRows(type,"target")) {
       sims.get(row.getString("sim")).callEvent(type,event,x,y,id);
     }
