@@ -1,6 +1,6 @@
 public interface Part
 {
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
+  //public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
   public color getColor();
   public int[] getResources();
   public String getGroupName();
@@ -20,7 +20,7 @@ public interface Part
   private Set<String> types;
   private String group;
 
-  Part(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
+  Part(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_,String group_)
   {
     RenderEngine renderEngine = GAME.getRenderEngine();
 
@@ -44,13 +44,13 @@ public interface Part
       
       img[i] = temp_img;
 
-      images[i] = renderEngine.createImgByIntArray(temp_img,c,"elements");
+      images[i] = renderEngine.createImgByIntArray(temp_img,c,group_);
     }
     
-    group = "elements";
+    group = group_;
   }
 
-  public Part copy(){return new Part(img,resources,background,c,types);}
+  public Part copy(){return new Part(img,resources,background,c,types,group);}
 
   public boolean is(String type)
   {
@@ -67,11 +67,6 @@ public interface Part
   public int[][] getFrame(int i)
   {
     return img[i];
-  }
-
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
-  {
-    return iterateTile(template,temp_template);
   }
 
   public void drawFrame(int x, int y, int frame)

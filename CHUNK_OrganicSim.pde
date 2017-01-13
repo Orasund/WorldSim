@@ -4,7 +4,6 @@ public class OrganicSim extends Simulation
   {
     //super(3,SimulationManager_);
     super(3);
-    println("call OrganicSim@OrganicSim");
 
     ObjectManager objectManager = GAME.getObjectManager();
 
@@ -25,7 +24,10 @@ public class OrganicSim extends Simulation
             println("BUG in simOrganic:groupname not elements");
             return;
           }
-          setEntry("organics",i,j,Tiles[template[i][j]].getResources()[3]);
+          int value = Tiles[template[i][j]].getResources()[3];
+          if(value > 16)
+            value = 16;
+          setEntry("organics",i,j,value);
         }
         else
           setEntry("organics",i,j,0);
@@ -92,7 +94,8 @@ public class OrganicSim extends Simulation
   *     A.)water_buffer = water
   *     B.)for each waterEntry >0
   *       a.)for each foodEntry next to waterEntry
-  *         i.)water.foodEntry += waterEntry.value [max at foodEntry.value]
+  *         i.)(old)water.foodEntry += waterEntry.value [max at foodEntry.value]
+  *         i.)water.foodEntry++;
   *     C.)for each water_bufferEntry
   *       a.)set waterEntry = 0
   *       b.)set foodEntry = 0
@@ -117,10 +120,12 @@ public class OrganicSim extends Simulation
       for(int j = 0; j<size; j++)
         temp_template[i][j] = temp_template_[i][j];
 
+    //(A)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
         setEntry("water_buffer",i,j,getEntry("water",i,j));
     
+    //(B)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
@@ -136,7 +141,8 @@ public class OrganicSim extends Simulation
           if(getEntry("organics",x,y)==0)
             continue;
           
-          setEntry("water",x,y,getEntry("water",i,j));
+          //setEntry("water",x,y,getEntry("water",i,j));
+          setEntry("water",x,y,getEntry("water",x,y)+1);
           if(getEntry("water",x,y)>getEntry("organics",x,y))
             setEntry("water",x,y,getEntry("organics",x,y));
         }

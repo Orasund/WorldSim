@@ -1,10 +1,12 @@
 [
   {
     "title":"",
-    "reason":""
+    "reason":"",
+    "solved":"false"
   },
   {
     "title":"bäume haben machmal keine Wasserquelle in der Nähe",
-    "reason":"wahrscheinlich funktioniert der SimulationManager nicht mehr."
+    "reason":"wahrscheinlich funktioniert der SimulationManager nicht mehr.",
+    "solved":"true"
   }
 ]

@@ -6,10 +6,12 @@ public Chunk evaluateChunk(final int[][] template_,String group_)
   simulationManager.add("Organic",new OrganicSim(template_,group_));
   simulationManager.listenTo("water","Organic");
   simulationManager.listenTo("organic","Organic");
+  /*
   simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
   simulationManager.listenTo("water","OrganicSpawn");
   simulationManager.listenTo("organic_spawn","OrganicSpawn");
-
+  */
+  
   int[][] blocks = simulationManager.init(template_);
 
   int[] resources = new int[SIZE];

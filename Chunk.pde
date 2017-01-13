@@ -72,7 +72,7 @@ public class Chunk implements Part
     return new Chunk(blocks,group,background,c,resources);
   }
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors){return temp_template;}
+  //public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors){return temp_template;}
 
 
   public color getColor(){return c;}

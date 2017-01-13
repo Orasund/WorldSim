@@ -55,10 +55,10 @@ public class Tile implements Part
     return img[i];
   }
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
+  /*public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
   {
     return iterateTile(template,temp_template);
-  }
+  }*/
 
   public void drawFrame(int x, int y, int frame)
   {

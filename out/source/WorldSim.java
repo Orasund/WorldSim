@@ -66,7 +66,6 @@ public class OrganicSim extends Simulation
   {
     //super(3,SimulationManager_);
     super(3);
-    println("call OrganicSim@OrganicSim");
 
     ObjectManager objectManager = GAME.getObjectManager();
 
@@ -87,7 +86,10 @@ public class OrganicSim extends Simulation
             println("BUG in simOrganic:groupname not elements");
             return;
           }
-          setEntry("organics",i,j,Tiles[template[i][j]].getResources()[3]);
+          int value = Tiles[template[i][j]].getResources()[3];
+          if(value > 16)
+            value = 16;
+          setEntry("organics",i,j,value);
         }
         else
           setEntry("organics",i,j,0);
@@ -154,7 +156,8 @@ public class OrganicSim extends Simulation
   *     A.)water_buffer = water
   *     B.)for each waterEntry >0
   *       a.)for each foodEntry next to waterEntry
-  *         i.)water.foodEntry += waterEntry.value [max at foodEntry.value]
+  *         i.)(old)water.foodEntry += waterEntry.value [max at foodEntry.value]
+  *         i.)water.foodEntry++;
   *     C.)for each water_bufferEntry
   *       a.)set waterEntry = 0
   *       b.)set foodEntry = 0
@@ -179,10 +182,12 @@ public class OrganicSim extends Simulation
       for(int j = 0; j<size; j++)
         temp_template[i][j] = temp_template_[i][j];
 
+    //(A)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
         setEntry("water_buffer",i,j,getEntry("water",i,j));
     
+    //(B)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
@@ -198,7 +203,8 @@ public class OrganicSim extends Simulation
           if(getEntry("organics",x,y)==0)
             continue;
           
-          setEntry("water",x,y,getEntry("water",i,j));
+          //setEntry("water",x,y,getEntry("water",i,j));
+          setEntry("water",x,y,getEntry("water",x,y)+1);
           if(getEntry("water",x,y)>getEntry("organics",x,y))
             setEntry("water",x,y,getEntry("organics",x,y));
         }
@@ -452,7 +458,7 @@ public class Chunk implements Part
     return new Chunk(blocks,group,background,c,resources);
   }
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors){return temp_template;}
+  //public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors){return temp_template;}
 
 
   public int getColor(){return c;}
@@ -1164,7 +1170,7 @@ public class GameLoop //implements Service
 }
 public interface Part
 {
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
+  //public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
   public int getColor();
   public int[] getResources();
   public String getGroupName();
@@ -1184,7 +1190,7 @@ public interface Part
   private Set<String> types;
   private String group;
 
-  Part(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
+  Part(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_,String group_)
   {
     RenderEngine renderEngine = GAME.getRenderEngine();
 
@@ -1208,13 +1214,13 @@ public interface Part
       
       img[i] = temp_img;
 
-      images[i] = renderEngine.createImgByIntArray(temp_img,c,"elements");
+      images[i] = renderEngine.createImgByIntArray(temp_img,c,group_);
     }
     
-    group = "elements";
+    group = group_;
   }
 
-  public Part copy(){return new Part(img,resources,background,c,types);}
+  public Part copy(){return new Part(img,resources,background,c,types,group);}
 
   public boolean is(String type)
   {
@@ -1231,11 +1237,6 @@ public interface Part
   public int[][] getFrame(int i)
   {
     return img[i];
-  }
-
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
-  {
-    return iterateTile(template,temp_template);
   }
 
   public void drawFrame(int x, int y, int frame)
@@ -2368,8 +2369,6 @@ public class SimulationManager
 
   public void deleteEntry(String type,int x, int y)
   {
-    println("call deleteEntry@SimulationManager");
-
     TableRow newRow = actions.addRow();
     newRow.setInt("id", 0);
     newRow.setInt("x", x);
@@ -2380,8 +2379,6 @@ public class SimulationManager
 
   public void tellListeners(String type, String event, int x, int y, int id)
   {
-    println("call tellListeners@SimulationManager");
-
     for (TableRow row : listeners.findRows(type,"target")) {
       sims.get(row.getString("sim")).callEvent(type,event,x,y,id);
     }
@@ -2698,10 +2695,10 @@ public class Tile implements Part
     return img[i];
   }
 
-  public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
+  /*public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
   {
     return iterateTile(template,temp_template);
-  }
+  }*/
 
   public void drawFrame(int x, int y, int frame)
   {
@@ -2792,10 +2789,12 @@ public Chunk evaluateChunk(final int[][] template_,String group_)
   simulationManager.add("Organic",new OrganicSim(template_,group_));
   simulationManager.listenTo("water","Organic");
   simulationManager.listenTo("organic","Organic");
+  /*
   simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
   simulationManager.listenTo("water","OrganicSpawn");
   simulationManager.listenTo("organic_spawn","OrganicSpawn");
-
+  */
+  
   int[][] blocks = simulationManager.init(template_);
 
   int[] resources = new int[SIZE];
