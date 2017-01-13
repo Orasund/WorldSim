@@ -2,7 +2,9 @@
   "Void":
   {
     "template_type":"ground",
-    "elements":[0,0,0,0]
+    "elements":[0,0,0,0],
+    "variance":1,
+    "types":{}
   },
   "Bush":
   {

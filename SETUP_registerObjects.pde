@@ -2,20 +2,18 @@ void registerObjects()
 {
   /* Register Parts */
   ObjectManager objectManager = GAME.getObjectManager();
-  int fails = 0;
 
-  /*objectManager.registerPart("space", new Element(color(0,0,0),"space"));
-  objectManager.registerPart("base", new Element(color(40,40,40),"base"));
-  objectManager.registerPart("source", new Element(color(0,0,255),"source"));
-  objectManager.registerPart("life", new Element(color(0,80,0),"life"));
-  objectManager.registerPart("energy", new Element(color(255,40,40),"energy"));*/
-  String[] elements = {"space","base","source","life","energy"};
-  for(int i = 0; i<5; i++)
-    objectManager.registerPart(elements[i], evaluateElement(i));
-  objectManager.registerGroup("elements",elements);
+  /**********************
+  * elements
+  ***********************/
+  registerElements();
 
-  Part obj;
-  objectManager.registerPart("void",createTile("Void"));
+  /**********************
+  * tiles
+  **********************/
+  registerTiles();
+  /*Part obj;
+  objectManager.registerPart("void0",createTile("Void"));
   objectManager.registerPart("ground0", createTile("Ground"));
   
   for(int variance = 0; variance < 2; variance++)
@@ -68,7 +66,7 @@ void registerObjects()
     objectManager.registerPart(template_names[i],evaluateTile(template));
   }
 
-  println("fails in registerObjects:"+fails);
+  println("fails in registerObjects:"+fails);*/
 
   /* register Groups */
   String[] tiles = {"ground0","lake0","stone0","alga0","moss0","bush0","gravel0"};
@@ -90,7 +88,7 @@ void registerObjects()
 
   String[] ship_tiles = 
   {
-    "floor","custom2","void","fuel0"
+    "floor","custom2","void0","fuel0"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
 
@@ -121,7 +119,7 @@ void registerObjects()
   objectManager.registerGroup("chunk",chunk);
 
   //ship
-  json = loadJSONObject("ship.json");
+  JSONObject json = loadJSONObject("ship.json");
   JSONArray ship_front = json.getJSONArray("front");
   JSONArray ship_back = json.getJSONArray("back");
   int[][] ship_template1 = new int[SIZE][SIZE];
