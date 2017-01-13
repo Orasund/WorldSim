@@ -25,7 +25,7 @@ public class Chunk implements Part
     background = background_;
   }
 
-  Chunk(color c_)
+  /*Chunk(color c_)
   {
     blocks = new int[8][8];
     for(int j = 0;j<8;j++)
@@ -48,9 +48,9 @@ public class Chunk implements Part
     simulationManager.add("Organic",new OrganicSim(template_,group_));
     simulationManager.listenTo("water","Organic");
     simulationManager.listenTo("organic","Organic");
-    /*simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+    simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
     simulationManager.listenTo("water","OrganicSpawn");
-    simulationManager.listenTo("organic_spawn","OrganicSpawn");*/
+    simulationManager.listenTo("organic_spawn","OrganicSpawn");
     
     blocks = simulationManager.init(template_);
 
@@ -65,7 +65,7 @@ public class Chunk implements Part
     group = group_;
     background = 0;
     c = color(0);
-  }
+  }*/
 
   public Chunk copy()
   {

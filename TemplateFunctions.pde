@@ -89,7 +89,8 @@ Chunk createChunkByVariance(int[] amount_, int variance, String[] names_, String
       out[i][j] = type;
     }
 
-  return new Chunk(out,group_name);
+  //return new Chunk(out,group_name);
+  return evaluateChunk(out,group_name);
 }
 
 int[][] plantTemplate(int stone, int water, int life, int energy)

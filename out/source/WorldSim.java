@@ -405,7 +405,7 @@ public class Chunk implements Part
     background = background_;
   }
 
-  Chunk(int c_)
+  /*Chunk(color c_)
   {
     blocks = new int[8][8];
     for(int j = 0;j<8;j++)
@@ -428,9 +428,9 @@ public class Chunk implements Part
     simulationManager.add("Organic",new OrganicSim(template_,group_));
     simulationManager.listenTo("water","Organic");
     simulationManager.listenTo("organic","Organic");
-    /*simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+    simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
     simulationManager.listenTo("water","OrganicSpawn");
-    simulationManager.listenTo("organic_spawn","OrganicSpawn");*/
+    simulationManager.listenTo("organic_spawn","OrganicSpawn");
     
     blocks = simulationManager.init(template_);
 
@@ -445,7 +445,7 @@ public class Chunk implements Part
     group = group_;
     background = 0;
     c = color(0);
-  }
+  }*/
 
   public Chunk copy()
   {
@@ -2597,7 +2597,8 @@ public Chunk createChunkByVariance(int[] amount_, int variance, String[] names_,
       out[i][j] = type;
     }
 
-  return new Chunk(out,group_name);
+  //return new Chunk(out,group_name);
+  return evaluateChunk(out,group_name);
 }
 
 public int[][] plantTemplate(int stone, int water, int life, int energy)
@@ -2782,6 +2783,34 @@ public void draw()
     println("ERROR:"+e.getMessage());
     exit();
   }
+}
+public Chunk evaluateChunk(final int[][] template_,String group_)
+{
+  SimulationManager simulationManager = GAME.getSimulationManager();
+
+  simulationManager.newSession(group_);
+  simulationManager.add("Organic",new OrganicSim(template_,group_));
+  simulationManager.listenTo("water","Organic");
+  simulationManager.listenTo("organic","Organic");
+  simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
+  simulationManager.listenTo("water","OrganicSpawn");
+  simulationManager.listenTo("organic_spawn","OrganicSpawn");
+
+  int[][] blocks = simulationManager.init(template_);
+
+  int[] resources = new int[SIZE];
+  for(int i = 0;i<SIZE;i++)
+    resources[i] = 0;
+
+  for(int j = 0;j<SIZE;j++)
+    for(int k = 0;k<SIZE;k++)
+      resources[blocks[j][k]]++;
+
+  String group = group_;
+  int background = 0;
+  int c = color(0);
+
+  return new Chunk(blocks,group,background,c,resources);
 }
 public Tile evaluateTile(int[][] template)
 {
@@ -3091,13 +3120,18 @@ public void registerObjects()
     }
   }
     
-  Chunk ship_chunk = new Chunk(ship_template1,"shipTiles");
+  Chunk ship_chunk;
+  //ship_chunk = new Chunk(ship_template1,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template1,"shipTiles");
   objectManager.registerPart("ship_1", ship_chunk);
-  ship_chunk = new Chunk(ship_template2,"shipTiles");
+  //ship_chunk = new Chunk(ship_template2,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template2,"shipTiles");
   objectManager.registerPart("ship_2", ship_chunk);
-  ship_chunk = new Chunk(ship_template3,"shipTiles");
+  //ship_chunk = new Chunk(ship_template3,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template3,"shipTiles");
   objectManager.registerPart("ship_3", ship_chunk);
-  ship_chunk = new Chunk(ship_template4,"shipTiles");
+  //ship_chunk = new Chunk(ship_template4,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template4,"shipTiles");
   objectManager.registerPart("ship_4", ship_chunk);
   String[] ship = 
   {
