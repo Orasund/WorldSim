@@ -1260,6 +1260,11 @@ public class Part
     drawPart(x,y,images[frame],img[frame],c,group);
   }
 
+  public void drawGrid(int x, int y, int frame)
+  {
+    drawPartGrid(x,y,frame,img[0],group);
+  }
+
   public int getColor(){return c;}
   public int[] getResources(){return resources;}
   public String getGroupName(){return group;}
@@ -2013,18 +2018,18 @@ public class Scene
         int x2 = x+i-2;
         int y2 = y+j-2;
         if(x2==3 && y2 == -2)
-        	ship[0].drawFrame(x2,y2,gameLoop.getFrame());
+        	ship[0].drawGrid(x2,y2,gameLoop.getFrame());
         if(x2==3 && y2 == -1)
-          ship[2].drawFrame(x2,y2,gameLoop.getFrame());
+          ship[2].drawGrid(x2,y2,gameLoop.getFrame());
         if(x2==4 && y2 == -2)
-          ship[1].drawFrame(x2,y2,gameLoop.getFrame());
+          ship[1].drawGrid(x2,y2,gameLoop.getFrame());
         if(x2==4 && y2 == -1)
-          ship[3].drawFrame(x2,y2,gameLoop.getFrame());
+          ship[3].drawGrid(x2,y2,gameLoop.getFrame());
 
         if(x2<0 || y2<0 || x2>=SIZE || y2>=SIZE)
           continue;
 
-        tiles[map[x2][y2]].drawFrame(x2,y2,gameLoop.getFrame());
+        tiles[map[x2][y2]].drawGrid(x2,y2,gameLoop.getFrame());
       }
   }
 }

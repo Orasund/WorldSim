@@ -142,6 +142,11 @@ public class Part
     drawPart(x,y,images[frame],img[frame],c,group);
   }
 
+  public void drawGrid(int x, int y, int frame)
+  {
+    drawPartGrid(x,y,frame,img[0],group);
+  }
+
   public color getColor(){return c;}
   public int[] getResources(){return resources;}
   public String getGroupName(){return group;}
