@@ -18,7 +18,7 @@ Part createChunk(String name)
   return createChunkByVariance(amounts,variance,names,group);
 }
 
-Part createTile(String name)
+/*Part createTile(String name)
 {
   JSONObject json = loadJSONObject("tile.json");
   int[][] template;
@@ -43,7 +43,7 @@ Part createTile(String name)
       break;
   }
   return evaluateTile(template);
-}
+}*/
 
 Part createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
 {
@@ -64,11 +64,16 @@ Part createChunkByVariance(int[] amount_, int variance, String[] names_, String 
 
   for(int i=0;i<names.length;i++)
     for(int j=1;j<group.length;j++)
+    {
       if(group[j].equals(names[i]))
       {
         adresses[i] = j;
         break;
       }
+      if(j == group.length-1)
+        throw new RuntimeException("Part not found: "+names[i]+" @createChunkByVariance");
+    }
+      
 
   int[][] out = new int[size][size];
   for(int i=0;i<size;i++)

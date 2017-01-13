@@ -1,49 +1,65 @@
-{
-  "Void":
-  {
+[
+ {
+    "name":"Void",
     "template_type":"ground",
     "elements":[0,0,0,0],
     "variance":1,
-    "types":{}
+    "types":[]
   },
-  "Bush":
   {
+    "name":"Bush",
     "template_type":"plant",
-    "elements":[0,10,10,0]
+    "elements":[0,10,10,0],
+    "variance":2,
+    "types":["organic"]
   },
-  "Fuel":
   {
+    "name":"Fuel",
     "template_type":"plant",
-    "elements":[0,10,10,5]
+    "elements":[0,10,10,5],
+    "variance":1,
+    "types":[]
   },
-  "Moss":
   {
+    "name":"Moss",
     "template_type":"solid",
-    "elements":[30,20,20,0]
+    "elements":[30,20,20,0],
+    "variance":1,
+    "types":[]
   },
-  "Ground":
   {
+    "name":"Ground",
     "template_type":"ground",
-    "elements":[10,0,0,0]
+    "elements":[10,0,0,0],
+    "variance":1,
+    "types":[]
   },
-  "Lake":
   {
+    "name":"Lake",
     "template_type":"ground",
-    "elements":[0,50,0,0]
+    "elements":[0,50,0,0],
+    "variance":2,
+    "types":["water"]
   },
-  "Stone":
   {
+    "name":"Stone",
     "template_type":"solid",
-    "elements":[80,1,0,0]
+    "elements":[80,1,0,0],
+    "variance":2,
+    "types":[]
   },
-  "Alga":
   {
+    "name":"Alga",
     "template_type":"ground",
-    "elements":[0,20,4,0]
+    "elements":[0,10,10,0],
+    "variance":2,
+    "types":["organic_spawn"]
   },
-  "Gravel":
   {
+    "name":"Gravel",
     "template_type":"ground",
-    "elements":[30,0,0,0]
+    "elements":[30,0,0,0],
+    "variance":1,
+    "types":[]
   }
-}
+]

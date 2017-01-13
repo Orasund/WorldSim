@@ -1,53 +1,55 @@
 public void registerTiles()
 {
   ObjectManager objectManager = GAME.getObjectManager();
-  JSONObject json;
-  json = loadJSONObject("tile.json");
+  JSONArray tiles = loadJSONArray("tile.json");
+
   int fails = 0;
-
-  //loading tiles from JSON file
-  //JSONObject tile = json.getJSONObject(name);
-
+  JSONObject tile;
+  JSONArray elements_arr;
+  JSONArray types_arr;
+  String name;
+  String template_type;
+  int[] elements;
+  int[][] template;
+  int variance;
+  String[] types;
   Part obj;
-  objectManager.registerPart("void0",createTile("Void"));
-  objectManager.registerPart("ground0", createTile("Ground"));
-  
-  for(int variance = 0; variance < 2; variance++)
+
+  for(int i = 0; i < tiles.size(); i++)
   {
-    obj = createTile("Lake");
-    if(obj.is("water") == false)
-    {
-      obj = createTile("Lake");
-      fails++;
-    }
-    objectManager.registerPart("lake"+variance, obj);
+    tile = tiles.getJSONObject(i);
+    elements_arr = tile.getJSONArray("elements");
+    types_arr = tile.getJSONArray("types");
 
-    obj = createTile("Bush");
-    if(obj.is("organic") == false)
+    name = tile.getString("name");
+    template_type = tile.getString("template_type");
+    variance = tile.getInt("variance");
+    elements = new int[4];
+    for(int j=0; j<4; j++)
+      elements[j] = elements_arr.getInt(j);
+    types = new String[types_arr.size()];
+    for(int j=0; j<types_arr.size(); j++)
+      types[j] = types_arr.getString(j);
+    
+    for(int j = 0; j < variance; j++)
     {
-      obj = createTile("Bush");
-      fails++;    
-    }
+      obj = createTile(elements,template_type);
 
-    objectManager.registerPart("bush"+variance, obj);
-
-    for(int i = 0; i < 5; i++)
-    {
-      obj = obj = createTile("Alga");
-      if(obj.is("organic_spawn")) break;
-      fails++;
+      for(int l = 0; l < types.length; l++)
+      {
+        if(obj.is(types[l]) == false)
+        {
+          fails++;
+          obj = createTile(elements,template_type);
+          break;
+        }
+      }
+      objectManager.registerPart(name+j, obj);
     }
-    objectManager.registerPart("alga"+variance, obj);
   }
 
-  objectManager.registerPart("stone0", createTile("Stone"));
-  objectManager.registerPart("moss0", createTile("Moss"));
-  objectManager.registerPart("gravel0",createTile("Gravel"));
-  objectManager.registerPart("fuel0",createTile("Fuel"));
-
-  json = loadJSONObject("template.json");
+  JSONObject json = loadJSONObject("template.json");
   String[] template_names = {"custom1","custom2","floor"};
-  int[][] template;
   JSONArray table,row;
   for(int i=0; i<template_names.length; i++)
   {
@@ -62,5 +64,5 @@ public void registerTiles()
     objectManager.registerPart(template_names[i],evaluateTile(template));
   }
 
-  println("fails in registerObjects:"+fails);
+  println("fails in registerTiles:"+fails);
 }

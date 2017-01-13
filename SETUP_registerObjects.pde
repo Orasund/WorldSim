@@ -3,92 +3,50 @@ void registerObjects()
   /* Register Parts */
   ObjectManager objectManager = GAME.getObjectManager();
 
-  /**********************
-  * elements
-  ***********************/
   registerElements();
-
-  /**********************
-  * tiles
-  **********************/
   registerTiles();
-  /*Part obj;
-  objectManager.registerPart("void0",createTile("Void"));
-  objectManager.registerPart("ground0", createTile("Ground"));
-  
-  for(int variance = 0; variance < 2; variance++)
-  {
-    obj = createTile("Lake");
-    if(obj.is("water") == false)
-    {
-      obj = createTile("Lake");
-      fails++;
-    }
-    objectManager.registerPart("lake"+variance, obj);
-
-    obj = createTile("Bush");
-    if(obj.is("organic") == false)
-    {
-      obj = createTile("Bush");
-      fails++;    
-    }
-
-    objectManager.registerPart("bush"+variance, obj);
-
-    for(int i = 0; i < 5; i++)
-    {
-      obj = obj = createTile("Alga");
-      if(obj.is("organic_spawn")) break;
-      fails++;
-    }
-    objectManager.registerPart("alga"+variance, obj);
-  }
-
-  objectManager.registerPart("stone0", createTile("Stone"));
-  objectManager.registerPart("moss0", createTile("Moss"));
-  objectManager.registerPart("gravel0",createTile("Gravel"));
-  objectManager.registerPart("fuel0",createTile("Fuel"));
-
-  JSONObject json = loadJSONObject("template.json");
-  String[] template_names = {"custom1","custom2","floor"};
-  int[][] template;
-  JSONArray table,row;
-  for(int i=0; i<template_names.length; i++)
-  {
-    template = new int[SIZE][SIZE];
-    table = json.getJSONArray(template_names[i]);
-    for(int j=0; j<SIZE; j++)
-    {
-      row = table.getJSONArray(j);
-      for(int k=0; k<SIZE; k++)
-        template[k][j] = row.getInt(k);
-    }
-    objectManager.registerPart(template_names[i],evaluateTile(template));
-  }
-
-  println("fails in registerObjects:"+fails);*/
 
   /* register Groups */
-  String[] tiles = {"ground0","lake0","stone0","alga0","moss0","bush0","gravel0"};
+  String[] tiles = {"Ground0","Lake0","Stone0","Alga0","Moss0","Bush0","Gravel0"};
   objectManager.registerGroup("tiles",tiles);
 
   String[] water_tiles = 
   {
-    "ground0",
-    "lake0","lake1","alga0","alga1","bush0","bush1"
+    "Ground0",
+    "Lake0","Lake1","Alga0","Alga1","Bush0","Bush1","Stone0","Stone1"
   };
   objectManager.registerGroup("waterTiles",water_tiles);
 
+  String[] organic_tiles = 
+  {"Bush0","Bush1","Moss0"};
+  objectManager.registerGroup("organicTiles",organic_tiles);
+
+  String[] rock_tiles =
+  {
+    "Stone0","Stone1","Moss0","Gravel0"
+  };
+  objectManager.registerGroup("rockTiles",organic_tiles);
+
+  String[] ground_tiles =
+  {
+    "Ground0","Gravel0"
+  };
+
+  String[] liquid_tiles =
+  {
+    "Lake0","Lake1","Alga0","Alga1"
+  };
+
   String[] forest_tiles = 
   {
-    "ground0",
-    "alga0","alga1","stone0","bush0","bush1"
+    "Ground0",
+    "Alga0","Alga1","Stone0","Stone1","Bush0","Bush1"
   };
   objectManager.registerGroup("forestTiles",forest_tiles);
 
   String[] ship_tiles = 
   {
-    "floor","custom2","void0","fuel0"
+    "floor","custom2","Void0","Fuel0"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
 

@@ -25,7 +25,7 @@ public class ObjectManager// implements Service
   {
     Part out = database.get(name);
     if(out==null)
-      println("ERROR: getPart not found: "+name);
+      throw new RuntimeException("getPart not found: "+name+" @ObjectManager.pde");
     return out;
   }
 
@@ -42,6 +42,9 @@ public class ObjectManager// implements Service
 
   public String[] getNamesByGroup(String name)
   {
-    return database.getGroup(name);
+    String[] out = database.getGroup(name);
+    if(out.length == 0)
+      throw new RuntimeException("getGroup not found: "+name+" @ObjectManager.pde");
+    return out;
   }
 }
