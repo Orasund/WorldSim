@@ -18,24 +18,26 @@ void registerObjects()
   objectManager.registerGroup("waterTiles",water_tiles);
 
   String[] organic_tiles = 
-  {"Bush0","Bush1","Moss0"};
+  {"Bush0","Bush1","Bush2","Bush3"};
   objectManager.registerGroup("organicTiles",organic_tiles);
 
   String[] rock_tiles =
   {
-    "Stone0","Stone1","Moss0","Gravel0"
+    "Stone0","Stone1","Stone2","Stone3","Moss0","Gravel0","Gravel1"
   };
-  objectManager.registerGroup("rockTiles",organic_tiles);
+  objectManager.registerGroup("rockTiles",rock_tiles);
 
   String[] ground_tiles =
   {
     "Ground0","Gravel0"
   };
+  objectManager.registerGroup("groundTiles",ground_tiles);
 
   String[] liquid_tiles =
   {
-    "Lake0","Lake1","Alga0","Alga1"
+    "Lake0","Lake1","Lake2","Lake3","Alga0","Alga1"
   };
+  objectManager.registerGroup("liquidTiles",liquid_tiles);
 
   String[] forest_tiles = 
   {

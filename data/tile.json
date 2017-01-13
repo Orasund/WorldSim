@@ -10,7 +10,7 @@
     "name":"Bush",
     "template_type":"plant",
     "elements":[0,10,10,0],
-    "variance":2,
+    "variance":4,
     "types":["organic"]
   },
   {
@@ -38,14 +38,14 @@
     "name":"Lake",
     "template_type":"ground",
     "elements":[0,50,0,0],
-    "variance":2,
+    "variance":4,
     "types":["water"]
   },
   {
     "name":"Stone",
     "template_type":"solid",
     "elements":[80,1,0,0],
-    "variance":2,
+    "variance":4,
     "types":[]
   },
   {
@@ -59,7 +59,7 @@
     "name":"Gravel",
     "template_type":"ground",
     "elements":[30,0,0,0],
-    "variance":1,
+    "variance":2,
     "types":[]
   }
 ]
