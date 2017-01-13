@@ -1,6 +1,5 @@
-Tile evaluateTile(int[][] template)
+Part evaluateTile(int[][] template)
 {
-  Tile out;
   Set<String> types = new Set<String>();
 
   //Iterate for 16 Ticks
@@ -33,6 +32,9 @@ Tile evaluateTile(int[][] template)
   
   int[][][] img = new int[6][8][8];
   int[] resources = new int[5];
+  for(int i = 0;i<5;i++)
+    resources[i]=0;
+    
   for(int k = 0;k<6;k++)
   {
     temp_template = iterateTile(temp_template,map_empty);
@@ -40,8 +42,6 @@ Tile evaluateTile(int[][] template)
       for(int j=0;j<8;j++)
       {
         img[k][i][j] = temp_template[i][j];
-        if(k==0)
-          resources[temp_template[i][j]]=0;
         if(k==5)
           resources[temp_template[i][j]]++;
       }
@@ -63,13 +63,15 @@ Tile evaluateTile(int[][] template)
     background = 2;
   }
 
+  color c;
+
   //switch
   switch(background)
   {
     //moving
     case 4:
       types.add("moving");
-      out = new Tile(img,resources,background,color(255,80,61),types);
+      c = color(255,80,61);
       break; 
 
     //organic
@@ -78,12 +80,12 @@ Tile evaluateTile(int[][] template)
       {
         types.add("solid");
         types.add("organic");
-        out = new Tile(img,resources,background,color(127,178,127),types);
+        c = color(127,178,127);
       }
       else //organic
       {
         types.add("organic");
-        out = new Tile(img,resources,background,color(0,128,0),types);
+        c = color(0,128,0);
       }
       break;
 
@@ -94,28 +96,28 @@ Tile evaluateTile(int[][] template)
       {
         types.add("organic_spawn");
         types.add("water");
-        out = new Tile(img,resources,background,color(53,80,128),types);
+        c = color(53,80,128);
       }
       else //water
       {
         types.add("water");
-        out = new Tile(img,resources,background,color(80,80,256),types);
+        c = color(80,80,256);
       }
       break;
 
     //stone
     case 1:
       types.add("solid");
-      out = new Tile(img,resources,background,color(127,127,127),types);
+      c = color(127,127,127);
       break;
 
     //ground
     default:
       if(resources[0]==SIZE*SIZE)
-        out = new Tile(img,resources,background,color(0,0,0),types);
+        c = color(0,0,0);
       else
-        out = new Tile(img,resources,background,color(80,255,80),types);
+        c = color(80,255,80);
   }
-
-  return out;
+  String group = "elements";
+  return new Part(img,resources,background,c,types,group);
 }

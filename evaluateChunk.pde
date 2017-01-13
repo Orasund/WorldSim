@@ -1,4 +1,4 @@
-public Chunk evaluateChunk(final int[][] template_,String group_)
+public Part evaluateChunk(final int[][] template_,String group_)
 {
   SimulationManager simulationManager = GAME.getSimulationManager();
 
@@ -25,6 +25,10 @@ public Chunk evaluateChunk(final int[][] template_,String group_)
   String group = group_;
   int background = 0;
   color c = color(0);
+  Set<String> types = new Set<String>();
 
-  return new Chunk(blocks,group,background,c,resources);
+  int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};
+
+  return new Part(img,resources,background,c,types,group);
+  //return new Chunk(blocks,group,background,c,resources);
 }

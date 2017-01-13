@@ -1,4 +1,4 @@
-public class Tile implements Part
+/*public class Tile implements Part
 {
   private int[][][] img;
   private PImage[] images;
@@ -55,26 +55,12 @@ public class Tile implements Part
     return img[i];
   }
 
-  /*public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
-  {
-    return iterateTile(template,temp_template);
-  }*/
-
   public void drawFrame(int x, int y, int frame)
   {
     drawPart(x,y,images[frame],img[frame],c,"elements");
-    
-    /*RenderEngine renderEngine = GAME.getRenderEngine();
-    if(renderEngine.getCamera().getZoom()==1)
-    {
-      PImage image = images[frame];
-      renderEngine.drawImg(image,x*8,y*8);
-    }
-    else
-      renderEngine.drawPart(img[frame],x*SIZE,y*SIZE,c,"elements");*/
   }
 
   public color getColor(){return c;}
   public int[] getResources(){return resources;}
   public String getGroupName(){return "elements";}
-}
+}*/

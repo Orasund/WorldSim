@@ -1,4 +1,4 @@
-Chunk createChunk(String name)
+Part createChunk(String name)
 {
   JSONObject json = loadJSONObject("chunk.json");
   JSONObject chunk = json.getJSONObject(name);
@@ -18,7 +18,7 @@ Chunk createChunk(String name)
   return createChunkByVariance(amounts,variance,names,group);
 }
 
-Tile createTile(String name)
+Part createTile(String name)
 {
   JSONObject json = loadJSONObject("tile.json");
   int[][] template;
@@ -45,7 +45,7 @@ Tile createTile(String name)
   return evaluateTile(template);
 }
 
-Chunk createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
+Part createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
 {
   int[] amount = new int[amount_.length*variance];
   String[] names = new String[amount.length];

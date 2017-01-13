@@ -4,12 +4,14 @@ void registerObjects()
   ObjectManager objectManager = GAME.getObjectManager();
   int fails = 0;
 
-  objectManager.registerPart("space", new Element(color(0,0,0),"space"));
+  /*objectManager.registerPart("space", new Element(color(0,0,0),"space"));
   objectManager.registerPart("base", new Element(color(40,40,40),"base"));
   objectManager.registerPart("source", new Element(color(0,0,255),"source"));
   objectManager.registerPart("life", new Element(color(0,80,0),"life"));
-  objectManager.registerPart("energy", new Element(color(255,40,40),"energy"));
+  objectManager.registerPart("energy", new Element(color(255,40,40),"energy"));*/
   String[] elements = {"space","base","source","life","energy"};
+  for(int i = 0; i<5; i++)
+    objectManager.registerPart(elements[i], evaluateElement(i));
   objectManager.registerGroup("elements",elements);
 
   Part obj;
@@ -53,7 +55,6 @@ void registerObjects()
   String[] template_names = {"custom1","custom2","floor"};
   int[][] template;
   JSONArray table,row;
-  Tile tile;
   for(int i=0; i<template_names.length; i++)
   {
     template = new int[SIZE][SIZE];
@@ -144,7 +145,7 @@ void registerObjects()
     }
   }
     
-  Chunk ship_chunk;
+  Part ship_chunk;
   //ship_chunk = new Chunk(ship_template1,"shipTiles");
   ship_chunk = evaluateChunk(ship_template1,"shipTiles");
   objectManager.registerPart("ship_1", ship_chunk);

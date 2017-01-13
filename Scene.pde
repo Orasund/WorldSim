@@ -2,7 +2,7 @@
 public class Scene
 {
   private int[][] map;
-  private Tile[] tiles;
+  private Part[] tiles;
   String group_name;
 
   Scene(int[][] map_,String tiles)

@@ -53,13 +53,13 @@ public void keyPressed()
   String out = new String(k);
   inputHandler.registerInput(out);
 }
-public class Block extends Tile
+/*public class Block extends Tile
 {
-  Block(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_)
+  Block(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
   {
     super(img_, resources_, background_, c_, types_);
   }
-}
+}*/
 public class OrganicSim extends Simulation
 {
   OrganicSim(final int[][] template,String group)
@@ -384,15 +384,15 @@ public class OrganicSpawnSim extends Simulation
     return temp_template;
   }
 }
-public class Chunk implements Part
+/*public class Chunk implements Part
 {
   private int[][] blocks;
   private int[] resources;
   private String group;
   private int background;
-  private int c;
+  private color c;
 
-  Chunk(int[][] blocks_,String group_,int background_, int c_, int[] resources_)
+  Chunk(int[][] blocks_,String group_,int background_, color c_, int[] resources_)
   {
     blocks = new int[8][8];
     for(int j = 0;j<8;j++)
@@ -411,57 +411,12 @@ public class Chunk implements Part
     background = background_;
   }
 
-  /*Chunk(color c_)
-  {
-    blocks = new int[8][8];
-    for(int j = 0;j<8;j++)
-      for(int k = 0;k<8;k++)
-        blocks[j][k] = 0;
-    
-    group = "null";
-    background = 0;
-    resources = new int[0];
-    c = c_;
-  }
-
-  Chunk(final int[][] template_,String group_)
-  { 
-    //int size = SIZE;
-
-    SimulationManager simulationManager = GAME.getSimulationManager();
-
-    simulationManager.newSession(group_);
-    simulationManager.add("Organic",new OrganicSim(template_,group_));
-    simulationManager.listenTo("water","Organic");
-    simulationManager.listenTo("organic","Organic");
-    simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
-    simulationManager.listenTo("water","OrganicSpawn");
-    simulationManager.listenTo("organic_spawn","OrganicSpawn");
-    
-    blocks = simulationManager.init(template_);
-
-    resources = new int[SIZE];
-    for(int i = 0;i<SIZE;i++)
-      resources[i] = 0;
-
-    for(int j = 0;j<SIZE;j++)
-      for(int k = 0;k<SIZE;k++)
-        resources[blocks[j][k]]++;
-    
-    group = group_;
-    background = 0;
-    c = color(0);
-  }*/
-
   public Chunk copy()
   {
     return new Chunk(blocks,group,background,c,resources);
   }
 
-  //public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors){return temp_template;}
-
-
-  public int getColor(){return c;}
+  public color getColor(){return c;}
 
   public boolean is(String type){return false;}
 
@@ -483,15 +438,8 @@ public class Chunk implements Part
   public void drawFrame(int x, int y, int frame)
   {
     drawPartGrid(x,y,frame,blocks,group);
-    /*ObjectManager objectManager = GAME.getObjectManager();
-
-    Part[] Tiles = objectManager.getGroup(group);
-
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        Tiles[blocks[i][j]].drawFrame(x*8+i,y*8+j,frame);*/
   }
-}
+}*/
 public class Database<T>
 {
   private HashMap<String,T> storage;
@@ -990,12 +938,12 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
     }
   return temp_template;*/
 }
-public class Element implements Part
+/*public class Element implements Part
 {
-  private int c;
+  private color c;
   String name;
 
-  Element(final int c_,String name_)
+  Element(final color c_,String name_)
   {
     c = c_;
     name = name_;
@@ -1018,7 +966,7 @@ public class Element implements Part
     return temp_template;
   }
 
-  public int getColor()
+  public color getColor()
   {
     return c;
   }
@@ -1045,7 +993,7 @@ public class Element implements Part
   {
     return "elements";
   }
-}
+}*/
 public class Game
 {
   private Player player;
@@ -1168,29 +1116,29 @@ public class GameLoop //implements Service
     return out;
   }
 }
-public interface Part
+/*public interface Part
 {
   //public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
-  public int getColor();
+  public color getColor();
   public int[] getResources();
   public String getGroupName();
   public Part copy();
   public boolean is(String type);
   public String[] getTypes();
   public void drawFrame(int x, int y, int frame);
-}
+}*/
 
-/*public class Part
+public class Part
 {
   private int[][][] img;
   private PImage[] images;
   private int[] resources;
   private int background;
-  private color c;
+  private int c;
   private Set<String> types;
   private String group;
 
-  Part(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_,String group_)
+  Part(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_,String group_)
   {
     RenderEngine renderEngine = GAME.getRenderEngine();
 
@@ -1220,7 +1168,75 @@ public interface Part
     group = group_;
   }
 
-  public Part copy(){return new Part(img,resources,background,c,types,group);}
+  //copy
+  private Part(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_,String group_, PImage[] images_)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
+    resources = new int[5];
+    for(int i = 0;i<5;i++)
+      resources[i] = resources_[i];
+    
+    types = types_.copy();
+    background = background_;
+    c = c_;
+    
+    images = new PImage[6];
+    img = new int[6][SIZE][SIZE];
+    int[][] temp_img;
+    for(int i = 0;i<6;i++)
+    {
+      temp_img = new int[SIZE][SIZE];
+      for(int j = 0;j<SIZE;j++)
+        for(int k = 0;k<SIZE;k++)
+          temp_img[j][k] = img_[i][j][k];
+      
+      img[i] = temp_img;
+
+      images[i] = images_[i].copy();
+    }
+    
+    group = group_;
+  }
+
+  //implementing a Element
+  Part(int id,int c_,final Set<String> types_)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
+    img = new int[6][8][8];
+    resources = new int[5];
+    images = new PImage[6];
+    int[][] c_arr = new int[SIZE][SIZE];
+
+    for(int k = 0;k<6;k++)
+    {
+      for(int i=0;i<SIZE;i++)
+        for(int j=0;j<SIZE;j++)
+        {
+          img[k][i][j] = id;
+          if(k == 0)
+            c_arr[i][j] = c_;
+        }
+      
+      images[k] = renderEngine.createImg(c_arr);
+      
+      if(k<5)
+      {
+        if(k==id)
+          resources[k] = SIZE*SIZE;
+        else
+          resources[k] = 0;
+      }
+    }
+
+    c = c_;
+    types = types_;
+    background = 0;
+    group = "elements";
+  }
+
+  public Part copy(){return new Part(img,resources,background,c,types,group,images);}
 
   public boolean is(String type)
   {
@@ -1244,10 +1260,10 @@ public interface Part
     drawPart(x,y,images[frame],img[frame],c,group);
   }
 
-  public color getColor(){return c;}
+  public int getColor(){return c;}
   public int[] getResources(){return resources;}
   public String getGroupName(){return group;}
-}*/
+}
 public class InputHandler// implements Service
 {
   private int buffer;
@@ -1938,7 +1954,7 @@ class RenderEngine// implements Service
 public class Scene
 {
   private int[][] map;
-  private Tile[] tiles;
+  private Part[] tiles;
   String group_name;
 
   Scene(int[][] map_,String tiles)
@@ -2503,7 +2519,7 @@ public class Template
     return out;
   }
 }
-public Chunk createChunk(String name)
+public Part createChunk(String name)
 {
   JSONObject json = loadJSONObject("chunk.json");
   JSONObject chunk = json.getJSONObject(name);
@@ -2523,7 +2539,7 @@ public Chunk createChunk(String name)
   return createChunkByVariance(amounts,variance,names,group);
 }
 
-public Tile createTile(String name)
+public Part createTile(String name)
 {
   JSONObject json = loadJSONObject("tile.json");
   int[][] template;
@@ -2550,7 +2566,7 @@ public Tile createTile(String name)
   return evaluateTile(template);
 }
 
-public Chunk createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
+public Part createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
 {
   int[] amount = new int[amount_.length*variance];
   String[] names = new String[amount.length];
@@ -2638,16 +2654,16 @@ public int[][] solidTemplate(int stone, int water, int life, int energy)
   
   return out;
 }
-public class Tile implements Part
+/*public class Tile implements Part
 {
   private int[][][] img;
   private PImage[] images;
   private int[] resources;
   private int background;
-  private int c;
+  private color c;
   private Set<String> types;
 
-  Tile(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_)
+  Tile(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
   {
     RenderEngine renderEngine = GAME.getRenderEngine();
 
@@ -2695,29 +2711,15 @@ public class Tile implements Part
     return img[i];
   }
 
-  /*public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors)
-  {
-    return iterateTile(template,temp_template);
-  }*/
-
   public void drawFrame(int x, int y, int frame)
   {
     drawPart(x,y,images[frame],img[frame],c,"elements");
-    
-    /*RenderEngine renderEngine = GAME.getRenderEngine();
-    if(renderEngine.getCamera().getZoom()==1)
-    {
-      PImage image = images[frame];
-      renderEngine.drawImg(image,x*8,y*8);
-    }
-    else
-      renderEngine.drawPart(img[frame],x*SIZE,y*SIZE,c,"elements");*/
   }
 
-  public int getColor(){return c;}
+  public color getColor(){return c;}
   public int[] getResources(){return resources;}
   public String getGroupName(){return "elements";}
-}
+}*/
 public void draw()
 {
   try
@@ -2781,7 +2783,7 @@ public void draw()
     exit();
   }
 }
-public Chunk evaluateChunk(final int[][] template_,String group_)
+public Part evaluateChunk(final int[][] template_,String group_)
 {
   SimulationManager simulationManager = GAME.getSimulationManager();
 
@@ -2808,12 +2810,47 @@ public Chunk evaluateChunk(final int[][] template_,String group_)
   String group = group_;
   int background = 0;
   int c = color(0);
+  Set<String> types = new Set<String>();
 
-  return new Chunk(blocks,group,background,c,resources);
+  int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};
+
+  return new Part(img,resources,background,c,types,group);
+  //return new Chunk(blocks,group,background,c,resources);
 }
-public Tile evaluateTile(int[][] template)
+public Part evaluateElement(int id)
 {
-  Tile out;
+  String[] names = {"space",    "base",         "source",       "life",       "energy"};
+  int[] colors = {color(0,0,0),color(40,40,40),color(0,0,255),color(0,80,0),color(255,20,20)};
+  int c = colors[id];
+  Set<String> types = new Set<String>();
+  types.add(names[id]);
+
+  return new Part(id,c,types);
+
+  /*int[][][] img = new int[6][8][8];
+  int[] resources = new int[5];
+
+  for(int k = 0;k<6;k++)
+  {
+    for(int i=0;i<8;i++)
+      for(int j=0;j<8;j++)
+        img[k][i][j] = id;
+    
+    if(k<5)
+    {
+      if(k==id)
+        resources[k] = SIZE*SIZE;
+      else
+        resources[k] = 0;
+    }
+  }
+
+  int background = 0;
+  String group = "elements";
+  return new Part(img,resources,background,c,types,group);*/
+}
+public Part evaluateTile(int[][] template)
+{
   Set<String> types = new Set<String>();
 
   //Iterate for 16 Ticks
@@ -2846,6 +2883,9 @@ public Tile evaluateTile(int[][] template)
   
   int[][][] img = new int[6][8][8];
   int[] resources = new int[5];
+  for(int i = 0;i<5;i++)
+    resources[i]=0;
+    
   for(int k = 0;k<6;k++)
   {
     temp_template = iterateTile(temp_template,map_empty);
@@ -2853,8 +2893,6 @@ public Tile evaluateTile(int[][] template)
       for(int j=0;j<8;j++)
       {
         img[k][i][j] = temp_template[i][j];
-        if(k==0)
-          resources[temp_template[i][j]]=0;
         if(k==5)
           resources[temp_template[i][j]]++;
       }
@@ -2876,13 +2914,15 @@ public Tile evaluateTile(int[][] template)
     background = 2;
   }
 
+  int c;
+
   //switch
   switch(background)
   {
     //moving
     case 4:
       types.add("moving");
-      out = new Tile(img,resources,background,color(255,80,61),types);
+      c = color(255,80,61);
       break; 
 
     //organic
@@ -2891,12 +2931,12 @@ public Tile evaluateTile(int[][] template)
       {
         types.add("solid");
         types.add("organic");
-        out = new Tile(img,resources,background,color(127,178,127),types);
+        c = color(127,178,127);
       }
       else //organic
       {
         types.add("organic");
-        out = new Tile(img,resources,background,color(0,128,0),types);
+        c = color(0,128,0);
       }
       break;
 
@@ -2907,30 +2947,30 @@ public Tile evaluateTile(int[][] template)
       {
         types.add("organic_spawn");
         types.add("water");
-        out = new Tile(img,resources,background,color(53,80,128),types);
+        c = color(53,80,128);
       }
       else //water
       {
         types.add("water");
-        out = new Tile(img,resources,background,color(80,80,256),types);
+        c = color(80,80,256);
       }
       break;
 
     //stone
     case 1:
       types.add("solid");
-      out = new Tile(img,resources,background,color(127,127,127),types);
+      c = color(127,127,127);
       break;
 
     //ground
     default:
       if(resources[0]==SIZE*SIZE)
-        out = new Tile(img,resources,background,color(0,0,0),types);
+        c = color(0,0,0);
       else
-        out = new Tile(img,resources,background,color(80,255,80),types);
+        c = color(80,255,80);
   }
-
-  return out;
+  String group = "elements";
+  return new Part(img,resources,background,c,types,group);
 }
 public void gameSetup()
 {
@@ -2979,12 +3019,14 @@ public void registerObjects()
   ObjectManager objectManager = GAME.getObjectManager();
   int fails = 0;
 
-  objectManager.registerPart("space", new Element(color(0,0,0),"space"));
+  /*objectManager.registerPart("space", new Element(color(0,0,0),"space"));
   objectManager.registerPart("base", new Element(color(40,40,40),"base"));
   objectManager.registerPart("source", new Element(color(0,0,255),"source"));
   objectManager.registerPart("life", new Element(color(0,80,0),"life"));
-  objectManager.registerPart("energy", new Element(color(255,40,40),"energy"));
+  objectManager.registerPart("energy", new Element(color(255,40,40),"energy"));*/
   String[] elements = {"space","base","source","life","energy"};
+  for(int i = 0; i<5; i++)
+    objectManager.registerPart(elements[i], evaluateElement(i));
   objectManager.registerGroup("elements",elements);
 
   Part obj;
@@ -3028,7 +3070,6 @@ public void registerObjects()
   String[] template_names = {"custom1","custom2","floor"};
   int[][] template;
   JSONArray table,row;
-  Tile tile;
   for(int i=0; i<template_names.length; i++)
   {
     template = new int[SIZE][SIZE];
@@ -3119,7 +3160,7 @@ public void registerObjects()
     }
   }
     
-  Chunk ship_chunk;
+  Part ship_chunk;
   //ship_chunk = new Chunk(ship_template1,"shipTiles");
   ship_chunk = evaluateChunk(ship_template1,"shipTiles");
   objectManager.registerPart("ship_1", ship_chunk);

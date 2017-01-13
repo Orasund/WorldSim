@@ -1,4 +1,4 @@
-public class Element implements Part
+/*public class Element implements Part
 {
   private color c;
   String name;
@@ -53,4 +53,4 @@ public class Element implements Part
   {
     return "elements";
   }
-}
+}*/
