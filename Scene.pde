@@ -63,7 +63,7 @@ public class Scene
     int x = floor(pos.x/SIZE);
     int y = floor(pos.y/SIZE);
     
-    renderEngine.rotateScene();
+    renderEngine.rotateScene(false);
 
     Part[] tiles = objectManager.getGroup(group_name);
     Part[] ship = objectManager.getGroup("ship");
@@ -87,5 +87,7 @@ public class Scene
 
         tiles[map[x2][y2]].drawGrid(x2,y2,gameLoop.getFrame());
       }
+    
+    renderEngine.rotateScene(true);
   }
 }

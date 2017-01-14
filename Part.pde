@@ -138,4 +138,5 @@ public class Part
   public color getColor(){return c;}
   public int[] getResources(){return resources;}
   public String getGroupName(){return group;}
+  public PImage getImage(int i){return images[i];}
 }

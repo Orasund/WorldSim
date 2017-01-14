@@ -72,9 +72,9 @@ class RenderEngine// implements Service
     getCamera().setZoom(zoom);
   }
 
-  void rotateScene()
+  void rotateScene(boolean reverse)
   {
-    getCamera().rotateScene();
+    getCamera().rotateScene(reverse);
   }
 
   PImage createImgByIntArray(int[][] template,color c, String group)
@@ -186,9 +186,8 @@ class RenderEngine// implements Service
   {
     SceneManager sceneManager = GAME.getSceneManager();
     GuiManager guiManager = GAME.getGuiManager();
-    
     sceneManager.renderArea();
-
+    
     guiManager.drawGUI();
   }
 }

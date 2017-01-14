@@ -670,161 +670,28 @@ public class GuiManager
 
   public void drawGUI()
   {
-    
-  }
-}
-/*public interface Part
-{
-  //public int[][] iterate(final int[][] template,final int[][] temp_template,final Part[] neighbors);
-  public color getColor();
-  public int[] getResources();
-  public String getGroupName();
-  public Part copy();
-  public boolean is(String type);
-  public String[] getTypes();
-  public void drawFrame(int x, int y, int frame);
-}*/
+    SceneManager sceneManager = GAME.getSceneManager();
+    ObjectManager objectManager = GAME.getObjectManager();
 
-public class Part
-{
-  private int[][][] img;
-  private PImage[] images;
-  private int[] resources;
-  private int background;
-  private int c;
-  private Set<String> types;
-  private String group;
+    String part_name = sceneManager.getCorrentPartName();
+    Part part = objectManager.getPart(part_name);
+    String group_name = part.getGroupName();
+    Part[] group = objectManager.getGroup(group_name);
 
-  Part(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_,String group_)
-  {
-    RenderEngine renderEngine = GAME.getRenderEngine();
-
-    resources = new int[5];
-    for(int i = 0;i<5;i++)
-      resources[i] = resources_[i];
-    
-    types = types_.copy();
-    background = background_;
-    c = c_;
-    
-    images = new PImage[6];
-    img = new int[6][SIZE][SIZE];
-    int[][] temp_img;
-    for(int i = 0;i<6;i++)
+    //TODO absolute DrawTools
+    int img_size = group[0].getImage(0).width;
+    int x = width/2;
+    int y = height-img_size;
+    fill(255);
+    rect(0,y-1,16*(img_size+1),height);
+    for(int i = 0; i< group.length; i++)
     {
-      temp_img = new int[SIZE][SIZE];
-      for(int j = 0;j<SIZE;j++)
-        for(int k = 0;k<SIZE;k++)
-          temp_img[j][k] = img_[i][j][k];
-      
-      img[i] = temp_img;
-
-      images[i] = renderEngine.createImgByIntArray(temp_img,c,group_);
+      PImage img = group[i].getImage(0);
+      x = 1+i*(img_size+1);
+      y = height-img_size;
+      image(img, x, y);
     }
-    
-    group = group_;
   }
-
-  //copy
-  private Part(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_,String group_, PImage[] images_)
-  {
-    RenderEngine renderEngine = GAME.getRenderEngine();
-
-    resources = new int[5];
-    for(int i = 0;i<5;i++)
-      resources[i] = resources_[i];
-    
-    types = types_.copy();
-    background = background_;
-    c = c_;
-    
-    images = new PImage[6];
-    img = new int[6][SIZE][SIZE];
-    int[][] temp_img;
-    for(int i = 0;i<6;i++)
-    {
-      temp_img = new int[SIZE][SIZE];
-      for(int j = 0;j<SIZE;j++)
-        for(int k = 0;k<SIZE;k++)
-          temp_img[j][k] = img_[i][j][k];
-      
-      img[i] = temp_img;
-
-      images[i] = images_[i].copy();
-    }
-    
-    group = group_;
-  }
-
-  //implementing a Element
-  Part(int id,int c_,final Set<String> types_)
-  {
-    RenderEngine renderEngine = GAME.getRenderEngine();
-
-    img = new int[6][8][8];
-    resources = new int[5];
-    images = new PImage[6];
-    int[][] c_arr = new int[SIZE][SIZE];
-
-    for(int k = 0;k<6;k++)
-    {
-      for(int i=0;i<SIZE;i++)
-        for(int j=0;j<SIZE;j++)
-        {
-          img[k][i][j] = id;
-          if(k == 0)
-            c_arr[i][j] = c_;
-        }
-      
-      images[k] = renderEngine.createImg(c_arr);
-      
-      if(k<5)
-      {
-        if(k==id)
-          resources[k] = SIZE*SIZE;
-        else
-          resources[k] = 0;
-      }
-    }
-
-    c = c_;
-    types = types_;
-    background = 0;
-    group = "elements";
-  }
-
-  public Part copy(){return new Part(img,resources,background,c,types,group,images);}
-
-  public boolean is(String type)
-  {
-    return types.contains(type);
-  }
-
-  public String[] getTypes()
-  {
-    ArrayList<String> list = types.toArrayList();
-    String[] out = list.toArray(new String[0]);
-    return out;
-  }
-  
-  public int[][] getFrame(int i)
-  {
-    return img[i];
-  }
-
-  public void drawFrame(int x, int y, int frame)
-  {
-    drawPart(x,y,images[frame],img[frame],c,group);
-  }
-
-  public void drawGrid(int x, int y, int frame)
-  {
-    drawPartGrid(x,y,frame,img[0],group);
-  }
-
-  public int getColor(){return c;}
-  public int[] getResources(){return resources;}
-  public String getGroupName(){return group;}
 }
 public class InputHandler// implements Service
 {
@@ -1110,6 +977,148 @@ public class ObjectManager// implements Service
     return out;
   }
 }
+public class Part
+{
+  private int[][][] img;
+  private PImage[] images;
+  private int[] resources;
+  private int background;
+  private int c;
+  private Set<String> types;
+  private String group;
+
+  Part(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_,String group_)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
+    resources = new int[5];
+    for(int i = 0;i<5;i++)
+      resources[i] = resources_[i];
+    
+    types = types_.copy();
+    background = background_;
+    c = c_;
+    
+    images = new PImage[6];
+    img = new int[6][SIZE][SIZE];
+    int[][] temp_img;
+    for(int i = 0;i<6;i++)
+    {
+      temp_img = new int[SIZE][SIZE];
+      for(int j = 0;j<SIZE;j++)
+        for(int k = 0;k<SIZE;k++)
+          temp_img[j][k] = img_[i][j][k];
+      
+      img[i] = temp_img;
+
+      images[i] = renderEngine.createImgByIntArray(temp_img,c,group_);
+    }
+    
+    group = group_;
+  }
+
+  //copy
+  private Part(int[][][] img_, int[] resources_, int background_, int c_, Set<String> types_,String group_, PImage[] images_)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
+    resources = new int[5];
+    for(int i = 0;i<5;i++)
+      resources[i] = resources_[i];
+    
+    types = types_.copy();
+    background = background_;
+    c = c_;
+    
+    images = new PImage[6];
+    img = new int[6][SIZE][SIZE];
+    int[][] temp_img;
+    for(int i = 0;i<6;i++)
+    {
+      temp_img = new int[SIZE][SIZE];
+      for(int j = 0;j<SIZE;j++)
+        for(int k = 0;k<SIZE;k++)
+          temp_img[j][k] = img_[i][j][k];
+      
+      img[i] = temp_img;
+
+      images[i] = images_[i].copy();
+    }
+    
+    group = group_;
+  }
+
+  //implementing a Element
+  Part(int id,int c_,final Set<String> types_)
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+
+    img = new int[6][8][8];
+    resources = new int[5];
+    images = new PImage[6];
+    int[][] c_arr = new int[SIZE][SIZE];
+
+    for(int k = 0;k<6;k++)
+    {
+      for(int i=0;i<SIZE;i++)
+        for(int j=0;j<SIZE;j++)
+        {
+          img[k][i][j] = id;
+          if(k == 0)
+            c_arr[i][j] = c_;
+        }
+      
+      images[k] = renderEngine.createImg(c_arr);
+      
+      if(k<5)
+      {
+        if(k==id)
+          resources[k] = SIZE*SIZE;
+        else
+          resources[k] = 0;
+      }
+    }
+
+    c = c_;
+    types = types_;
+    background = 0;
+    group = "elements";
+  }
+
+  public Part copy(){return new Part(img,resources,background,c,types,group,images);}
+
+  public boolean is(String type)
+  {
+    return types.contains(type);
+  }
+
+  public String[] getTypes()
+  {
+    ArrayList<String> list = types.toArrayList();
+    String[] out = list.toArray(new String[0]);
+    return out;
+  }
+  
+  public int[][] getFrame(int i)
+  {
+    return img[i];
+  }
+
+  public void drawFrame(int x, int y, int frame)
+  {
+    drawPart(x,y,images[frame],img[frame],c,group);
+  }
+
+  public void drawGrid(int x, int y, int frame)
+  {
+    drawPartGrid(x,y,frame,img[0],group);
+  }
+
+  public int getColor(){return c;}
+  public int[] getResources(){return resources;}
+  public String getGroupName(){return group;}
+  public PImage getImage(int i){return images[i];}
+}
 public class Player //implements Service
 {
   private PVector pos;
@@ -1226,10 +1235,13 @@ public class Camera
       rotation+=TWO_PI;
   }
 
-  public void rotateScene()
+  public void rotateScene(boolean reverse)
   {
     translate(width/2, height/2);
-    rotate(rotation);
+    if(reverse)
+      rotate(-rotation);
+    else
+      rotate(rotation);
     translate(-width/2, -height/2);
   }
 
@@ -1398,9 +1410,9 @@ class RenderEngine// implements Service
     getCamera().setZoom(zoom);
   }
 
-  public void rotateScene()
+  public void rotateScene(boolean reverse)
   {
-    getCamera().rotateScene();
+    getCamera().rotateScene(reverse);
   }
 
   public PImage createImgByIntArray(int[][] template,int c, String group)
@@ -1512,9 +1524,8 @@ class RenderEngine// implements Service
   {
     SceneManager sceneManager = GAME.getSceneManager();
     GuiManager guiManager = GAME.getGuiManager();
-    
     sceneManager.renderArea();
-
+    
     guiManager.drawGUI();
   }
 }
@@ -2546,6 +2557,19 @@ public class Scene
     return out;
   }
 
+  public String getCorrentPartName()
+  {
+    ObjectManager objectManager = GAME.getObjectManager();
+    Player player = GAME.getPlayer();
+    
+    String[] parts = objectManager.getNamesByGroup(group_name);
+    PVector pos = player.getPos();
+    int x = floor(pos.x/SIZE);
+    int y = floor(pos.y/SIZE);
+
+    return parts[map[x][y]];
+  }  
+
   public int[][] getMapArea(int x, int y, int w, int h)
   {
     int[][] out = new int[map.length][map[0].length];
@@ -2565,7 +2589,7 @@ public class Scene
     int x = floor(pos.x/SIZE);
     int y = floor(pos.y/SIZE);
     
-    renderEngine.rotateScene();
+    renderEngine.rotateScene(false);
 
     Part[] tiles = objectManager.getGroup(group_name);
     Part[] ship = objectManager.getGroup("ship");
@@ -2589,6 +2613,8 @@ public class Scene
 
         tiles[map[x2][y2]].drawGrid(x2,y2,gameLoop.getFrame());
       }
+    
+    renderEngine.rotateScene(true);
   }
 }
 public class SceneManager //implements Service
@@ -2620,6 +2646,11 @@ public class SceneManager //implements Service
     zoom_level = 0;
 
     addScene(name,map,tiles);
+  }
+
+  public String getCorrentPartName()
+  {
+    return getCorrentScene().getCorrentPartName();
   }
 
   public void moveTo(int x, int y, int time)
@@ -3120,7 +3151,7 @@ public void draw()
     else
     {
       //draw the area around the player
-      sceneManager.renderArea();
+      renderEngine.render();
     }    
   }
   catch (Exception e)

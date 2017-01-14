@@ -62,10 +62,13 @@ public class Camera
       rotation+=TWO_PI;
   }
 
-  void rotateScene()
+  void rotateScene(boolean reverse)
   {
     translate(width/2, height/2);
-    rotate(rotation);
+    if(reverse)
+      rotate(-rotation);
+    else
+      rotate(rotation);
     translate(-width/2, -height/2);
   }
 

@@ -3,5 +3,15 @@
     "title":"",
     "reason":"",
     "solved":"false"
+  },
+  {
+    "title":"doppelte Parts",
+    "reason":"aktuell wählt der Zufallsgenerator 'mit zurücklegen' aus.",
+    "solved":"false"
+  },
+  {
+    "title":"ungenützte Tiles werden nicht gelöscht",
+    "reason":"dafür benötigt man einen Listener der sich merk wie viele Tile gerade genützt werden.",
+    "solved":"false"
   }
 ]

@@ -52,7 +52,7 @@ void draw()
     else
     {
       //draw the area around the player
-      sceneManager.renderArea();
+      renderEngine.render();
     }    
   }
   catch (Exception e)
