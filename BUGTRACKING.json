@@ -3,10 +3,5 @@
     "title":"",
     "reason":"",
     "solved":"false"
-  },
-  {
-    "title":"Chunk werden als Tiles angezeigt",
-    "reason":"es liegt daran, dass der Render von Chunk überschrieben wurde (drawPartGrid)",
-    "solved":"false"
   }
 ]

@@ -6,6 +6,7 @@ void gameSetup()
   int MAP_SIZE = 4*MAP_DETAIL;
   GAME = new Game();
   GAME.addGameLoop(new GameLoop(60,60,6));
+  GAME.addSetupManager(new SetupManager());
   GAME.addInputHandler(new InputHandler());
   GAME.addRenderEngine(new RenderEngine("single",4*MAP_DETAIL));
   RenderEngine renderEngine = GAME.getRenderEngine();

@@ -1,6 +1,7 @@
 public void registerTiles()
 {
   ObjectManager objectManager = GAME.getObjectManager();
+  SetupManager setupManager = GAME.getSetupManager();
   JSONArray tiles = loadJSONArray("tile.json");
 
   int fails = 0;
@@ -14,6 +15,7 @@ public void registerTiles()
   int variance;
   String[] types;
   Part obj;
+  String group;
 
   for(int i = 0; i < tiles.size(); i++)
   {
@@ -30,10 +32,13 @@ public void registerTiles()
     types = new String[types_arr.size()];
     for(int j=0; j<types_arr.size(); j++)
       types[j] = types_arr.getString(j);
-    
+    group = tile.getString("group");
+
     for(int j = 0; j < variance; j++)
     {
       obj = createTile(elements,template_type);
+
+      setupManager.addPartToGroup(group,name+j);
 
       for(int l = 0; l < types.length; l++)
       {

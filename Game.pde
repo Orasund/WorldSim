@@ -7,9 +7,19 @@ public class Game
   private SceneManager sceneManager;
   private InputHandler inputHandler;
   private SimulationManager simulationManager;
+  private SetupManager setupManager;
 
   Game()
   {
+  }
+
+  public void addSetupManager(SetupManager sv){setupManager = sv;}
+
+  public SetupManager getSetupManager()
+  {
+    if(setupManager == null)
+      throw new RuntimeException("cant find SetupManager @Game.pde");
+    return setupManager;
   }
 
   public void addInputHandler(InputHandler sv){inputHandler = sv;}

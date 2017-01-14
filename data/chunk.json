@@ -22,8 +22,8 @@
   },
   "Mountain":
   {
-    "names":["liquid","rock","ground"],
-    "amounts":[5,65,10],
+    "names":["liquid","rock"],
+    "amounts":[5,65],
     "ground":"Gravel",
     "variance":1
   },

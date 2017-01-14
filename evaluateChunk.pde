@@ -14,8 +14,8 @@ public Part evaluateChunk(final int[][] template_,String group_)
   
   int[][] blocks = simulationManager.init(template_);
 
-  int[] resources = new int[SIZE];
-  for(int i = 0;i<SIZE;i++)
+  int[] resources = new int[16];
+  for(int i = 0;i<16;i++)
     resources[i] = 0;
 
   for(int j = 0;j<SIZE;j++)

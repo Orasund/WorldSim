@@ -1,60 +1,14 @@
 void registerObjects()
 {
-  /* Register Parts */
-  ObjectManager objectManager = GAME.getObjectManager();
-
   registerElements();
   registerTiles();
-
-  /* register Groups */
-  String[] tiles = {"Ground0","Lake0","Stone0","Alga0","Moss0","Bush0","Gravel0"};
-  objectManager.registerGroup("tiles",tiles);
-
-  String[] water_tiles = 
-  {
-    "Ground0",
-    "Lake0","Lake1","Alga0","Alga1","Bush0","Bush1","Stone0","Stone1"
-  };
-  objectManager.registerGroup("waterTiles",water_tiles);
-
-  String[] organic_tiles = 
-  {"Bush0","Bush1","Bush2","Bush3"};
-  objectManager.registerGroup("organicTiles",organic_tiles);
-
-  String[] rock_tiles =
-  {
-    "Stone0","Stone1","Stone2","Stone3","Moss0","Gravel0","Gravel1"
-  };
-  objectManager.registerGroup("rockTiles",rock_tiles);
-
-  String[] ground_tiles =
-  {
-    "Ground0","Gravel0"
-  };
-  objectManager.registerGroup("groundTiles",ground_tiles);
-
-  String[] liquid_tiles =
-  {
-    "Lake0","Lake1","Lake2","Lake3","Alga0","Alga1"
-  };
-  objectManager.registerGroup("liquidTiles",liquid_tiles);
-
-  String[] forest_tiles = 
-  {
-    "Ground0",
-    "Alga0","Alga1","Stone0","Stone1","Bush0","Bush1"
-  };
-  objectManager.registerGroup("forestTiles",forest_tiles);
-
-  String[] ship_tiles = 
-  {
-    "floor","custom2","Void0","Fuel0"
-  };
-  objectManager.registerGroup("shipTiles",ship_tiles);
+  registerGroups();
+  
+  /*register chunks*/
+  ObjectManager objectManager = GAME.getObjectManager();
 
   int variance = 2;
 
-  /*register chunks*/
   String[] names = {"Ground","Swamp","Sea","Mountain","Forest"};
   String name;
   String[] group = new String[variance];

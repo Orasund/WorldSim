@@ -463,481 +463,6 @@ public class Database<T>
   public void delete(String name){storage.remove(name);}
   public void deleteGroup(String name){groups.remove(name);}
 }
-public class BaseSim extends Simulation
-{
-  BaseSim(final int[][] template,String group)
-  {
-    super(0);
-  }
-
-  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
-  {
-    return simBase(template,temp_template_,group,this);
-  }
-}
-public class EnergySim extends Simulation
-{
-  EnergySim(final int[][] template,String group)
-  {
-    super(0);
-  }
-
-  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
-  {
-    return simEnergy(template,temp_template_,group,this);
-  }
-}
-public class LifeSim extends Simulation
-{
-  LifeSim(final int[][] template,String group)
-  {
-    super(0);
-  }
-
-  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
-  {
-    return simLife(template,temp_template_,group,this);
-  }
-}
-public class SourceSim extends Simulation
-{
-  SourceSim(final int[][] template,String group)
-  {
-    super(0);
-  }
-
-  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
-  {
-    return simSource(template,temp_template_,group,this);
-  }
-
-  /*
-  *
-  * (1)if entry next to one source or base
-  *   move to oposite direction if possible
-  *
-  * (2)if next to more then one source or base
-  *   create source in all directions next to it
-  *   delete
-  *
-  * (3)if touching borders
-  *   delete
-  *
-  */
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
-  {
-    SimulationManager simulationManager = GAME.getSimulationManager();
-    ObjectManager objectManager = GAME.getObjectManager();
-    int x,y;
-
-    for(int i = 0; i<SIZE; i++)
-      for(int j = 0; j<SIZE; j++)
-      {
-        if(template[i][j]!=2)
-          continue;
-
-        //(3)
-        if(i==0 || j==0 || i==SIZE-1 || j==SIZE-1)
-        {
-          simulationManager.deleteEntry("source",i,j);
-          continue;
-        }
-        
-        int[] neighbors = new int[4];
-        int friends = 0;
-        for(int k=0;k<4;k++)
-        {
-          x = i+dir[k][0];
-          y = j+dir[k][1];
-          neighbors[k] = template[x][y];
-          if(template[x][y] == 2 || template[x][y] == 1)
-            friends++;
-        }
-
-        if(friends == 0 || friends == 4)
-          continue;
-        
-        //(1)
-        if(friends == 1)
-        {
-          for(int k=0;k<4;k++)
-          {
-            x = i+dir[k][0];
-            y = j+dir[k][1];
-            if(template[x][y] != 2 && template[x][y] != 1)
-              continue;
-            
-            x = i+dir[(k+2)%4][0];
-            y = j+dir[(k+2)%4][1];
-            
-            simulationManager.deleteEntry("source",i,j);
-            simulationManager.createEntry(2,x,y);
-            break;
-          }
-          continue;
-        }
-
-        //(2)
-        for(int k=0;k<4;k++)
-        {
-          x = i+dir[k][0];
-          y = j+dir[k][1];
-          if(template[x][y] != 0)
-            continue;
-
-          simulationManager.deleteEntry("source",i,j);
-          simulationManager.createEntry(2,x,y);
-          break;
-        }
-      }
-    return temp_template_;
-  }
-}
-public Simulation initBaseSim(final int[][] template,String group)
-{
-  String[] names = {};
-  return new Simulation(names);
-}
-
-public int[][] simBase(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
-{
-  int size = 8;
-  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-  int x,y;
-
-  int[][] temp_template = new int[size][size];
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
-    {
-      temp_template[i][j]=temp_template_[i][j];
-
-      if(template[i][j] != 1)
-        continue;
-
-      temp_template[i][j] = 1;
-    }
-    
-  return temp_template;
-}
-public Simulation initEnergySim(final int[][] template,String group)
-{
-  String[] names = {};
-  return new Simulation(names);
-}
-
-/****************************
-*
-* (1)if next to Life
-*   chance Life to Energy
-*
-* (2)if exactly one Energy is next to it
-*   create Energy on oposit side.
-*   if not possible
-*     chance to Life
-*
-* (3)else
-*   chance to life
-*
-****************************/
-public int[][] simEnergy(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
-{
-  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-  int x,y;
-
-  int[][] temp_template = new int[SIZE][SIZE];
-  for(int i=0;i<SIZE;i++)
-    for(int j=0;j<SIZE;j++)
-      temp_template[i][j]=temp_template_[i][j];
-  
-  for(int i=0;i<SIZE;i++)
-    for(int j=0;j<SIZE;j++)
-    {
-      if(template[i][j] != 4)
-        continue;
-
-      int[] neighbors = new int[4];
-      int friends = 0;
-      int sources = 0;
-      for(int k=0;k<4;k++)
-      {
-        x = i+dir[k][0];
-        y = j+dir[k][1];
-        if(x<0 || y<0 || x>=SIZE || y>=SIZE)
-        {
-          neighbors[k] = 1;
-          continue;
-        }
-        
-        neighbors[k] = template[x][y];
-        if(template[x][y] == 4)
-          friends++;
-        
-        if(template[x][y] == 3)
-          sources++;
-      }
-
-      //(2)
-      if(friends == 1)
-      {
-        for(int k=0;k<4;k++)
-        {
-          if(neighbors[k] != 4)
-            continue;
-          
-          if(neighbors[(k+2)%4] != 0)
-          {
-            temp_template[i][j]=3;
-            break;
-          }
-
-          x = i+dir[(k+2)%4][0];
-          y = j+dir[(k+2)%4][1];
-          if(x<0 || y<0 || x>=SIZE || y>=SIZE)
-            break;
-          temp_template[x][y]=4;
-        }
-        //continue;
-      }
-
-      //(1)
-      if(sources != 0)
-      {
-        for(int k=0;k<4;k++)
-        {
-          if(neighbors[k] == 3)
-          {
-            x = i+dir[k][0];
-            y = j+dir[k][1];
-            temp_template[x][y]=4;
-          }
-        }
-        continue;
-      }
-      
-      //(3)
-      temp_template[i][j]=3;
-    }
-
-  return temp_template;
-}
-public Simulation initLifeSim(final int[][] template,String group)
-{
-  String[] names = {};
-  return new Simulation(names);
-}
-
-/*
-*
-* (1) if source next to it
-*   chance source to life
-* 
-* (2) if no source next to it
-*   chance to source
-*
-*/
-public int[][] simLife(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
-{
-  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-  int x,y;
-
-  int[][] temp_template = new int[SIZE][SIZE];
-  for(int i=0;i<SIZE;i++)
-    for(int j=0;j<SIZE;j++)
-      temp_template[i][j]=temp_template_[i][j];
-  
-  for(int i=0;i<SIZE;i++)
-    for(int j=0;j<SIZE;j++)
-    {
-      if(template[i][j] != 3)
-        continue;
-
-      int friends = 0;
-      for(int k=0;k<4;k++)
-      {
-        x = i+dir[k][0];
-        y = j+dir[k][1];
-        if(x<0 || y<0 || x>=SIZE || y>=SIZE)
-          continue;
-        
-        if(template[x][y] != 2)
-          continue;
-        
-        friends++;
-        //simulationManager.deleteEntry("source",x,y);
-        if(temp_template[x][y]==2)
-          temp_template[x][y]=0;
-        //simulationManager.createEntry(3,x,y);
-        if(temp_template[x][y]==0)
-          temp_template[x][y]=3;
-        //break;
-      }
-
-      //(2)
-      if(friends == 0)
-      {
-        //simulationManager.deleteEntry("life",i,j);
-        if(temp_template[i][j]==3)
-          temp_template[i][j]=0;
-        //simulationManager.createEntry(2,i,j);
-        if(temp_template[i][j]==0)
-          temp_template[i][j]=2;
-      }
-
-      /*if(coord[0]>0 && coord[1]>0)
-      {
-        temp_template[coord[0]][coord[1]]=3;
-        if(temp_template[i][j]!=4)
-          temp_template[i][j]=3;
-      }
-      else if(temp_template[i][j]!=4)
-        temp_template[i][j]=2;*/
-    }
-
-  return temp_template;
-}
-public Simulation initSourceSim(final int[][] template,String group)
-{
-  String[] names = {};
-  return new Simulation(names);
-}
-
-public int[][] simSource(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
-{
-  int[][] temp_template = new int[8][8];
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      temp_template[i][j]=temp_template_[i][j];
-
-  int x,y;
-  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-
-  for(int i = 0; i<SIZE; i++)
-    for(int j = 0; j<SIZE; j++)
-    {
-      if(template[i][j]!=2)
-        continue;
-
-      //(3)
-      if(i==0 || j==0 || i==SIZE-1 || j==SIZE-1)
-      {
-        //simulationManager.deleteEntry("source",i,j);
-        if(temp_template[i][j]==2)
-          temp_template[i][j]=0;
-        continue;
-      }
-      
-      int[] neighbors = new int[4];
-      int friends = 0;
-      for(int k=0;k<4;k++)
-      {
-        x = i+dir[k][0];
-        y = j+dir[k][1];
-        neighbors[k] = template[x][y];
-        if(template[x][y] == 2 || template[x][y] == 1)
-          friends++;
-      }
-
-      if(friends == 0 || friends == 4)
-        continue;
-      
-      //(1)
-      if(friends == 1)
-      {
-        for(int k=0;k<4;k++)
-        {
-          x = i+dir[k][0];
-          y = j+dir[k][1];
-          if(template[x][y] != 2 && template[x][y] != 1)
-            continue;
-          
-          x = i+dir[(k+2)%4][0];
-          y = j+dir[(k+2)%4][1];
-          
-          //simulationManager.deleteEntry("source",i,j);
-          if(temp_template[i][j]==2)
-            temp_template[i][j]=0;
-          //simulationManager.createEntry(2,x,y);
-          if(temp_template[x][y]==0)
-            temp_template[x][y]=2;
-          //break;
-        }
-        continue;
-      }
-
-      //(2)
-      for(int k=0;k<4;k++)
-      {
-        x = i+dir[k][0];
-        y = j+dir[k][1];
-        if(template[x][y] != 0)
-          continue;
-
-        //simulationManager.deleteEntry("source",i,j);
-        if(temp_template[i][j]==2)
-            temp_template[i][j]=0;
-        //simulationManager.createEntry(2,x,y);
-        if(temp_template[x][y]==0)
-            temp_template[x][y]=2;
-        //break;
-      }
-    }
-  return temp_template;
-
-  /*int size = 8;
-  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
-  int x,y;
-
-  int[][] temp_template = new int[8][8];
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      temp_template[i][j]=temp_template_[i][j];
-
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
-    {
-      if(temp_template[i][j]!=2)
-        continue;
-
-      int coord[] = {i,j};
-      
-      temp_template[i][j]=0;
-
-      if(i==0 || j==0 || i==7 || j==7)
-        continue;
-        
-      int[] neighbors = new int[4];
-      for(int k=0;k<4;k++)
-      {
-        x = i+dir[k][0];
-        y = j+dir[k][1];
-        neighbors[k] = template[x][y];
-      }
-      
-      boolean found = false;
-
-      for(int k=0;k<4;k++)
-        if((neighbors[k]==1) && (neighbors[(k+1)%4]==2) && neighbors[(k+2)%4]==2 && (neighbors[(k+3)%4]==2))
-        {
-          for(int l=0;l<2;l++)
-            coord[l] += dir[k][l];
-          found = true;
-          break;
-        }
-      
-      if(found == false)
-        for(int k=0;k<4;k++)
-          if((neighbors[(k+2)%4]==2 || neighbors[(k+2)%4]==1) && neighbors[k]==0)
-          {
-            for(int l=0;l<2;l++)
-              coord[l] += dir[k][l];
-            break;
-          }
-
-      if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)
-        temp_template[coord[0]][coord[1]]=2;
-    }
-  return temp_template;*/
-}
 /*public class Element implements Part
 {
   private color c;
@@ -1003,9 +528,19 @@ public class Game
   private SceneManager sceneManager;
   private InputHandler inputHandler;
   private SimulationManager simulationManager;
+  private SetupManager setupManager;
 
   Game()
   {
+  }
+
+  public void addSetupManager(SetupManager sv){setupManager = sv;}
+
+  public SetupManager getSetupManager()
+  {
+    if(setupManager == null)
+      throw new RuntimeException("cant find SetupManager @Game.pde");
+    return setupManager;
   }
 
   public void addInputHandler(InputHandler sv){inputHandler = sv;}
@@ -2130,6 +1665,7 @@ public void gameSetup()
   int MAP_SIZE = 4*MAP_DETAIL;
   GAME = new Game();
   GAME.addGameLoop(new GameLoop(60,60,6));
+  GAME.addSetupManager(new SetupManager());
   GAME.addInputHandler(new InputHandler());
   GAME.addRenderEngine(new RenderEngine("single",4*MAP_DETAIL));
   RenderEngine renderEngine = GAME.getRenderEngine();
@@ -2172,40 +1708,24 @@ public void registerElements()
     objectManager.registerPart(elements[i], evaluateElement(i));
   objectManager.registerGroup("elements",elements);
 }
-public void registerObjects()
+public void registerGroups()
 {
-  /* Register Parts */
   ObjectManager objectManager = GAME.getObjectManager();
+  SetupManager setupManager = GAME.getSetupManager();
 
-  registerElements();
-  registerTiles();
-
-  /* register Groups */
-  String[] tiles = {"Ground0","Lake0","Stone0","Alga0","Moss0","Bush0","Gravel0"};
-  objectManager.registerGroup("tiles",tiles);
-
-  String[] water_tiles = 
-  {
-    "Ground0",
-    "Lake0","Lake1","Alga0","Alga1","Bush0","Bush1","Stone0","Stone1"
-  };
-  objectManager.registerGroup("waterTiles",water_tiles);
-
-  String[] organic_tiles = 
-  {"Bush0","Bush1","Bush2","Bush3"};
+  String[] organic_tiles = setupManager.getGroup("plants");
   objectManager.registerGroup("organicTiles",organic_tiles);
+
+
+  /*String[] organic_tiles = 
+  {"Bush0","Bush1","Bush2","Bush3"};
+  objectManager.registerGroup("organicTiles",organic_tiles);*/
 
   String[] rock_tiles =
   {
-    "Stone0","Stone1","Stone2","Stone3","Moss0","Gravel0","Gravel1"
+    "Stone0","Stone1","Stone2","Stone3","Moss0","Gravel0"
   };
   objectManager.registerGroup("rockTiles",rock_tiles);
-
-  String[] ground_tiles =
-  {
-    "Ground0","Gravel0"
-  };
-  objectManager.registerGroup("groundTiles",ground_tiles);
 
   String[] liquid_tiles =
   {
@@ -2213,22 +1733,23 @@ public void registerObjects()
   };
   objectManager.registerGroup("liquidTiles",liquid_tiles);
 
-  String[] forest_tiles = 
-  {
-    "Ground0",
-    "Alga0","Alga1","Stone0","Stone1","Bush0","Bush1"
-  };
-  objectManager.registerGroup("forestTiles",forest_tiles);
-
   String[] ship_tiles = 
   {
     "floor","custom2","Void0","Fuel0"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
+}
+public void registerObjects()
+{
+  registerElements();
+  registerTiles();
+  registerGroups();
+  
+  /*register chunks*/
+  ObjectManager objectManager = GAME.getObjectManager();
 
   int variance = 2;
 
-  /*register chunks*/
   String[] names = {"Ground","Swamp","Sea","Mountain","Forest"};
   String name;
   String[] group = new String[variance];
@@ -2300,6 +1821,7 @@ public void registerObjects()
 public void registerTiles()
 {
   ObjectManager objectManager = GAME.getObjectManager();
+  SetupManager setupManager = GAME.getSetupManager();
   JSONArray tiles = loadJSONArray("tile.json");
 
   int fails = 0;
@@ -2313,6 +1835,7 @@ public void registerTiles()
   int variance;
   String[] types;
   Part obj;
+  String group;
 
   for(int i = 0; i < tiles.size(); i++)
   {
@@ -2329,10 +1852,13 @@ public void registerTiles()
     types = new String[types_arr.size()];
     for(int j=0; j<types_arr.size(); j++)
       types[j] = types_arr.getString(j);
-    
+    group = tile.getString("group");
+
     for(int j = 0; j < variance; j++)
     {
       obj = createTile(elements,template_type);
+
+      setupManager.addPartToGroup(group,name+j);
 
       for(int l = 0; l < types.length; l++)
       {
@@ -2364,6 +1890,590 @@ public void registerTiles()
   }
 
   println("fails in registerTiles:"+fails);
+}
+public class BaseSim extends Simulation
+{
+  BaseSim(final int[][] template,String group)
+  {
+    super(0);
+  }
+
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simBase(template,temp_template_,group,this);
+  }
+}
+public class EnergySim extends Simulation
+{
+  EnergySim(final int[][] template,String group)
+  {
+    super(0);
+  }
+
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simEnergy(template,temp_template_,group,this);
+  }
+}
+public class LifeSim extends Simulation
+{
+  LifeSim(final int[][] template,String group)
+  {
+    super(0);
+  }
+
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simLife(template,temp_template_,group,this);
+  }
+}
+public class Simulation
+{
+  private int[][][] tables;
+  private String[] names;
+  private int size;
+  int[][] dir;
+  //public SimulationManager SimulationManager;
+
+  Simulation(int n)
+  {
+    size = SIZE;
+    names = new String[n];
+    tables = new int[n][size][size];
+    for(int i = 0; i < n; i++)
+    {
+      for(int j = 0; j < size; j++)
+        for(int k = 0; k < size; k++)
+          tables[i][j][k] = 0;
+    }
+    int[][] dir_ = {{-1,0},{0,-1},{1,0},{0,1}};
+    dir = dir_;
+  }
+
+  //pls delete as fast as possible
+  Simulation(final String[] names_)
+  {
+    size = SIZE;
+    int n = names_.length;
+    names = new String[n];
+    tables = new int[n][size][size];
+    for(int i = 0; i < n; i++)
+    {
+      names[i] = names_[i];
+
+      for(int j = 0; j < size; j++)
+        for(int k = 0; k < size; k++)
+          tables[i][j][k] = 0;
+    }
+    int[][] dir_ = {{-1,0},{0,-1},{1,0},{0,1}};
+    dir = dir_;
+  }
+
+  public void setNames(String[] names_)
+  {
+    for(int i = 0; i < names.length; i++)
+      names[i] = names_[i];
+  }
+
+  public Simulation copy()
+  {
+    Simulation out = new Simulation(names);
+    for(int i = 0; i<names.length; i++)
+      out.setTable(names[i], tables[i]);
+    return out;
+  }
+
+  public int getNumfromName(String name)
+  {
+    for(int i = 0; i < names.length; i++)
+      if(names[i].equals(name))
+        return i;
+    println("BUG in Simulation.getNumfromName:name not found");
+    return -1;
+  }
+
+  public int[][] getTable(String name)
+  {
+    int[][] out = new int[size][size];
+
+    int n = getNumfromName(name);
+
+    for(int i = 0; i < n; i++)
+      for(int j = 0; j < size; j++)
+        out[i][j] = tables[n][i][j];
+    
+    return out;
+  }
+
+  public void setTable(String name, final int[][] table)
+  {
+    int n = getNumfromName(name);
+
+    for(int i = 0; i < n; i++)
+      for(int j = 0; j < size; j++)
+        tables[n][i][j] = table[i][j];
+  }
+
+  public int getEntry(String name, int x, int y)
+  {
+    int n = getNumfromName(name);
+    return tables[n][x][y];
+  }
+
+  public void setEntry(String name, int x, int y,int value)
+  {
+    int n = getNumfromName(name);
+    tables[n][x][y] = value;
+  }
+
+  //void
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return temp_template_;
+  }
+
+  public void callEvent(String type, String event, int x, int y, int id)
+  {
+  }
+}
+public class SourceSim extends Simulation
+{
+  SourceSim(final int[][] template,String group)
+  {
+    super(0);
+  }
+
+  public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
+  {
+    return simSource(template,temp_template_,group,this);
+  }
+
+  /*
+  *
+  * (1)if entry next to one source or base
+  *   move to oposite direction if possible
+  *
+  * (2)if next to more then one source or base
+  *   create source in all directions next to it
+  *   delete
+  *
+  * (3)if touching borders
+  *   delete
+  *
+  */
+  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
+  {
+    SimulationManager simulationManager = GAME.getSimulationManager();
+    ObjectManager objectManager = GAME.getObjectManager();
+    int x,y;
+
+    for(int i = 0; i<SIZE; i++)
+      for(int j = 0; j<SIZE; j++)
+      {
+        if(template[i][j]!=2)
+          continue;
+
+        //(3)
+        if(i==0 || j==0 || i==SIZE-1 || j==SIZE-1)
+        {
+          simulationManager.deleteEntry("source",i,j);
+          continue;
+        }
+        
+        int[] neighbors = new int[4];
+        int friends = 0;
+        for(int k=0;k<4;k++)
+        {
+          x = i+dir[k][0];
+          y = j+dir[k][1];
+          neighbors[k] = template[x][y];
+          if(template[x][y] == 2 || template[x][y] == 1)
+            friends++;
+        }
+
+        if(friends == 0 || friends == 4)
+          continue;
+        
+        //(1)
+        if(friends == 1)
+        {
+          for(int k=0;k<4;k++)
+          {
+            x = i+dir[k][0];
+            y = j+dir[k][1];
+            if(template[x][y] != 2 && template[x][y] != 1)
+              continue;
+            
+            x = i+dir[(k+2)%4][0];
+            y = j+dir[(k+2)%4][1];
+            
+            simulationManager.deleteEntry("source",i,j);
+            simulationManager.createEntry(2,x,y);
+            break;
+          }
+          continue;
+        }
+
+        //(2)
+        for(int k=0;k<4;k++)
+        {
+          x = i+dir[k][0];
+          y = j+dir[k][1];
+          if(template[x][y] != 0)
+            continue;
+
+          simulationManager.deleteEntry("source",i,j);
+          simulationManager.createEntry(2,x,y);
+          break;
+        }
+      }
+    return temp_template_;
+  }
+}
+public Simulation initBaseSim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
+
+public int[][] simBase(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int size = 8;
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
+
+  int[][] temp_template = new int[size][size];
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
+    {
+      temp_template[i][j]=temp_template_[i][j];
+
+      if(template[i][j] != 1)
+        continue;
+
+      temp_template[i][j] = 1;
+    }
+    
+  return temp_template;
+}
+public Simulation initEnergySim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
+
+/****************************
+*
+* (1)if next to Life
+*   chance Life to Energy
+*
+* (2)if exactly one Energy is next to it
+*   create Energy on oposit side.
+*   if not possible
+*     chance to Life
+*
+* (3)else
+*   chance to life
+*
+****************************/
+public int[][] simEnergy(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
+
+  int[][] temp_template = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+      temp_template[i][j]=temp_template_[i][j];
+  
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+    {
+      if(template[i][j] != 4)
+        continue;
+
+      int[] neighbors = new int[4];
+      int friends = 0;
+      int sources = 0;
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(x<0 || y<0 || x>=SIZE || y>=SIZE)
+        {
+          neighbors[k] = 1;
+          continue;
+        }
+        
+        neighbors[k] = template[x][y];
+        if(template[x][y] == 4)
+          friends++;
+        
+        if(template[x][y] == 3)
+          sources++;
+      }
+
+      //(2)
+      if(friends == 1)
+      {
+        for(int k=0;k<4;k++)
+        {
+          if(neighbors[k] != 4)
+            continue;
+          
+          if(neighbors[(k+2)%4] != 0)
+          {
+            temp_template[i][j]=3;
+            break;
+          }
+
+          x = i+dir[(k+2)%4][0];
+          y = j+dir[(k+2)%4][1];
+          if(x<0 || y<0 || x>=SIZE || y>=SIZE)
+            break;
+          temp_template[x][y]=4;
+        }
+        //continue;
+      }
+
+      //(1)
+      if(sources != 0)
+      {
+        for(int k=0;k<4;k++)
+        {
+          if(neighbors[k] == 3)
+          {
+            x = i+dir[k][0];
+            y = j+dir[k][1];
+            temp_template[x][y]=4;
+          }
+        }
+        continue;
+      }
+      
+      //(3)
+      temp_template[i][j]=3;
+    }
+
+  return temp_template;
+}
+public Simulation initLifeSim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
+
+/*
+*
+* (1) if source next to it
+*   chance source to life
+* 
+* (2) if no source next to it
+*   chance to source
+*
+*/
+public int[][] simLife(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
+
+  int[][] temp_template = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+      temp_template[i][j]=temp_template_[i][j];
+  
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+    {
+      if(template[i][j] != 3)
+        continue;
+
+      int friends = 0;
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(x<0 || y<0 || x>=SIZE || y>=SIZE)
+          continue;
+        
+        if(template[x][y] != 2)
+          continue;
+        
+        friends++;
+        //simulationManager.deleteEntry("source",x,y);
+        if(temp_template[x][y]==2)
+          temp_template[x][y]=0;
+        //simulationManager.createEntry(3,x,y);
+        if(temp_template[x][y]==0)
+          temp_template[x][y]=3;
+        //break;
+      }
+
+      //(2)
+      if(friends == 0)
+      {
+        //simulationManager.deleteEntry("life",i,j);
+        if(temp_template[i][j]==3)
+          temp_template[i][j]=0;
+        //simulationManager.createEntry(2,i,j);
+        if(temp_template[i][j]==0)
+          temp_template[i][j]=2;
+      }
+
+      /*if(coord[0]>0 && coord[1]>0)
+      {
+        temp_template[coord[0]][coord[1]]=3;
+        if(temp_template[i][j]!=4)
+          temp_template[i][j]=3;
+      }
+      else if(temp_template[i][j]!=4)
+        temp_template[i][j]=2;*/
+    }
+
+  return temp_template;
+}
+public Simulation initSourceSim(final int[][] template,String group)
+{
+  String[] names = {};
+  return new Simulation(names);
+}
+
+public int[][] simSource(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+{
+  int[][] temp_template = new int[8][8];
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      temp_template[i][j]=temp_template_[i][j];
+
+  int x,y;
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+
+  for(int i = 0; i<SIZE; i++)
+    for(int j = 0; j<SIZE; j++)
+    {
+      if(template[i][j]!=2)
+        continue;
+
+      //(3)
+      if(i==0 || j==0 || i==SIZE-1 || j==SIZE-1)
+      {
+        //simulationManager.deleteEntry("source",i,j);
+        if(temp_template[i][j]==2)
+          temp_template[i][j]=0;
+        continue;
+      }
+      
+      int[] neighbors = new int[4];
+      int friends = 0;
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        neighbors[k] = template[x][y];
+        if(template[x][y] == 2 || template[x][y] == 1)
+          friends++;
+      }
+
+      if(friends == 0 || friends == 4)
+        continue;
+      
+      //(1)
+      if(friends == 1)
+      {
+        for(int k=0;k<4;k++)
+        {
+          x = i+dir[k][0];
+          y = j+dir[k][1];
+          if(template[x][y] != 2 && template[x][y] != 1)
+            continue;
+          
+          x = i+dir[(k+2)%4][0];
+          y = j+dir[(k+2)%4][1];
+          
+          //simulationManager.deleteEntry("source",i,j);
+          if(temp_template[i][j]==2)
+            temp_template[i][j]=0;
+          //simulationManager.createEntry(2,x,y);
+          if(temp_template[x][y]==0)
+            temp_template[x][y]=2;
+          //break;
+        }
+        continue;
+      }
+
+      //(2)
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        if(template[x][y] != 0)
+          continue;
+
+        //simulationManager.deleteEntry("source",i,j);
+        if(temp_template[i][j]==2)
+            temp_template[i][j]=0;
+        //simulationManager.createEntry(2,x,y);
+        if(temp_template[x][y]==0)
+            temp_template[x][y]=2;
+        //break;
+      }
+    }
+  return temp_template;
+
+  /*int size = 8;
+  int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
+  int x,y;
+
+  int[][] temp_template = new int[8][8];
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      temp_template[i][j]=temp_template_[i][j];
+
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
+    {
+      if(temp_template[i][j]!=2)
+        continue;
+
+      int coord[] = {i,j};
+      
+      temp_template[i][j]=0;
+
+      if(i==0 || j==0 || i==7 || j==7)
+        continue;
+        
+      int[] neighbors = new int[4];
+      for(int k=0;k<4;k++)
+      {
+        x = i+dir[k][0];
+        y = j+dir[k][1];
+        neighbors[k] = template[x][y];
+      }
+      
+      boolean found = false;
+
+      for(int k=0;k<4;k++)
+        if((neighbors[k]==1) && (neighbors[(k+1)%4]==2) && neighbors[(k+2)%4]==2 && (neighbors[(k+3)%4]==2))
+        {
+          for(int l=0;l<2;l++)
+            coord[l] += dir[k][l];
+          found = true;
+          break;
+        }
+      
+      if(found == false)
+        for(int k=0;k<4;k++)
+          if((neighbors[(k+2)%4]==2 || neighbors[(k+2)%4]==1) && neighbors[k]==0)
+          {
+            for(int l=0;l<2;l++)
+              coord[l] += dir[k][l];
+            break;
+          }
+
+      if(coord[0]>0 && coord[1]>0 && temp_template[coord[0]][coord[1]]==0)
+        temp_template[coord[0]][coord[1]]=2;
+    }
+  return temp_template;*/
 }
 //test
 public class Scene
@@ -2634,113 +2744,31 @@ public class Set<E>
     return out;
   }
 }
-public class Simulation
-{
-  private int[][][] tables;
-  private String[] names;
-  private int size;
-  int[][] dir;
-  //public SimulationManager SimulationManager;
+public class SetupManager
+{;
+  HashMap<String,ArrayList<String>> groups;
 
-  Simulation(int n)
+  SetupManager()
   {
-    size = SIZE;
-    names = new String[n];
-    tables = new int[n][size][size];
-    for(int i = 0; i < n; i++)
-    {
-      for(int j = 0; j < size; j++)
-        for(int k = 0; k < size; k++)
-          tables[i][j][k] = 0;
-    }
-    int[][] dir_ = {{-1,0},{0,-1},{1,0},{0,1}};
-    dir = dir_;
+    groups = new HashMap<String,ArrayList<String>>();
+    groups.put("background",new ArrayList<String>());
+    groups.put("plants",new ArrayList<String>());
+    groups.put("mechanical",new ArrayList<String>());
+    groups.put("rock",new ArrayList<String>());
+    groups.put("liquid",new ArrayList<String>());
   }
 
-  //pls delete as fast as possible
-  Simulation(final String[] names_)
+  public void addPartToGroup(String name,String part)
   {
-    size = SIZE;
-    int n = names_.length;
-    names = new String[n];
-    tables = new int[n][size][size];
-    for(int i = 0; i < n; i++)
-    {
-      names[i] = names_[i];
-
-      for(int j = 0; j < size; j++)
-        for(int k = 0; k < size; k++)
-          tables[i][j][k] = 0;
-    }
-    int[][] dir_ = {{-1,0},{0,-1},{1,0},{0,1}};
-    dir = dir_;
+    ArrayList<String> group = groups.get(name);
+    group.add(part);
   }
 
-  public void setNames(String[] names_)
+  public String[] getGroup(String name)
   {
-    for(int i = 0; i < names.length; i++)
-      names[i] = names_[i];
-  }
-
-  public Simulation copy()
-  {
-    Simulation out = new Simulation(names);
-    for(int i = 0; i<names.length; i++)
-      out.setTable(names[i], tables[i]);
+    ArrayList<String> group = groups.get(name);
+    String[] out = group.toArray(new String[0]);
     return out;
-  }
-
-  public int getNumfromName(String name)
-  {
-    for(int i = 0; i < names.length; i++)
-      if(names[i].equals(name))
-        return i;
-    println("BUG in Simulation.getNumfromName:name not found");
-    return -1;
-  }
-
-  public int[][] getTable(String name)
-  {
-    int[][] out = new int[size][size];
-
-    int n = getNumfromName(name);
-
-    for(int i = 0; i < n; i++)
-      for(int j = 0; j < size; j++)
-        out[i][j] = tables[n][i][j];
-    
-    return out;
-  }
-
-  public void setTable(String name, final int[][] table)
-  {
-    int n = getNumfromName(name);
-
-    for(int i = 0; i < n; i++)
-      for(int j = 0; j < size; j++)
-        tables[n][i][j] = table[i][j];
-  }
-
-  public int getEntry(String name, int x, int y)
-  {
-    int n = getNumfromName(name);
-    return tables[n][x][y];
-  }
-
-  public void setEntry(String name, int x, int y,int value)
-  {
-    int n = getNumfromName(name);
-    tables[n][x][y] = value;
-  }
-
-  //void
-  public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
-  {
-    return temp_template_;
-  }
-
-  public void callEvent(String type, String event, int x, int y, int id)
-  {
   }
 }
 public class SimulationManager
@@ -3079,8 +3107,8 @@ public Part evaluateChunk(final int[][] template_,String group_)
   
   int[][] blocks = simulationManager.init(template_);
 
-  int[] resources = new int[SIZE];
-  for(int i = 0;i<SIZE;i++)
+  int[] resources = new int[16];
+  for(int i = 0;i<16;i++)
     resources[i] = 0;
 
   for(int j = 0;j<SIZE;j++)
