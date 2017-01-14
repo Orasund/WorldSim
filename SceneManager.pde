@@ -29,6 +29,11 @@ public class SceneManager //implements Service
     addScene(name,map,tiles);
   }
 
+  public String getCorrentPartName()
+  {
+    return getCorrentScene().getCorrentPartName();
+  }
+
   public void moveTo(int x, int y, int time)
   {
     RenderEngine renderEngine = GAME.getRenderEngine();

@@ -31,6 +31,19 @@ public class Scene
     return out;
   }
 
+  public String getCorrentPartName()
+  {
+    ObjectManager objectManager = GAME.getObjectManager();
+    Player player = GAME.getPlayer();
+    
+    String[] parts = objectManager.getNamesByGroup(group_name);
+    PVector pos = player.getPos();
+    int x = floor(pos.x/SIZE);
+    int y = floor(pos.y/SIZE);
+
+    return parts[map[x][y]];
+  }  
+
   public int[][] getMapArea(int x, int y, int w, int h)
   {
     int[][] out = new int[map.length][map[0].length];
