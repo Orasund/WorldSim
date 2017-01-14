@@ -8,9 +8,19 @@ public class Game
   private InputHandler inputHandler;
   private SimulationManager simulationManager;
   private SetupManager setupManager;
+  private GuiManager guiManager;
 
   Game()
   {
+  }
+
+  public void addGuiManager(GuiManager sv){guiManager = sv;}
+
+  public GuiManager getGuiManager()
+  {
+    if(guiManager == null)
+      throw new RuntimeException("cant find GuiManager @Game.pde");
+    return guiManager;
   }
 
   public void addSetupManager(SetupManager sv){setupManager = sv;}

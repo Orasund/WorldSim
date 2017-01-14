@@ -529,9 +529,19 @@ public class Game
   private InputHandler inputHandler;
   private SimulationManager simulationManager;
   private SetupManager setupManager;
+  private GuiManager guiManager;
 
   Game()
   {
+  }
+
+  public void addGuiManager(GuiManager sv){guiManager = sv;}
+
+  public GuiManager getGuiManager()
+  {
+    if(guiManager == null)
+      throw new RuntimeException("cant find GuiManager @Game.pde");
+    return guiManager;
   }
 
   public void addSetupManager(SetupManager sv){setupManager = sv;}
@@ -649,6 +659,18 @@ public class GameLoop //implements Service
       nextFrame();
 
     return out;
+  }
+}
+public class GuiManager
+{
+  GuiManager()
+  {
+    
+  }
+
+  public void drawGUI()
+  {
+    
   }
 }
 /*public interface Part
@@ -1489,8 +1511,11 @@ class RenderEngine// implements Service
   public void render()
   {
     SceneManager sceneManager = GAME.getSceneManager();
+    GuiManager guiManager = GAME.getGuiManager();
     
     sceneManager.renderArea();
+
+    guiManager.drawGUI();
   }
 }
 public Part createChunk(String name)
@@ -1672,6 +1697,7 @@ public void gameSetup()
   renderEngine.addView("map");
   GAME.addObjectManager(new ObjectManager());
   GAME.addSimulationManager(new SimulationManager());
+  GAME.addGuiManager(new GuiManager());
 
   GameLoop gameLoop = GAME.gameLoop;
   InputHandler inputHandler = GAME.getInputHandler();
@@ -1696,8 +1722,8 @@ public void gameSetup()
 
   GAME.addSceneManager(new SceneManager("main",map.getMap(),"chunk"));
   SceneManager sceneManager = GAME.getSceneManager();
-  sceneManager.addScene("template",TEMPLATE,"tiles");
-  sceneManager.chanceScene("template");
+  //sceneManager.addScene("template",TEMPLATE,"tiles");
+  //sceneManager.chanceScene("template");
 }
 public void registerElements()
 {
@@ -1713,25 +1739,37 @@ public void registerGroups()
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
 
-  String[] organic_tiles = setupManager.getGroup("plants");
-  objectManager.registerGroup("organicTiles",organic_tiles);
+  String[] group;
+  group = setupManager.getGroup("plants");
+  objectManager.registerGroup("organicTiles",group);
 
+  group = setupManager.getGroup("rock");
+  objectManager.registerGroup("rockTiles",group);
+
+  group = setupManager.getGroup("liquid");
+  objectManager.registerGroup("liquidTiles",group);
+
+  group = setupManager.getGroup("background");
+  objectManager.registerGroup("backgroundTiles",group);
+
+  group = setupManager.getGroup("mechanical");
+  objectManager.registerGroup("mechanicalTiles",group);
 
   /*String[] organic_tiles = 
   {"Bush0","Bush1","Bush2","Bush3"};
   objectManager.registerGroup("organicTiles",organic_tiles);*/
 
-  String[] rock_tiles =
+  /*String[] rock_tiles =
   {
     "Stone0","Stone1","Stone2","Stone3","Moss0","Gravel0"
   };
-  objectManager.registerGroup("rockTiles",rock_tiles);
+  objectManager.registerGroup("rockTiles",rock_tiles);*/
 
-  String[] liquid_tiles =
+  /*String[] liquid_tiles =
   {
     "Lake0","Lake1","Lake2","Lake3","Alga0","Alga1"
   };
-  objectManager.registerGroup("liquidTiles",liquid_tiles);
+  objectManager.registerGroup("liquidTiles",liquid_tiles);*/
 
   String[] ship_tiles = 
   {
@@ -3266,8 +3304,16 @@ public Part evaluateTile(int[][] template)
 
     //stone
     case 1:
-      types.add("solid");
-      c = color(127,127,127);
+      
+      if(resources[1]>28)
+      {
+        types.add("solid");
+        c = color(90,90,90);
+      }
+      else
+      {
+        c = color(127,127,127);
+      }
       break;
 
     //ground

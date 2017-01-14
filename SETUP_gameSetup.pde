@@ -13,6 +13,7 @@ void gameSetup()
   renderEngine.addView("map");
   GAME.addObjectManager(new ObjectManager());
   GAME.addSimulationManager(new SimulationManager());
+  GAME.addGuiManager(new GuiManager());
 
   GameLoop gameLoop = GAME.gameLoop;
   InputHandler inputHandler = GAME.getInputHandler();
@@ -37,6 +38,6 @@ void gameSetup()
 
   GAME.addSceneManager(new SceneManager("main",map.getMap(),"chunk"));
   SceneManager sceneManager = GAME.getSceneManager();
-  sceneManager.addScene("template",TEMPLATE,"tiles");
-  sceneManager.chanceScene("template");
+  //sceneManager.addScene("template",TEMPLATE,"tiles");
+  //sceneManager.chanceScene("template");
 }

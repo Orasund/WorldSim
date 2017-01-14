@@ -107,8 +107,16 @@ Part evaluateTile(int[][] template)
 
     //stone
     case 1:
-      types.add("solid");
-      c = color(127,127,127);
+      
+      if(resources[1]>28)
+      {
+        types.add("solid");
+        c = color(90,90,90);
+      }
+      else
+      {
+        c = color(127,127,127);
+      }
       break;
 
     //ground

@@ -185,7 +185,10 @@ class RenderEngine// implements Service
   public void render()
   {
     SceneManager sceneManager = GAME.getSceneManager();
+    GuiManager guiManager = GAME.getGuiManager();
     
     sceneManager.renderArea();
+
+    guiManager.drawGUI();
   }
 }
