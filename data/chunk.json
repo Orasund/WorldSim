@@ -1,5 +1,5 @@
 {
-  "Ground":
+  "Plain":
   {
     "names":["liquid","organic","rock"],
     "amounts":[4,40,1],
@@ -20,7 +20,7 @@
     "ground":"Ground",
     "variance":2
   },
-  "Mountain":
+  "Hill":
   {
     "names":["liquid","rock"],
     "amounts":[5,65],

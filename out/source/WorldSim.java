@@ -1784,7 +1784,7 @@ public void registerGroups()
 
   String[] ship_tiles = 
   {
-    "floor","custom2","Void0","Fuel0"
+    "floor","custom2","Air0","Fuel0"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
 }
@@ -1799,7 +1799,7 @@ public void registerObjects()
 
   int variance = 2;
 
-  String[] names = {"Ground","Swamp","Sea","Mountain","Forest"};
+  String[] names = {"Plain","Swamp","Sea","Hill","Forest"};
   String name;
   String[] group = new String[variance];
   for(int i=0; i<names.length; i++)
@@ -1815,9 +1815,9 @@ public void registerObjects()
 
   String[] chunk = 
   {
-    "GroundChunk1","GroundChunk0",
+    "PlainChunk1","PlainChunk0",
     "SeaChunk1","SwampChunk0",
-    "MountainChunk1","MountainChunk0",
+    "HillChunk1","HillChunk0",
     "ForestChunk1","ForestChunk0",
   };
   objectManager.registerGroup("chunk",chunk);

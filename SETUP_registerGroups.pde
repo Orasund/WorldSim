@@ -37,7 +37,7 @@ public void registerGroups()
 
   String[] ship_tiles = 
   {
-    "floor","custom2","Void0","Fuel0"
+    "floor","custom2","Air0","Fuel0"
   };
   objectManager.registerGroup("shipTiles",ship_tiles);
 }

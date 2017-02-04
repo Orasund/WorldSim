@@ -1,6 +1,6 @@
 [
  {
-    "name":"Void",
+    "name":"Air",
     "template_type":"ground",
     "elements":[0,0,0,0],
     "variance":1,
@@ -8,7 +8,7 @@
     "group":"background"
   },
   {
-    "name":"Bush",
+    "name":"Cell",
     "template_type":"plant",
     "elements":[0,10,10,0],
     "variance":4,
@@ -40,7 +40,7 @@
     "group":"background"
   },
   {
-    "name":"Lake",
+    "name":"Water",
     "template_type":"ground",
     "elements":[0,50,0,0],
     "variance":4,
