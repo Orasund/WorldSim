@@ -6,9 +6,9 @@ public class SetupManager
   {
     groups = new HashMap<String,ArrayList<String>>();
     groups.put("background",new ArrayList<String>());
-    groups.put("plants",new ArrayList<String>());
-    groups.put("mechanical",new ArrayList<String>());
-    groups.put("rock",new ArrayList<String>());
+    groups.put("organism",new ArrayList<String>());
+    groups.put("reaction",new ArrayList<String>());
+    groups.put("mineral",new ArrayList<String>());
     groups.put("liquid",new ArrayList<String>());
   }
 

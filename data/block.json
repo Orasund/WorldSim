@@ -1,7 +1,7 @@
 {
   "Grass":
   {
-    "names":["liquid","organic","rock"],
+    "names":["liquid","organic","mineral"],
     "amounts":[4,40,1],
     "ground":"Ground",
     "group":"spaceBlock",
@@ -21,23 +21,23 @@
     "ground":"Ground",
     "variance":1
   },
-  "Rock":
+  "mineral":
   {
-    "names":["liquid","rock"],
+    "names":["liquid","mineral"],
     "amounts":[5,65],
     "ground":"Gravel",
     "variance":1
   },
   "Bush":
   {
-    "names":["liquid","rock","organic"],
+    "names":["liquid","mineral","organic"],
     "amounts":[10,5,40],
     "ground":"Ground",
     "variance":1
   },
   "Magma":
   {
-    "names":["mechanical","rock"],
+    "names":["reaction","mineral"],
     "amounts":[60,20],
     "ground":"Gravel",
     "variance":1

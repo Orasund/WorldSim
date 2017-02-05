@@ -1751,11 +1751,11 @@ public void registerGroups()
   SetupManager setupManager = GAME.getSetupManager();
 
   String[] group;
-  group = setupManager.getGroup("plants");
+  group = setupManager.getGroup("organism");
   objectManager.registerGroup("organicTiles",group);
 
-  group = setupManager.getGroup("rock");
-  objectManager.registerGroup("rockTiles",group);
+  group = setupManager.getGroup("mineral");
+  objectManager.registerGroup("mineralTiles",group);
 
   group = setupManager.getGroup("liquid");
   objectManager.registerGroup("liquidTiles",group);
@@ -1763,18 +1763,18 @@ public void registerGroups()
   group = setupManager.getGroup("background");
   objectManager.registerGroup("backgroundTiles",group);
 
-  group = setupManager.getGroup("mechanical");
-  objectManager.registerGroup("mechanicalTiles",group);
+  group = setupManager.getGroup("reaction");
+  objectManager.registerGroup("reactionTiles",group);
 
   /*String[] organic_tiles = 
   {"Bush0","Bush1","Bush2","Bush3"};
   objectManager.registerGroup("organicTiles",organic_tiles);*/
 
-  /*String[] rock_tiles =
+  /*String[] mineral_tiles =
   {
     "Stone0","Stone1","Stone2","Stone3","Moss0","Gravel0"
   };
-  objectManager.registerGroup("rockTiles",rock_tiles);*/
+  objectManager.registerGroup("mineralTiles",mineral_tiles);*/
 
   /*String[] liquid_tiles =
   {
@@ -2821,9 +2821,9 @@ public class SetupManager
   {
     groups = new HashMap<String,ArrayList<String>>();
     groups.put("background",new ArrayList<String>());
-    groups.put("plants",new ArrayList<String>());
-    groups.put("mechanical",new ArrayList<String>());
-    groups.put("rock",new ArrayList<String>());
+    groups.put("organism",new ArrayList<String>());
+    groups.put("reaction",new ArrayList<String>());
+    groups.put("mineral",new ArrayList<String>());
     groups.put("liquid",new ArrayList<String>());
   }
 
