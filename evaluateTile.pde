@@ -89,18 +89,18 @@ Part evaluateTile(int[][] template)
       }
       break;
 
-    //water
+    //floid
     case 2:
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
       {
         types.add("organic_spawn");
-        types.add("water");
+        types.add("floid");
         c = color(53,80,128);
       }
-      else //water
+      else //floid
       {
-        types.add("water");
+        types.add("floid");
         c = color(80,80,256);
       }
       break;

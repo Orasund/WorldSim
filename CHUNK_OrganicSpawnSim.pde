@@ -15,19 +15,19 @@ public class OrganicSpawnSim extends Simulation
         organic_parts.append(i); 
 
 
-    String[] names_ = {"water","organic_spawn"};
+    String[] names_ = {"floid","organic_spawn"};
     setNames(names_);
     
     
     int size = template[0].length;
 
-    //creating water table and organic_spawn
+    //creating floid table and organic_spawn
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(tiles[template[i][j]].is("water"))
+        if(tiles[template[i][j]].is("floid"))
         {
-          setEntry("water",i,j, 1);
+          setEntry("floid",i,j, 1);
         }
 
         if(tiles[template[i][j]].is("organic_spawn"))
@@ -43,14 +43,14 @@ public class OrganicSpawnSim extends Simulation
     Part[] tiles = GAME.getObjectManager().getGroup(group);
     switch(type)
     {
-      case "water":
+      case "floid":
         switch(event)
         {
           case "create":
-            setEntry("water",x,y,1);
+            setEntry("floid",x,y,1);
             break;
           case "delete":
-            setEntry("water",x,y,0);
+            setEntry("floid",x,y,0);
             break;
         }
         break;
@@ -114,7 +114,7 @@ public class OrganicSpawnSim extends Simulation
             continue;
           }
 
-          if(getEntry("water",x,y)==0)
+          if(getEntry("floid",x,y)==0)
             continue;
           
           if(getEntry("organic_spawn",x,y)==1)
@@ -128,7 +128,7 @@ public class OrganicSpawnSim extends Simulation
             if(x2<0 || y2<0 || x2>=size || y2>=size)
               continue;
 
-            if(getEntry("water",x2,y2)==0)
+            if(getEntry("floid",x2,y2)==0)
               continue;
             
             count++;
@@ -137,7 +137,7 @@ public class OrganicSpawnSim extends Simulation
             continue;
           
           //new spawn can be created
-          simulationManager.deleteEntry("water",x,y);
+          simulationManager.deleteEntry("floid",x,y);
           simulationManager.createEntry(template[i][j],x,y);
           //setEntry("organic_spawn",x,y,1);
         }

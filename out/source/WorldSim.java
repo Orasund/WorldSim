@@ -69,7 +69,7 @@ public class OrganicSim extends Simulation
 
     ObjectManager objectManager = GAME.getObjectManager();
 
-    String[] names_ = {"organics","water","water_buffer"};
+    String[] names_ = {"organics","floid","floid_buffer"};
     setNames(names_);
 
     Part[] Tiles = objectManager.getGroup(group);
@@ -95,13 +95,13 @@ public class OrganicSim extends Simulation
           setEntry("organics",i,j,0);
       }
         
-    //creating water table and water_buffer
+    //creating floid table and floid_buffer
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
-        if(Tiles[template[i][j]].is("water"))
+        if(Tiles[template[i][j]].is("floid"))
         {
-          setEntry("water",i,j, 100);
-          setEntry("water_buffer",i,j,100);
+          setEntry("floid",i,j, 100);
+          setEntry("floid_buffer",i,j,100);
         }
   }
 
@@ -111,14 +111,14 @@ public class OrganicSim extends Simulation
     Part[] tiles = GAME.getObjectManager().getGroup(group);
     switch(type)
     {
-      case "water":
+      case "floid":
         switch(event)
         {
           case "create":
-            setEntry("water",x,y,100);
+            setEntry("floid",x,y,100);
             break;
           case "delete":
-            setEntry("water",x,y,0);
+            setEntry("floid",x,y,0);
             break;
         }
         break;
@@ -149,22 +149,22 @@ public class OrganicSim extends Simulation
   *   temp_template ... the same array but with new updates
   *
   * Algorithm
-  *   1.)create food&water-table and a water_buffer-table
+  *   1.)create food&floid-table and a floid_buffer-table
   *   2.)set food to amount of life-parts in Tile
-  *   3.)set water to 100 for each water Tile
+  *   3.)set floid to 100 for each floid Tile
   *   4.)iterate 16 times
-  *     A.)water_buffer = water
-  *     B.)for each waterEntry >0
-  *       a.)for each foodEntry next to waterEntry
-  *         i.)(old)water.foodEntry += waterEntry.value [max at foodEntry.value]
-  *         i.)water.foodEntry++;
-  *     C.)for each water_bufferEntry
-  *       a.)set waterEntry = 0
+  *     A.)floid_buffer = floid
+  *     B.)for each floidEntry >0
+  *       a.)for each foodEntry next to floidEntry
+  *         i.)(old)floid.foodEntry += floidEntry.value [max at foodEntry.value]
+  *         i.)floid.foodEntry++;
+  *     C.)for each floid_bufferEntry
+  *       a.)set floidEntry = 0
   *       b.)set foodEntry = 0
   *     D.)for each food
   *       a.)if foodEntry = 1 delete
   *       b.)WaterEntry-=1
-  *   5.)for each waterEntry
+  *   5.)for each floidEntry
   *     A.) delete
   */
   public int[][] sim(final int[][] template,final int[][] temp_template_,String group)
@@ -185,13 +185,13 @@ public class OrganicSim extends Simulation
     //(A)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
-        setEntry("water_buffer",i,j,getEntry("water",i,j));
+        setEntry("floid_buffer",i,j,getEntry("floid",i,j));
     
     //(B)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(getEntry("water",i,j)<=0)
+        if(getEntry("floid",i,j)<=0)
           continue;
         
         for(int k = 0; k<4; k++)
@@ -203,19 +203,19 @@ public class OrganicSim extends Simulation
           if(getEntry("organics",x,y)==0)
             continue;
           
-          //setEntry("water",x,y,getEntry("water",i,j));
-          setEntry("water",x,y,getEntry("water",x,y)+1);
-          if(getEntry("water",x,y)>getEntry("organics",x,y))
-            setEntry("water",x,y,getEntry("organics",x,y));
+          //setEntry("floid",x,y,getEntry("floid",i,j));
+          setEntry("floid",x,y,getEntry("floid",x,y)+1);
+          if(getEntry("floid",x,y)>getEntry("organics",x,y))
+            setEntry("floid",x,y,getEntry("organics",x,y));
         }
       }
   
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(getEntry("water_buffer",i,j)>0)
+        if(getEntry("floid_buffer",i,j)>0)
         {
-          setEntry("water",i,j,0);
+          setEntry("floid",i,j,0);
           setEntry("organics",i,j,0);
         }
 
@@ -253,19 +253,19 @@ public class OrganicSpawnSim extends Simulation
         organic_parts.append(i); 
 
 
-    String[] names_ = {"water","organic_spawn"};
+    String[] names_ = {"floid","organic_spawn"};
     setNames(names_);
     
     
     int size = template[0].length;
 
-    //creating water table and organic_spawn
+    //creating floid table and organic_spawn
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(tiles[template[i][j]].is("water"))
+        if(tiles[template[i][j]].is("floid"))
         {
-          setEntry("water",i,j, 1);
+          setEntry("floid",i,j, 1);
         }
 
         if(tiles[template[i][j]].is("organic_spawn"))
@@ -281,14 +281,14 @@ public class OrganicSpawnSim extends Simulation
     Part[] tiles = GAME.getObjectManager().getGroup(group);
     switch(type)
     {
-      case "water":
+      case "floid":
         switch(event)
         {
           case "create":
-            setEntry("water",x,y,1);
+            setEntry("floid",x,y,1);
             break;
           case "delete":
-            setEntry("water",x,y,0);
+            setEntry("floid",x,y,0);
             break;
         }
         break;
@@ -352,7 +352,7 @@ public class OrganicSpawnSim extends Simulation
             continue;
           }
 
-          if(getEntry("water",x,y)==0)
+          if(getEntry("floid",x,y)==0)
             continue;
           
           if(getEntry("organic_spawn",x,y)==1)
@@ -366,7 +366,7 @@ public class OrganicSpawnSim extends Simulation
             if(x2<0 || y2<0 || x2>=size || y2>=size)
               continue;
 
-            if(getEntry("water",x2,y2)==0)
+            if(getEntry("floid",x2,y2)==0)
               continue;
             
             count++;
@@ -375,7 +375,7 @@ public class OrganicSpawnSim extends Simulation
             continue;
           
           //new spawn can be created
-          simulationManager.deleteEntry("water",x,y);
+          simulationManager.deleteEntry("floid",x,y);
           simulationManager.createEntry(template[i][j],x,y);
           //setEntry("organic_spawn",x,y,1);
         }
@@ -1312,7 +1312,7 @@ public void drawPartGrid(int x, int y, int frame, int[][] blocks, String group)
       for(int j=0;j<8;j++)
         Tiles[blocks[i][j]].drawFrame(x*8+i,y*8+j,frame);
   }*/
-public int[][] randTemplate(int stone, int water, int life, int power)
+public int[][] randTemplate(int base, int source, int life, int power)
 {
   int template[][] = new int[8][8];
   for(int i=0;i<8;i++)
@@ -1323,7 +1323,7 @@ public int[][] randTemplate(int stone, int water, int life, int power)
     for(int j=0;j<8;j++)
     {
       float rand = random(100);
-      int[] elements = {stone,water,life,power};
+      int[] elements = {base,source,life,power};
       int type = 4;
       for(int k=0;k<4;k++)
       {
@@ -1635,9 +1635,9 @@ public Part createChunkByVariance(int[] amount_, int variance, String[] names_, 
   return evaluateChunk(out,group_name);
 }
 
-public int[][] plantTemplate(int stone, int water, int life, int power)
+public int[][] plantTemplate(int base, int source, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,power);
+  int[][] out = randTemplate(base,source,life,power);
   
   for(int i=0;i<2;i++)
     for(int j=0;j<2;j++)
@@ -1655,15 +1655,15 @@ public int[][] plantTemplate(int stone, int water, int life, int power)
   return out;
 }
 
-public int[][] groundTemplate(int stone, int water, int life, int power)
+public int[][] groundTemplate(int base, int source, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,power);
+  int[][] out = randTemplate(base,source,life,power);
   return out;
 }
 
-public int[][] solidTemplate(int stone, int water, int life, int power)
+public int[][] solidTemplate(int base, int source, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,power);
+  int[][] out = randTemplate(base,source,life,power);
   
   for(int i=0;i<8;i++)
   {
@@ -1778,7 +1778,7 @@ public void registerGroups()
 
   /*String[] liquid_tiles =
   {
-    "Lake0","Lake1","Lake2","Lake3","Alga0","Alga1"
+    "Lake0","Lake1","Lake2","Lake3","Spawn0","Spawn1"
   };
   objectManager.registerGroup("liquidTiles",liquid_tiles);*/
 
@@ -1799,7 +1799,7 @@ public void registerObjects()
 
   int variance = 2;
 
-  String[] names = {"Plain","Swamp","Sea","Hill","Forest"};
+  String[] names = {"Plain","Swamp","Sea","Hill","Forest","Lava"};
   String name;
   String[] group = new String[variance];
   for(int i=0; i<names.length; i++)
@@ -1817,7 +1817,7 @@ public void registerObjects()
   {
     "PlainChunk1","PlainChunk0",
     "SeaChunk1","SwampChunk0",
-    "HillChunk1","HillChunk0",
+    "HillChunk1","LavaChunk0",
     "ForestChunk1","ForestChunk0",
   };
   objectManager.registerGroup("chunk",chunk);
@@ -3166,11 +3166,11 @@ public Part evaluateChunk(final int[][] template_,String group_)
 
   simulationManager.newSession(group_);
   simulationManager.add("Organic",new OrganicSim(template_,group_));
-  simulationManager.listenTo("water","Organic");
+  simulationManager.listenTo("floid","Organic");
   simulationManager.listenTo("organic","Organic");
   /*
   simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
-  simulationManager.listenTo("water","OrganicSpawn");
+  simulationManager.listenTo("floid","OrganicSpawn");
   simulationManager.listenTo("organic_spawn","OrganicSpawn");
   */
   
@@ -3317,18 +3317,18 @@ public Part evaluateTile(int[][] template)
       }
       break;
 
-    //water
+    //floid
     case 2:
       //does life exist?
       if(resources[3]>0) //OrganicSpawn
       {
         types.add("organic_spawn");
-        types.add("water");
+        types.add("floid");
         c = color(53,80,128);
       }
-      else //water
+      else //floid
       {
-        types.add("water");
+        types.add("floid");
         c = color(80,80,256);
       }
       break;

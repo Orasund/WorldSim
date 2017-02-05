@@ -44,7 +44,7 @@
     "template_type":"ground",
     "elements":[0,50,0,0],
     "variance":4,
-    "types":["water"],
+    "types":["floid"],
     "group":"liquid"
   },
   {
@@ -56,7 +56,7 @@
     "group":"rock"
   },
   {
-    "name":"Alga",
+    "name":"Spawn",
     "template_type":"ground",
     "elements":[0,10,10,0],
     "variance":2,

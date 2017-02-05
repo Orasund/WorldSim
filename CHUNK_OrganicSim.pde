@@ -7,7 +7,7 @@ public class OrganicSim extends Simulation
 
     ObjectManager objectManager = GAME.getObjectManager();
 
-    String[] names_ = {"organics","water","water_buffer"};
+    String[] names_ = {"organics","floid","floid_buffer"};
     setNames(names_);
 
     Part[] Tiles = objectManager.getGroup(group);
@@ -33,13 +33,13 @@ public class OrganicSim extends Simulation
           setEntry("organics",i,j,0);
       }
         
-    //creating water table and water_buffer
+    //creating floid table and floid_buffer
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
-        if(Tiles[template[i][j]].is("water"))
+        if(Tiles[template[i][j]].is("floid"))
         {
-          setEntry("water",i,j, 100);
-          setEntry("water_buffer",i,j,100);
+          setEntry("floid",i,j, 100);
+          setEntry("floid_buffer",i,j,100);
         }
   }
 
@@ -49,14 +49,14 @@ public class OrganicSim extends Simulation
     Part[] tiles = GAME.getObjectManager().getGroup(group);
     switch(type)
     {
-      case "water":
+      case "floid":
         switch(event)
         {
           case "create":
-            setEntry("water",x,y,100);
+            setEntry("floid",x,y,100);
             break;
           case "delete":
-            setEntry("water",x,y,0);
+            setEntry("floid",x,y,0);
             break;
         }
         break;
@@ -87,22 +87,22 @@ public class OrganicSim extends Simulation
   *   temp_template ... the same array but with new updates
   *
   * Algorithm
-  *   1.)create food&water-table and a water_buffer-table
+  *   1.)create food&floid-table and a floid_buffer-table
   *   2.)set food to amount of life-parts in Tile
-  *   3.)set water to 100 for each water Tile
+  *   3.)set floid to 100 for each floid Tile
   *   4.)iterate 16 times
-  *     A.)water_buffer = water
-  *     B.)for each waterEntry >0
-  *       a.)for each foodEntry next to waterEntry
-  *         i.)(old)water.foodEntry += waterEntry.value [max at foodEntry.value]
-  *         i.)water.foodEntry++;
-  *     C.)for each water_bufferEntry
-  *       a.)set waterEntry = 0
+  *     A.)floid_buffer = floid
+  *     B.)for each floidEntry >0
+  *       a.)for each foodEntry next to floidEntry
+  *         i.)(old)floid.foodEntry += floidEntry.value [max at foodEntry.value]
+  *         i.)floid.foodEntry++;
+  *     C.)for each floid_bufferEntry
+  *       a.)set floidEntry = 0
   *       b.)set foodEntry = 0
   *     D.)for each food
   *       a.)if foodEntry = 1 delete
   *       b.)WaterEntry-=1
-  *   5.)for each waterEntry
+  *   5.)for each floidEntry
   *     A.) delete
   */
   int[][] sim(final int[][] template,final int[][] temp_template_,String group)
@@ -123,13 +123,13 @@ public class OrganicSim extends Simulation
     //(A)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
-        setEntry("water_buffer",i,j,getEntry("water",i,j));
+        setEntry("floid_buffer",i,j,getEntry("floid",i,j));
     
     //(B)
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(getEntry("water",i,j)<=0)
+        if(getEntry("floid",i,j)<=0)
           continue;
         
         for(int k = 0; k<4; k++)
@@ -141,19 +141,19 @@ public class OrganicSim extends Simulation
           if(getEntry("organics",x,y)==0)
             continue;
           
-          //setEntry("water",x,y,getEntry("water",i,j));
-          setEntry("water",x,y,getEntry("water",x,y)+1);
-          if(getEntry("water",x,y)>getEntry("organics",x,y))
-            setEntry("water",x,y,getEntry("organics",x,y));
+          //setEntry("floid",x,y,getEntry("floid",i,j));
+          setEntry("floid",x,y,getEntry("floid",x,y)+1);
+          if(getEntry("floid",x,y)>getEntry("organics",x,y))
+            setEntry("floid",x,y,getEntry("organics",x,y));
         }
       }
   
     for(int i = 0; i<size; i++)
       for(int j = 0; j<size; j++)
       {
-        if(getEntry("water_buffer",i,j)>0)
+        if(getEntry("floid_buffer",i,j)>0)
         {
-          setEntry("water",i,j,0);
+          setEntry("floid",i,j,0);
           setEntry("organics",i,j,0);
         }
 

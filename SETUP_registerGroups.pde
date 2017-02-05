@@ -31,7 +31,7 @@ public void registerGroups()
 
   /*String[] liquid_tiles =
   {
-    "Lake0","Lake1","Lake2","Lake3","Alga0","Alga1"
+    "Lake0","Lake1","Lake2","Lake3","Spawn0","Spawn1"
   };
   objectManager.registerGroup("liquidTiles",liquid_tiles);*/
 
