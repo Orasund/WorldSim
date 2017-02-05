@@ -33,5 +33,12 @@
     "amounts":[10,5,40],
     "ground":"Ground",
     "variance":2
+  },
+  "Lava":
+  {
+    "names":["mechanical","rock"],
+    "amounts":[60,20],
+    "ground":"Gravel",
+    "variance":2
   }
 }

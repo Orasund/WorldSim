@@ -16,7 +16,7 @@
     "group":"plants"
   },
   {
-    "name":"Fuel",
+    "name":"Energy",
     "template_type":"plant",
     "elements":[0,10,10,5],
     "variance":1,
