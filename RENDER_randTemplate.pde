@@ -1,4 +1,4 @@
-int[][] randTemplate(int stone, int water, int life, int energy)
+int[][] randTemplate(int stone, int water, int life, int power)
 {
   int template[][] = new int[8][8];
   for(int i=0;i<8;i++)
@@ -9,7 +9,7 @@ int[][] randTemplate(int stone, int water, int life, int energy)
     for(int j=0;j<8;j++)
     {
       float rand = random(100);
-      int[] elements = {stone,water,life,energy};
+      int[] elements = {stone,water,life,power};
       int type = 4;
       for(int k=0;k<4;k++)
       {

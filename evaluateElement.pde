@@ -1,6 +1,6 @@
 Part evaluateElement(int id)
 {
-  String[] names = {"space",    "base",         "source",       "life",       "energy"};
+  String[] names = {"space",    "base",         "source",       "life",       "power"};
   color[] colors = {color(0,0,0),color(40,40,40),color(0,0,255),color(0,80,0),color(255,20,20)};
   color c = colors[id];
   Set<String> types = new Set<String>();

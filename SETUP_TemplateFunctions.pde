@@ -104,9 +104,9 @@ Part createChunkByVariance(int[] amount_, int variance, String[] names_, String 
   return evaluateChunk(out,group_name);
 }
 
-int[][] plantTemplate(int stone, int water, int life, int energy)
+int[][] plantTemplate(int stone, int water, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,energy);
+  int[][] out = randTemplate(stone,water,life,power);
   
   for(int i=0;i<2;i++)
     for(int j=0;j<2;j++)
@@ -124,15 +124,15 @@ int[][] plantTemplate(int stone, int water, int life, int energy)
   return out;
 }
 
-int[][] groundTemplate(int stone, int water, int life, int energy)
+int[][] groundTemplate(int stone, int water, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,energy);
+  int[][] out = randTemplate(stone,water,life,power);
   return out;
 }
 
-int[][] solidTemplate(int stone, int water, int life, int energy)
+int[][] solidTemplate(int stone, int water, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,energy);
+  int[][] out = randTemplate(stone,water,life,power);
   
   for(int i=0;i<8;i++)
   {

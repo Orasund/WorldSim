@@ -1312,7 +1312,7 @@ public void drawPartGrid(int x, int y, int frame, int[][] blocks, String group)
       for(int j=0;j<8;j++)
         Tiles[blocks[i][j]].drawFrame(x*8+i,y*8+j,frame);
   }*/
-public int[][] randTemplate(int stone, int water, int life, int energy)
+public int[][] randTemplate(int stone, int water, int life, int power)
 {
   int template[][] = new int[8][8];
   for(int i=0;i<8;i++)
@@ -1323,7 +1323,7 @@ public int[][] randTemplate(int stone, int water, int life, int energy)
     for(int j=0;j<8;j++)
     {
       float rand = random(100);
-      int[] elements = {stone,water,life,energy};
+      int[] elements = {stone,water,life,power};
       int type = 4;
       for(int k=0;k<4;k++)
       {
@@ -1635,9 +1635,9 @@ public Part createChunkByVariance(int[] amount_, int variance, String[] names_, 
   return evaluateChunk(out,group_name);
 }
 
-public int[][] plantTemplate(int stone, int water, int life, int energy)
+public int[][] plantTemplate(int stone, int water, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,energy);
+  int[][] out = randTemplate(stone,water,life,power);
   
   for(int i=0;i<2;i++)
     for(int j=0;j<2;j++)
@@ -1655,15 +1655,15 @@ public int[][] plantTemplate(int stone, int water, int life, int energy)
   return out;
 }
 
-public int[][] groundTemplate(int stone, int water, int life, int energy)
+public int[][] groundTemplate(int stone, int water, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,energy);
+  int[][] out = randTemplate(stone,water,life,power);
   return out;
 }
 
-public int[][] solidTemplate(int stone, int water, int life, int energy)
+public int[][] solidTemplate(int stone, int water, int life, int power)
 {
-  int[][] out = randTemplate(stone,water,life,energy);
+  int[][] out = randTemplate(stone,water,life,power);
   
   for(int i=0;i<8;i++)
   {
@@ -1740,7 +1740,7 @@ public void registerElements()
 {
   ObjectManager objectManager = GAME.getObjectManager();
   
-  String[] elements = {"space","base","source","life","energy"};
+  String[] elements = {"space","base","source","life","power"};
   for(int i = 0; i<5; i++)
     objectManager.registerPart(elements[i], evaluateElement(i));
   objectManager.registerGroup("elements",elements);
@@ -1952,16 +1952,16 @@ public class BaseSim extends Simulation
     return simBase(template,temp_template_,group,this);
   }
 }
-public class EnergySim extends Simulation
+public class PowerSim extends Simulation
 {
-  EnergySim(final int[][] template,String group)
+  PowerSim(final int[][] template,String group)
   {
     super(0);
   }
 
   public int[][] simOld(final int[][] template,final int[][] temp_template_,String group)
   {
-    return simEnergy(template,temp_template_,group,this);
+    return simPower(template,temp_template_,group,this);
   }
 }
 public class LifeSim extends Simulation
@@ -2205,7 +2205,7 @@ public int[][] simBase(final int[][] template,final int[][] temp_template_,Strin
     
   return temp_template;
 }
-public Simulation initEnergySim(final int[][] template,String group)
+public Simulation initPowerSim(final int[][] template,String group)
 {
   String[] names = {};
   return new Simulation(names);
@@ -2214,10 +2214,10 @@ public Simulation initEnergySim(final int[][] template,String group)
 /****************************
 *
 * (1)if next to Life
-*   chance Life to Energy
+*   chance Life to Power
 *
-* (2)if exactly one Energy is next to it
-*   create Energy on oposit side.
+* (2)if exactly one Power is next to it
+*   create Power on oposit side.
 *   if not possible
 *     chance to Life
 *
@@ -2225,7 +2225,7 @@ public Simulation initEnergySim(final int[][] template,String group)
 *   chance to life
 *
 ****************************/
-public int[][] simEnergy(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+public int[][] simPower(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y;
@@ -2992,9 +2992,9 @@ public int[][] iterateTile(final int[][] template, final int[][] temp_template_)
   Simulation lifeSim = initLifeSim(template,group);
   Simulation sourceSim = initSourceSim(template,group);
   Simulation baseSim = initBaseSim(template,group);
-  Simulation energySim = initEnergySim(template,group);
+  Simulation powerSim = initPowerSim(template,group);
   
-  temp_template = simEnergy(template,temp_template,group,energySim);
+  temp_template = simPower(template,temp_template,group,powerSim);
   temp_template = simLife(template,temp_template,group,lifeSim);
   temp_template = simSource(template,temp_template,group,sourceSim);
   temp_template = simBase(template,temp_template,group,baseSim);
@@ -3196,7 +3196,7 @@ public Part evaluateChunk(final int[][] template_,String group_)
 }
 public Part evaluateElement(int id)
 {
-  String[] names = {"space",    "base",         "source",       "life",       "energy"};
+  String[] names = {"space",    "base",         "source",       "life",       "power"};
   int[] colors = {color(0,0,0),color(40,40,40),color(0,0,255),color(0,80,0),color(255,20,20)};
   int c = colors[id];
   Set<String> types = new Set<String>();
@@ -3251,7 +3251,7 @@ public Part evaluateTile(int[][] template)
   String group = "elements";
 
   simulationManager.newSession(group);
-  //simulationManager.add("Energy",new EnergySim(template,group));
+  //simulationManager.add("Power",new PowerSim(template,group));
   //simulationManager.add("Life",new LifeSim(template,group));
   simulationManager.add("Source",new SourceSim(template,group));
 

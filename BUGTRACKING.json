@@ -13,5 +13,10 @@
     "title":"ungenützte Tiles werden nicht gelöscht",
     "reason":"dafür benötigt man einen Listener der sich merk wie viele Tile gerade genützt werden.",
     "solved":"false"
+  },
+  {
+    "title":"Spiel stürzt ab wenn außerhalb des Randes",
+    "reason":"Hitdetection sollte das Problem lösen.",
+    "solved":"false"
   }
 ]

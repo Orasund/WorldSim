@@ -1,4 +1,4 @@
-Simulation initEnergySim(final int[][] template,String group)
+Simulation initPowerSim(final int[][] template,String group)
 {
   String[] names = {};
   return new Simulation(names);
@@ -7,10 +7,10 @@ Simulation initEnergySim(final int[][] template,String group)
 /****************************
 *
 * (1)if next to Life
-*   chance Life to Energy
+*   chance Life to Power
 *
-* (2)if exactly one Energy is next to it
-*   create Energy on oposit side.
+* (2)if exactly one Power is next to it
+*   create Power on oposit side.
 *   if not possible
 *     chance to Life
 *
@@ -18,7 +18,7 @@ Simulation initEnergySim(final int[][] template,String group)
 *   chance to life
 *
 ****************************/
-int[][] simEnergy(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
+int[][] simPower(final int[][] template,final int[][] temp_template_,String group,Simulation sim)
 {
   int[][] dir = {{-1,0},{0,-1},{1,0},{0,1}};
   int x,y;

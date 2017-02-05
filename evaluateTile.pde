@@ -23,7 +23,7 @@ Part evaluateTile(int[][] template)
   String group = "elements";
 
   simulationManager.newSession(group);
-  //simulationManager.add("Energy",new EnergySim(template,group));
+  //simulationManager.add("Power",new PowerSim(template,group));
   //simulationManager.add("Life",new LifeSim(template,group));
   simulationManager.add("Source",new SourceSim(template,group));
 
