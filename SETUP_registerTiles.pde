@@ -1,44 +1,28 @@
-public void registerTiles()
+public void registerTiles(JSONArray file)
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
-  setupManager.clear();
-
-  String[] groups = {"background","organism","reaction","mineral","liquid"};
-  for(int i=0; i<groups.length; i++)
-    setupManager.addGroup(groups[i]);
-
-  JSONArray tiles = loadJSONArray("tile.json");
 
   int fails = 0;
-  JSONObject tile;
-  JSONArray elements_arr;
-  JSONArray types_arr;
+
+  JSONObjectHandler entry;
   String name;
   String template_type;
   int[] elements;
-  int[][] template;
   int variance;
   String[] types;
   Part obj;
   String group;
 
-  for(int i = 0; i < tiles.size(); i++)
+  for(int i = 0; i < file.size(); i++)
   {
-    tile = tiles.getJSONObject(i);
-    elements_arr = tile.getJSONArray("elements");
-    types_arr = tile.getJSONArray("types");
-
-    name = tile.getString("name");
-    template_type = tile.getString("template_type");
-    variance = tile.getInt("variance");
-    elements = new int[4];
-    for(int j=0; j<4; j++)
-      elements[j] = elements_arr.getInt(j);
-    types = new String[types_arr.size()];
-    for(int j=0; j<types_arr.size(); j++)
-      types[j] = types_arr.getString(j);
-    group = tile.getString("group");
+    entry = new JSONObjectHandler(file.getJSONObject(i));
+    name = entry.getString("name");
+    template_type = entry.getString("template_type");
+    variance = entry.getInt("variance");
+    elements = entry.getIntArray("elements");
+    types = entry.getStringArray("types");
+    group = entry.getString("group");
 
     for(int j = 0; j < variance; j++)
     {
@@ -58,22 +42,5 @@ public void registerTiles()
       objectManager.registerPart(name+j, obj);
     }
   }
-
-  JSONObject json = loadJSONObject("template.json");
-  String[] template_names = {"custom1","custom2","floor"};
-  JSONArray table,row;
-  for(int i=0; i<template_names.length; i++)
-  {
-    template = new int[SIZE][SIZE];
-    table = json.getJSONArray(template_names[i]);
-    for(int j=0; j<SIZE; j++)
-    {
-      row = table.getJSONArray(j);
-      for(int k=0; k<SIZE; k++)
-        template[k][j] = row.getInt(k);
-    }
-    objectManager.registerPart(template_names[i],evaluateTile(template));
-  }
-
   println("fails in registerTiles:"+fails);
 }

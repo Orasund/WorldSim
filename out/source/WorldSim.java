@@ -800,6 +800,45 @@ public class InputHandler// implements Service
       inputs.remove(input_);
   }
 }
+public class JSONObjectHandler
+{
+  JSONObject obj;
+
+  JSONObjectHandler(JSONObject obj_)
+  {
+    obj = obj_;
+  }
+
+  public String[] getStringArray(String name)
+  {
+    JSONArray file = obj.getJSONArray(name);
+    int size = file.size();
+    String[] arr = new String[size];
+    for(int i=0; i<size; i++)
+      arr[i] = file.getString(i);
+    return arr;
+  }
+
+  public int[] getIntArray(String name)
+  {
+    JSONArray file = obj.getJSONArray(name);
+    int size = file.size();
+    int[] arr = new int[size];
+    for(int i=0; i<size; i++)
+      arr[i] = file.getInt(i);
+    return arr;
+  }
+
+  public String getString(String name)
+  {
+    return obj.getString(name);
+  }
+
+  public int getInt(String name)
+  {
+    return obj.getInt(name);
+  }
+}
 class Map
 {
   private int[][] map;
@@ -1752,38 +1791,52 @@ public void gameSetup()
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
-  JSONArray blocks = loadJSONArray("block.json");
+  setupManager.clear();
 
-  JSONObject block;
-  JSONArray names_arr;
+  String[] groups = {"background","organism","reaction","mineral","liquid"};
+  for(int i=0; i<groups.length; i++)
+    setupManager.addGroup(groups[i]);
+
+  JSONArray file = loadJSONArray("block.json");
+
+  //JSON Structure
+  JSONObject entry;
+  JSONArray parts_arr;
+  JSONArray amounts_arr;
+  String name;
+  String[] parts;
+  int[] amounts;
+  int variance;
+
+
 
   JSONArray elements_arr;
   JSONArray types_arr;
-  String name;
+
   String template_type;
   int[] elements;
   int[][] template;
-  int variance;
+
   String[] types;
   Part obj;
   String group;
 
-  for(int i = 0; i < blocks.size(); i++)
+  for(int i = 0; i < file.size(); i++)
   {
-    block = blocks.getJSONObject(i);
-    elements_arr = block.getJSONArray("elements");
-    types_arr = block.getJSONArray("types");
+    entry = file.getJSONObject(i);
+    elements_arr = entry.getJSONArray("elements");
+    types_arr = entry.getJSONArray("types");
 
-    name = block.getString("name");
-    template_type = block.getString("template_type");
-    variance = block.getInt("variance");
+    name = entry.getString("name");
+    template_type = entry.getString("template_type");
+    variance = entry.getInt("variance");
     elements = new int[4];
     for(int j=0; j<4; j++)
       elements[j] = elements_arr.getInt(j);
     types = new String[types_arr.size()];
     for(int j=0; j<types_arr.size(); j++)
       types[j] = types_arr.getString(j);
-    group = block.getString("group");
+    group = entry.getString("group");
 
     for(int j = 0; j < variance; j++)
     {
@@ -1820,7 +1873,7 @@ public void gameSetup()
     objectManager.registerPart(template_names[i],evaluateblock(template));
   }
 
-  println("fails in registerblocks:"+fails);
+  println("fails in registerBlocks:"+fails);
 }*/
 public void registerChunk()
 {
@@ -1896,6 +1949,33 @@ public void registerChunk()
   };
   objectManager.registerGroup("ship",ship);
 }
+public void registerCustomTiles()
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+
+  int[][] template;
+  JSONObject json = loadJSONObject("template.json");
+  String[] template_names = {"custom1","custom2","floor"};
+  JSONArray table,row;
+  for(int i=0; i<template_names.length; i++)
+  {
+    template = new int[SIZE][SIZE];
+    table = json.getJSONArray(template_names[i]);
+    for(int j=0; j<SIZE; j++)
+    {
+      row = table.getJSONArray(j);
+      for(int k=0; k<SIZE; k++)
+        template[k][j] = row.getInt(k);
+    }
+    objectManager.registerPart(template_names[i],evaluateTile(template));
+  }
+
+  String[] ship_tiles = 
+  {
+    "floor","custom2","Air0","Energy0"
+  };
+  objectManager.registerGroup("shipTiles",ship_tiles);
+}
 public void registerElements()
 {
   ObjectManager objectManager = GAME.getObjectManager();
@@ -1905,81 +1985,71 @@ public void registerElements()
     objectManager.registerPart(elements[i], evaluateElement(i));
   objectManager.registerGroup("elements",elements);
 }
-public void registerGroups()
-{
-  ObjectManager objectManager = GAME.getObjectManager();
-  SetupManager setupManager = GAME.getSetupManager();
-
-  String[] group;
-  group = setupManager.getGroup("organism");
-  objectManager.registerGroup("organicTiles",group);
-
-  group = setupManager.getGroup("mineral");
-  objectManager.registerGroup("mineralTiles",group);
-
-  group = setupManager.getGroup("liquid");
-  objectManager.registerGroup("liquidTiles",group);
-
-  group = setupManager.getGroup("background");
-  objectManager.registerGroup("backgroundTiles",group);
-
-  group = setupManager.getGroup("reaction");
-  objectManager.registerGroup("reactionTiles",group);
-
-  String[] ship_tiles = 
-  {
-    "floor","custom2","Air0","Energy0"
-  };
-  objectManager.registerGroup("shipTiles",ship_tiles);
-}
 public void registerObjects()
 {
   registerElements();
-  registerTiles();
-  registerGroups();
-  registerChunk();
-}
-public void registerTiles()
-{
+
+  //registerTiles
+  //TODO:make a generall Function for all Parts
+  String[] groups = {"background","organism","reaction","mineral","liquid"};
+  String part_name = "Tile";
+
+
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
   setupManager.clear();
+
+  for(int i=0; i<groups.length; i++)
+    setupManager.addGroup(groups[i]);
+  
+  JSONArray file = loadJSONArray("Tile.json");
+  registerTiles(file);
+
+  String[] new_group;
+  for(int i=0; i<groups.length; i++)
+  {
+    new_group = setupManager.getGroup(groups[i]);
+    objectManager.registerGroup(groups[i]+"Tiles",new_group);
+  }
+  registerCustomTiles();
+  //registerTiles END
+  
+  registerChunk();
+}
+public void registerTiles(JSONArray file)
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+  SetupManager setupManager = GAME.getSetupManager();
+  /*setupManager.clear();
 
   String[] groups = {"background","organism","reaction","mineral","liquid"};
   for(int i=0; i<groups.length; i++)
     setupManager.addGroup(groups[i]);
 
-  JSONArray tiles = loadJSONArray("tile.json");
+  JSONArray file = loadJSONArray("tile.json");*/
 
   int fails = 0;
-  JSONObject tile;
-  JSONArray elements_arr;
-  JSONArray types_arr;
-  String name;
-  String template_type;
-  int[] elements;
-  int[][] template;
-  int variance;
-  String[] types;
-  Part obj;
-  String group;
 
-  for(int i = 0; i < tiles.size(); i++)
+  for(int i = 0; i < file.size(); i++)
   {
-    tile = tiles.getJSONObject(i);
-    elements_arr = tile.getJSONArray("elements");
-    types_arr = tile.getJSONArray("types");
+    
+    JSONObjectHandler entry;
+    String name;
+    String template_type;
+    int[] elements;
+    //int[][] template;
+    int variance;
+    String[] types;
+    Part obj;
+    String group;
 
-    name = tile.getString("name");
-    template_type = tile.getString("template_type");
-    variance = tile.getInt("variance");
-    elements = new int[4];
-    for(int j=0; j<4; j++)
-      elements[j] = elements_arr.getInt(j);
-    types = new String[types_arr.size()];
-    for(int j=0; j<types_arr.size(); j++)
-      types[j] = types_arr.getString(j);
-    group = tile.getString("group");
+    entry = new JSONObjectHandler(file.getJSONObject(i));
+    name = entry.getString("name");
+    template_type = entry.getString("template_type");
+    variance = entry.getInt("variance");
+    elements = entry.getIntArray("elements");
+    types = entry.getStringArray("types");
+    group = entry.getString("group");
 
     for(int j = 0; j < variance; j++)
     {
@@ -1999,6 +2069,15 @@ public void registerTiles()
       objectManager.registerPart(name+j, obj);
     }
   }
+  println("fails in registerTiles:"+fails);
+
+  /*register Groups*/
+  /*String[] new_group;
+  for(int i=0; i<groups.length; i++)
+  {
+    new_group = setupManager.getGroup(groups[i]);
+    objectManager.registerGroup(groups[i]+"Tiles",new_group);
+  }
 
   JSONObject json = loadJSONObject("template.json");
   String[] template_names = {"custom1","custom2","floor"};
@@ -2017,6 +2096,12 @@ public void registerTiles()
   }
 
   println("fails in registerTiles:"+fails);
+
+  String[] ship_tiles = 
+  {
+    "floor","custom2","Air0","Energy0"
+  };
+  objectManager.registerGroup("shipTiles",ship_tiles);*/
 }
 public class BaseSim extends Simulation
 {

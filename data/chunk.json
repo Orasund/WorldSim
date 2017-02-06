@@ -1,14 +1,14 @@
 {
   "Plain":
   {
-    "names":["liquid","organic","mineral"],
+    "names":["liquid","organism","mineral"],
     "amounts":[4,40,1],
     "ground":"Dirt",
     "variance":4
   },
   "Swamp":
   {
-    "names":["liquid","organic"],
+    "names":["liquid","organism"],
     "amounts":[50,0],
     "ground":"Dirt",
     "variance":3
@@ -29,7 +29,7 @@
   },
   "Forest":
   {
-    "names":["liquid","mineral","organic"],
+    "names":["liquid","mineral","organism"],
     "amounts":[10,5,40],
     "ground":"Dirt",
     "variance":2

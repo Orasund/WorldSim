@@ -2,38 +2,52 @@
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
-  JSONArray blocks = loadJSONArray("block.json");
+  setupManager.clear();
 
-  JSONObject block;
-  JSONArray names_arr;
+  String[] groups = {"background","organism","reaction","mineral","liquid"};
+  for(int i=0; i<groups.length; i++)
+    setupManager.addGroup(groups[i]);
+
+  JSONArray file = loadJSONArray("block.json");
+
+  //JSON Structure
+  JSONObject entry;
+  JSONArray parts_arr;
+  JSONArray amounts_arr;
+  String name;
+  String[] parts;
+  int[] amounts;
+  int variance;
+
+
 
   JSONArray elements_arr;
   JSONArray types_arr;
-  String name;
+
   String template_type;
   int[] elements;
   int[][] template;
-  int variance;
+
   String[] types;
   Part obj;
   String group;
 
-  for(int i = 0; i < blocks.size(); i++)
+  for(int i = 0; i < file.size(); i++)
   {
-    block = blocks.getJSONObject(i);
-    elements_arr = block.getJSONArray("elements");
-    types_arr = block.getJSONArray("types");
+    entry = file.getJSONObject(i);
+    elements_arr = entry.getJSONArray("elements");
+    types_arr = entry.getJSONArray("types");
 
-    name = block.getString("name");
-    template_type = block.getString("template_type");
-    variance = block.getInt("variance");
+    name = entry.getString("name");
+    template_type = entry.getString("template_type");
+    variance = entry.getInt("variance");
     elements = new int[4];
     for(int j=0; j<4; j++)
       elements[j] = elements_arr.getInt(j);
     types = new String[types_arr.size()];
     for(int j=0; j<types_arr.size(); j++)
       types[j] = types_arr.getString(j);
-    group = block.getString("group");
+    group = entry.getString("group");
 
     for(int j = 0; j < variance; j++)
     {
@@ -70,5 +84,5 @@
     objectManager.registerPart(template_names[i],evaluateblock(template));
   }
 
-  println("fails in registerblocks:"+fails);
+  println("fails in registerBlocks:"+fails);
 }*/
