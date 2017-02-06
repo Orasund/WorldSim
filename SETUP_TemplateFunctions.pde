@@ -1,22 +1,5 @@
 Part createChunk(String name)
 {
-  /*JSONObject json = loadJSONObject("chunk.json");
-  JSONObject chunk = json.getJSONObject(name);
-  JSONArray arr1 = chunk.getJSONArray("names");
-  JSONArray arr2 = chunk.getJSONArray("amounts");
-  String[] names = new String[arr1.size()];
-  int[] amounts = new int[arr2.size()];
-
-  for(int i=0; i<arr1.size(); i++)
-  {
-    names[i] = arr1.getString(i);
-    amounts[i] = arr2.getInt(i);
-  }
-
-  int variance = chunk.getInt("variance");
-  String group = chunk.getString("group");
-  return createChunkByVariance(amounts,variance,names,group);*/
-
   ObjectManager objectManager = GAME.getObjectManager();
   JSONObject chunk = loadJSONObject("chunk.json").getJSONObject(name); 
 
@@ -104,7 +87,7 @@ Part createChunkByVariance(int[] amount_, int variance, String[] names_, String 
   return evaluateChunk(out,group_name);
 }
 
-int[][] plantTemplate(int base, int source, int life, int power)
+int[][] seedTemplate(int base, int source, int life, int power)
 {
   int[][] out = randTemplate(base,source,life,power);
   
@@ -124,13 +107,13 @@ int[][] plantTemplate(int base, int source, int life, int power)
   return out;
 }
 
-int[][] groundTemplate(int base, int source, int life, int power)
+int[][] defaultTemplate(int base, int source, int life, int power)
 {
   int[][] out = randTemplate(base,source,life,power);
   return out;
 }
 
-int[][] solidTemplate(int base, int source, int life, int power)
+int[][] frameTemplate(int base, int source, int life, int power)
 {
   int[][] out = randTemplate(base,source,life,power);
   

@@ -3,21 +3,21 @@
   {
     "names":["liquid","organic","mineral"],
     "amounts":[4,40,1],
-    "ground":"Ground",
+    "ground":"Dirt",
     "variance":4
   },
   "Swamp":
   {
     "names":["liquid","organic"],
     "amounts":[50,0],
-    "ground":"Ground",
+    "ground":"Dirt",
     "variance":3
   },
   "Sea":
   {
     "names":["liquid"],
     "amounts":[70],
-    "ground":"Ground",
+    "ground":"Dirt",
     "variance":2
   },
   "Hill":
@@ -31,7 +31,7 @@
   {
     "names":["liquid","mineral","organic"],
     "amounts":[10,5,40],
-    "ground":"Ground",
+    "ground":"Dirt",
     "variance":2
   },
   "Lava":

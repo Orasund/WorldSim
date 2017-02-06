@@ -1,45 +1,49 @@
-{
-  "Grass":
+[
   {
-    "names":["liquid","organic","mineral"],
+    "name":"Grass",
+    "parts":["liquid","organic","mineral"],
     "amounts":[4,40,1],
-    "ground":"Ground",
-    "group":"spaceBlock",
+    "ground":"Dirt",
+    "group":"ground",
     "variance":1
   },
-  "Alga":
   {
-    "names":["liquid","organic"],
+    "name":"Alga",
+    "parts":["liquid","organic"],
     "amounts":[50,0],
-    "ground":"Ground",
+    "ground":"Dirt",
+    "group":"marine_life",
     "variance":1
   },
-  "Lake":
   {
-    "names":["liquid"],
+    "name":"Lake",
+    "parts":["liquid"],
     "amounts":[70],
-    "ground":"Ground",
+    "ground":"Dirt",
+    "group":"marine_life",
     "variance":1
   },
-  "mineral":
   {
-    "names":["liquid","mineral"],
+    "name":"Rock",
+    "parts":["liquid","mineral"],
     "amounts":[5,65],
     "ground":"Gravel",
+    "group":"resource",
     "variance":1
   },
-  "Bush":
   {
-    "names":["liquid","mineral","organic"],
+    "name":"Bush",
+    "parts":["liquid","mineral","organic"],
     "amounts":[10,5,40],
-    "ground":"Ground",
+    "ground":"Dirt",
+    "group":"flora",
     "variance":1
   },
-  "Magma":
   {
-    "names":["reaction","mineral"],
+    "name":"Magma",
+    "parts":["reaction","mineral"],
     "amounts":[60,20],
     "ground":"Gravel",
     "variance":1
   }
-}
+]

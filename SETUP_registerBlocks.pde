@@ -1,17 +1,12 @@
-public void registerTiles()
+/*public void registerBlocks()
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
-  setupManager.clear();
+  JSONArray blocks = loadJSONArray("block.json");
 
-  String[] groups = {"background","organism","reaction","mineral","liquid"};
-  for(int i=0; i<groups.length; i++)
-    setupManager.addGroup(groups[i]);
+  JSONObject block;
+  JSONArray names_arr;
 
-  JSONArray tiles = loadJSONArray("tile.json");
-
-  int fails = 0;
-  JSONObject tile;
   JSONArray elements_arr;
   JSONArray types_arr;
   String name;
@@ -23,26 +18,26 @@ public void registerTiles()
   Part obj;
   String group;
 
-  for(int i = 0; i < tiles.size(); i++)
+  for(int i = 0; i < blocks.size(); i++)
   {
-    tile = tiles.getJSONObject(i);
-    elements_arr = tile.getJSONArray("elements");
-    types_arr = tile.getJSONArray("types");
+    block = blocks.getJSONObject(i);
+    elements_arr = block.getJSONArray("elements");
+    types_arr = block.getJSONArray("types");
 
-    name = tile.getString("name");
-    template_type = tile.getString("template_type");
-    variance = tile.getInt("variance");
+    name = block.getString("name");
+    template_type = block.getString("template_type");
+    variance = block.getInt("variance");
     elements = new int[4];
     for(int j=0; j<4; j++)
       elements[j] = elements_arr.getInt(j);
     types = new String[types_arr.size()];
     for(int j=0; j<types_arr.size(); j++)
       types[j] = types_arr.getString(j);
-    group = tile.getString("group");
+    group = block.getString("group");
 
     for(int j = 0; j < variance; j++)
     {
-      obj = createTile(elements,template_type);
+      obj = createblock(elements,template_type);
 
       setupManager.addPartToGroup(group,name+j);
 
@@ -51,7 +46,7 @@ public void registerTiles()
         if(obj.is(types[l]) == false)
         {
           fails++;
-          obj = createTile(elements,template_type);
+          obj = createblock(elements,template_type);
           break;
         }
       }
@@ -72,8 +67,8 @@ public void registerTiles()
       for(int k=0; k<SIZE; k++)
         template[k][j] = row.getInt(k);
     }
-    objectManager.registerPart(template_names[i],evaluateTile(template));
+    objectManager.registerPart(template_names[i],evaluateblock(template));
   }
 
-  println("fails in registerTiles:"+fails);
-}
+  println("fails in registerblocks:"+fails);
+}*/

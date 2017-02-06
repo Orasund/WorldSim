@@ -1,7 +1,7 @@
 [
  {
     "name":"Air",
-    "template_type":"ground",
+    "template_type":"default",
     "elements":[0,0,0,0],
     "variance":1,
     "types":[],
@@ -9,7 +9,7 @@
   },
   {
     "name":"Cell",
-    "template_type":"plant",
+    "template_type":"seed",
     "elements":[0,10,10,0],
     "variance":4,
     "types":["organic"],
@@ -17,7 +17,7 @@
   },
   {
     "name":"Energy",
-    "template_type":"plant",
+    "template_type":"seed",
     "elements":[0,10,10,5],
     "variance":1,
     "types":[],
@@ -25,15 +25,15 @@
   },
   {
     "name":"Moss",
-    "template_type":"solid",
+    "template_type":"frame",
     "elements":[30,20,20,0],
     "variance":1,
     "types":[],
     "group":"mineral"
   },
   {
-    "name":"Ground",
-    "template_type":"ground",
+    "name":"Dirt",
+    "template_type":"default",
     "elements":[10,0,0,0],
     "variance":1,
     "types":[],
@@ -41,7 +41,7 @@
   },
   {
     "name":"Water",
-    "template_type":"ground",
+    "template_type":"default",
     "elements":[0,50,0,0],
     "variance":4,
     "types":["floid"],
@@ -49,7 +49,7 @@
   },
   {
     "name":"Stone",
-    "template_type":"solid",
+    "template_type":"frame",
     "elements":[80,1,0,0],
     "variance":4,
     "types":[],
@@ -57,7 +57,7 @@
   },
   {
     "name":"Spawn",
-    "template_type":"ground",
+    "template_type":"default",
     "elements":[0,10,10,0],
     "variance":2,
     "types":["organic_spawn"],
@@ -65,7 +65,7 @@
   },
   {
     "name":"Gravel",
-    "template_type":"ground",
+    "template_type":"default",
     "elements":[30,0,0,0],
     "variance":1,
     "types":[],

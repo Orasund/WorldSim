@@ -53,13 +53,6 @@ public void keyPressed()
   String out = new String(k);
   inputHandler.registerInput(out);
 }
-/*public class Block extends Tile
-{
-  Block(int[][][] img_, int[] resources_, int background_, color c_, Set<String> types_)
-  {
-    super(img_, resources_, background_, c_, types_);
-  }
-}*/
 public class OrganicSim extends Simulation
 {
   OrganicSim(final int[][] template,String group)
@@ -1531,23 +1524,6 @@ class RenderEngine// implements Service
 }
 public Part createChunk(String name)
 {
-  /*JSONObject json = loadJSONObject("chunk.json");
-  JSONObject chunk = json.getJSONObject(name);
-  JSONArray arr1 = chunk.getJSONArray("names");
-  JSONArray arr2 = chunk.getJSONArray("amounts");
-  String[] names = new String[arr1.size()];
-  int[] amounts = new int[arr2.size()];
-
-  for(int i=0; i<arr1.size(); i++)
-  {
-    names[i] = arr1.getString(i);
-    amounts[i] = arr2.getInt(i);
-  }
-
-  int variance = chunk.getInt("variance");
-  String group = chunk.getString("group");
-  return createChunkByVariance(amounts,variance,names,group);*/
-
   ObjectManager objectManager = GAME.getObjectManager();
   JSONObject chunk = loadJSONObject("chunk.json").getJSONObject(name); 
 
@@ -1635,7 +1611,7 @@ public Part createChunkByVariance(int[] amount_, int variance, String[] names_, 
   return evaluateChunk(out,group_name);
 }
 
-public int[][] plantTemplate(int base, int source, int life, int power)
+public int[][] seedTemplate(int base, int source, int life, int power)
 {
   int[][] out = randTemplate(base,source,life,power);
   
@@ -1655,13 +1631,13 @@ public int[][] plantTemplate(int base, int source, int life, int power)
   return out;
 }
 
-public int[][] groundTemplate(int base, int source, int life, int power)
+public int[][] defaultTemplate(int base, int source, int life, int power)
 {
   int[][] out = randTemplate(base,source,life,power);
   return out;
 }
 
-public int[][] solidTemplate(int base, int source, int life, int power)
+public int[][] frameTemplate(int base, int source, int life, int power)
 {
   int[][] out = randTemplate(base,source,life,power);
   
@@ -1675,20 +1651,56 @@ public int[][] solidTemplate(int base, int source, int life, int power)
   
   return out;
 }
+  /*public Part createBlock(int[] elements,String template_type)
+{
+
+  ObjectManager objectManager = GAME.getObjectManager();
+  JSONObject chunk = loadJSONObject("chunk.json").getJSONObject(name); 
+
+  String ground = chunk.getString("ground");
+  JSONArray names_arr = chunk.getJSONArray("names");
+  JSONArray amounts_arr = chunk.getJSONArray("amounts");
+  String[] names = new String[names_arr.size()];
+  int[] amounts = new int[amounts_arr.size()];
+  for(int i=0; i<names.length; i++)
+  {
+    names[i] = names_arr.getString(i);
+    amounts[i] = amounts_arr.getInt(i);
+  }
+  int variance = chunk.getInt("variance");
+
+  String[] group = new String[1+variance*names.length];
+  group[0] = ground+"0";
+  String[] parts;
+  int[] final_amounts = new int[variance*names.length];
+  for(int i = 0; i < names.length; i++)
+  {
+    parts = objectManager.getNamesByGroup(names[i]+"Tiles");
+    for(int j = 0; j < variance; j++)
+    {
+      group[1+i*variance+j] = parts[floor(random(parts.length))];
+      final_amounts[i*variance+j] = floor(amounts[i]/variance);
+    }
+  }
+  String group_name = name+"_chunktiles";
+  objectManager.registerGroup(group_name,group);
+
+  return createChunkByVariance(final_amounts,1,group,group_name);
+}*/
 public Part createTile(int[] elements,String template_type)
 {
   int[][] template;
   
   switch(template_type)
   {
-    case "plant":
-      template = plantTemplate(elements[0], elements[1], elements[2], elements[3]);
+    case "seed":
+      template = seedTemplate(elements[0], elements[1], elements[2], elements[3]);
       break;
-    case "solid":
-      template = solidTemplate(elements[0], elements[1], elements[2], elements[3]);
+    case "frame":
+      template = frameTemplate(elements[0], elements[1], elements[2], elements[3]);
       break;
     default:
-      template = groundTemplate(elements[0], elements[1], elements[2], elements[3]);
+      template = defaultTemplate(elements[0], elements[1], elements[2], elements[3]);
       break;
   }
   return evaluateTile(template);
@@ -1721,7 +1733,7 @@ public void gameSetup()
   COUNTER = 0;
   registerObjects();
 
-  TEMPLATE = solidTemplate(0,10,0,0);
+  TEMPLATE = frameTemplate(0,10,0,0);
 
   Map map = new Map("chunk");
   int POS_X = MAP_SIZE/2;
@@ -1736,65 +1748,82 @@ public void gameSetup()
   //sceneManager.addScene("template",TEMPLATE,"tiles");
   //sceneManager.chanceScene("template");
 }
-public void registerElements()
-{
-  ObjectManager objectManager = GAME.getObjectManager();
-  
-  String[] elements = {"space","base","source","life","power"};
-  for(int i = 0; i<5; i++)
-    objectManager.registerPart(elements[i], evaluateElement(i));
-  objectManager.registerGroup("elements",elements);
-}
-public void registerGroups()
+/*public void registerBlocks()
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
+  JSONArray blocks = loadJSONArray("block.json");
 
-  String[] group;
-  group = setupManager.getGroup("organism");
-  objectManager.registerGroup("organicTiles",group);
+  JSONObject block;
+  JSONArray names_arr;
 
-  group = setupManager.getGroup("mineral");
-  objectManager.registerGroup("mineralTiles",group);
+  JSONArray elements_arr;
+  JSONArray types_arr;
+  String name;
+  String template_type;
+  int[] elements;
+  int[][] template;
+  int variance;
+  String[] types;
+  Part obj;
+  String group;
 
-  group = setupManager.getGroup("liquid");
-  objectManager.registerGroup("liquidTiles",group);
-
-  group = setupManager.getGroup("background");
-  objectManager.registerGroup("backgroundTiles",group);
-
-  group = setupManager.getGroup("reaction");
-  objectManager.registerGroup("reactionTiles",group);
-
-  /*String[] organic_tiles = 
-  {"Bush0","Bush1","Bush2","Bush3"};
-  objectManager.registerGroup("organicTiles",organic_tiles);*/
-
-  /*String[] mineral_tiles =
+  for(int i = 0; i < blocks.size(); i++)
   {
-    "Stone0","Stone1","Stone2","Stone3","Moss0","Gravel0"
-  };
-  objectManager.registerGroup("mineralTiles",mineral_tiles);*/
+    block = blocks.getJSONObject(i);
+    elements_arr = block.getJSONArray("elements");
+    types_arr = block.getJSONArray("types");
 
-  /*String[] liquid_tiles =
-  {
-    "Lake0","Lake1","Lake2","Lake3","Spawn0","Spawn1"
-  };
-  objectManager.registerGroup("liquidTiles",liquid_tiles);*/
+    name = block.getString("name");
+    template_type = block.getString("template_type");
+    variance = block.getInt("variance");
+    elements = new int[4];
+    for(int j=0; j<4; j++)
+      elements[j] = elements_arr.getInt(j);
+    types = new String[types_arr.size()];
+    for(int j=0; j<types_arr.size(); j++)
+      types[j] = types_arr.getString(j);
+    group = block.getString("group");
 
-  String[] ship_tiles = 
+    for(int j = 0; j < variance; j++)
+    {
+      obj = createblock(elements,template_type);
+
+      setupManager.addPartToGroup(group,name+j);
+
+      for(int l = 0; l < types.length; l++)
+      {
+        if(obj.is(types[l]) == false)
+        {
+          fails++;
+          obj = createblock(elements,template_type);
+          break;
+        }
+      }
+      objectManager.registerPart(name+j, obj);
+    }
+  }
+
+  JSONObject json = loadJSONObject("template.json");
+  String[] template_names = {"custom1","custom2","floor"};
+  JSONArray table,row;
+  for(int i=0; i<template_names.length; i++)
   {
-    "floor","custom2","Air0","Energy0"
-  };
-  objectManager.registerGroup("shipTiles",ship_tiles);
-}
-public void registerObjects()
+    template = new int[SIZE][SIZE];
+    table = json.getJSONArray(template_names[i]);
+    for(int j=0; j<SIZE; j++)
+    {
+      row = table.getJSONArray(j);
+      for(int k=0; k<SIZE; k++)
+        template[k][j] = row.getInt(k);
+    }
+    objectManager.registerPart(template_names[i],evaluateblock(template));
+  }
+
+  println("fails in registerblocks:"+fails);
+}*/
+public void registerChunk()
 {
-  registerElements();
-  registerTiles();
-  registerGroups();
-  
-  /*register chunks*/
   ObjectManager objectManager = GAME.getObjectManager();
 
   int variance = 2;
@@ -1867,10 +1896,59 @@ public void registerObjects()
   };
   objectManager.registerGroup("ship",ship);
 }
+public void registerElements()
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+  
+  String[] elements = {"space","base","source","life","power"};
+  for(int i = 0; i<5; i++)
+    objectManager.registerPart(elements[i], evaluateElement(i));
+  objectManager.registerGroup("elements",elements);
+}
+public void registerGroups()
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+  SetupManager setupManager = GAME.getSetupManager();
+
+  String[] group;
+  group = setupManager.getGroup("organism");
+  objectManager.registerGroup("organicTiles",group);
+
+  group = setupManager.getGroup("mineral");
+  objectManager.registerGroup("mineralTiles",group);
+
+  group = setupManager.getGroup("liquid");
+  objectManager.registerGroup("liquidTiles",group);
+
+  group = setupManager.getGroup("background");
+  objectManager.registerGroup("backgroundTiles",group);
+
+  group = setupManager.getGroup("reaction");
+  objectManager.registerGroup("reactionTiles",group);
+
+  String[] ship_tiles = 
+  {
+    "floor","custom2","Air0","Energy0"
+  };
+  objectManager.registerGroup("shipTiles",ship_tiles);
+}
+public void registerObjects()
+{
+  registerElements();
+  registerTiles();
+  registerGroups();
+  registerChunk();
+}
 public void registerTiles()
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
+  setupManager.clear();
+
+  String[] groups = {"background","organism","reaction","mineral","liquid"};
+  for(int i=0; i<groups.length; i++)
+    setupManager.addGroup(groups[i]);
+
   JSONArray tiles = loadJSONArray("tile.json");
 
   int fails = 0;
@@ -2814,17 +2892,29 @@ public class Set<E>
   }
 }
 public class SetupManager
-{;
+{
   HashMap<String,ArrayList<String>> groups;
 
   SetupManager()
   {
     groups = new HashMap<String,ArrayList<String>>();
-    groups.put("background",new ArrayList<String>());
+    /*groups.put("background",new ArrayList<String>());
     groups.put("organism",new ArrayList<String>());
     groups.put("reaction",new ArrayList<String>());
     groups.put("mineral",new ArrayList<String>());
-    groups.put("liquid",new ArrayList<String>());
+    groups.put("liquid",new ArrayList<String>());*/
+  }
+
+  public void addGroup(String name)
+  {
+    if(groups.containsKey(name))
+      return;
+    groups.put(name,new ArrayList<String>());
+  }
+
+  public void clear()
+  {
+    groups.clear();
   }
 
   public void addPartToGroup(String name,String part)
