@@ -1903,6 +1903,11 @@ public void registerChunk()
     "ForestChunk1","ForestChunk0",
   };
   objectManager.registerGroup("chunk",chunk);
+  registerCostumChunks();
+}
+public void registerCostumChunks()
+{
+  ObjectManager objectManager = GAME.getObjectManager();
 
   //ship
   JSONObject json = loadJSONObject("ship.json");
@@ -1994,7 +1999,6 @@ public void registerObjects()
   String[] groups = {"background","organism","reaction","mineral","liquid"};
   String part_name = "Tile";
 
-
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
   setupManager.clear();
@@ -2002,14 +2006,14 @@ public void registerObjects()
   for(int i=0; i<groups.length; i++)
     setupManager.addGroup(groups[i]);
   
-  JSONArray file = loadJSONArray("Tile.json");
+  JSONArray file = loadJSONArray(part_name+".json");
   registerTiles(file);
 
   String[] new_group;
   for(int i=0; i<groups.length; i++)
   {
     new_group = setupManager.getGroup(groups[i]);
-    objectManager.registerGroup(groups[i]+"Tiles",new_group);
+    objectManager.registerGroup(groups[i]+part_name+"s",new_group);
   }
   registerCustomTiles();
   //registerTiles END
@@ -2020,29 +2024,20 @@ public void registerTiles(JSONArray file)
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
-  /*setupManager.clear();
-
-  String[] groups = {"background","organism","reaction","mineral","liquid"};
-  for(int i=0; i<groups.length; i++)
-    setupManager.addGroup(groups[i]);
-
-  JSONArray file = loadJSONArray("tile.json");*/
 
   int fails = 0;
 
+  JSONObjectHandler entry;
+  String name;
+  String template_type;
+  int[] elements;
+  int variance;
+  String[] types;
+  Part obj;
+  String group;
+
   for(int i = 0; i < file.size(); i++)
   {
-    
-    JSONObjectHandler entry;
-    String name;
-    String template_type;
-    int[] elements;
-    //int[][] template;
-    int variance;
-    String[] types;
-    Part obj;
-    String group;
-
     entry = new JSONObjectHandler(file.getJSONObject(i));
     name = entry.getString("name");
     template_type = entry.getString("template_type");
@@ -2070,38 +2065,6 @@ public void registerTiles(JSONArray file)
     }
   }
   println("fails in registerTiles:"+fails);
-
-  /*register Groups*/
-  /*String[] new_group;
-  for(int i=0; i<groups.length; i++)
-  {
-    new_group = setupManager.getGroup(groups[i]);
-    objectManager.registerGroup(groups[i]+"Tiles",new_group);
-  }
-
-  JSONObject json = loadJSONObject("template.json");
-  String[] template_names = {"custom1","custom2","floor"};
-  JSONArray table,row;
-  for(int i=0; i<template_names.length; i++)
-  {
-    template = new int[SIZE][SIZE];
-    table = json.getJSONArray(template_names[i]);
-    for(int j=0; j<SIZE; j++)
-    {
-      row = table.getJSONArray(j);
-      for(int k=0; k<SIZE; k++)
-        template[k][j] = row.getInt(k);
-    }
-    objectManager.registerPart(template_names[i],evaluateTile(template));
-  }
-
-  println("fails in registerTiles:"+fails);
-
-  String[] ship_tiles = 
-  {
-    "floor","custom2","Air0","Energy0"
-  };
-  objectManager.registerGroup("shipTiles",ship_tiles);*/
 }
 public class BaseSim extends Simulation
 {

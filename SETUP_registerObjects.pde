@@ -21,7 +21,7 @@ void registerObjects()
   for(int i=0; i<groups.length; i++)
   {
     new_group = setupManager.getGroup(groups[i]);
-    objectManager.registerGroup(groups[i]+part_name,new_group);
+    objectManager.registerGroup(groups[i]+part_name+"s",new_group);
   }
   registerCustomTiles();
   //registerTiles END
