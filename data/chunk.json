@@ -1,44 +1,44 @@
-{
-  "Plain":
+[
   {
-    "names":["liquid","organism","mineral"],
+    "name":"Plain",
+    "parts":["liquid","organism","mineral"],
     "amounts":[4,40,1],
     "ground":"Dirt",
-    "variance":4
+    "picks":4
   },
-  "Swamp":
   {
-    "names":["liquid","organism"],
+    "name":"Swamp",
+    "parts":["liquid","organism"],
     "amounts":[50,0],
     "ground":"Dirt",
-    "variance":3
+    "picks":3
   },
-  "Sea":
   {
-    "names":["liquid"],
+    "name":"Sea",
+    "parts":["liquid"],
     "amounts":[70],
     "ground":"Dirt",
-    "variance":2
+    "picks":2
   },
-  "Hill":
   {
-    "names":["liquid","mineral"],
+    "name":"Hill",
+    "parts":["liquid","mineral"],
     "amounts":[5,65],
     "ground":"Gravel",
-    "variance":2
+    "picks":2
   },
-  "Forest":
   {
-    "names":["liquid","mineral","organism"],
+    "name":"Forest",
+    "parts":["liquid","mineral","organism"],
     "amounts":[10,5,40],
     "ground":"Dirt",
-    "variance":2
+    "picks":2
   },
-  "Lava":
   {
-    "names":["reaction","mineral"],
+    "name":"Lava",
+    "parts":["reaction","mineral"],
     "amounts":[60,20],
     "ground":"Gravel",
-    "variance":2
+    "picks":2
   }
-}
+]

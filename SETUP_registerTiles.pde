@@ -1,46 +1,34 @@
-public void registerTiles(JSONArray file)
+public int registerTiles(JSONObject file)
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();
 
-  int fails = 0;
-
-  JSONObjectHandler entry;
-  String name;
-  String template_type;
-  int[] elements;
-  int variance;
-  String[] types;
+  JSONObjectHandler entry = new JSONObjectHandler(file);
+  String name = entry.getString("name");
+  String template_type = entry.getString("template_type");
+  int variance = entry.getInt("variance");
+  int[] amounts = entry.getIntArray("amounts");
+  String[] types = entry.getStringArray("types");
+  String group = entry.getString("group");
   Part obj;
-  String group;
 
-  for(int i = 0; i < file.size(); i++)
+  int fails = 0;
+  for(int j = 0; j < variance; j++)
   {
-    entry = new JSONObjectHandler(file.getJSONObject(i));
-    name = entry.getString("name");
-    template_type = entry.getString("template_type");
-    variance = entry.getInt("variance");
-    elements = entry.getIntArray("elements");
-    types = entry.getStringArray("types");
-    group = entry.getString("group");
+    obj = createTile(amounts,template_type);
 
-    for(int j = 0; j < variance; j++)
+    setupManager.addPartToGroup(group,name+j);
+
+    for(int l = 0; l < types.length; l++)
     {
-      obj = createTile(elements,template_type);
-
-      setupManager.addPartToGroup(group,name+j);
-
-      for(int l = 0; l < types.length; l++)
+      if(obj.is(types[l]) == false)
       {
-        if(obj.is(types[l]) == false)
-        {
-          fails++;
-          obj = createTile(elements,template_type);
-          break;
-        }
+        fails++;
+        obj = createTile(amounts,template_type);
+        break;
       }
-      objectManager.registerPart(name+j, obj);
     }
+    objectManager.registerPart(name+j, obj);
   }
-  println("fails in registerTiles:"+fails);
+  return fails;
 }

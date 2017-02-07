@@ -1,66 +1,108 @@
-Part createChunk(String name)
+public int registerChunk(JSONObject file)
 {
   ObjectManager objectManager = GAME.getObjectManager();
-  JSONObject chunk = loadJSONObject("chunk.json").getJSONObject(name); 
 
-  String ground = chunk.getString("ground");
-  JSONArray names_arr = chunk.getJSONArray("names");
-  JSONArray amounts_arr = chunk.getJSONArray("amounts");
-  String[] names = new String[names_arr.size()];
-  int[] amounts = new int[amounts_arr.size()];
-  for(int i=0; i<names.length; i++)
+  JSONObjectHandler entry = new JSONObjectHandler(file);
+  String name = entry.getString("name");
+  String[] parts = entry.getStringArray("parts");
+  int[] amounts = entry.getIntArray("amounts");
+  String ground = entry.getString("ground");
+  int picks = entry.getInt("picks");
+
+  Part obj;
+
+  int variance = 2;
+  for(int j = 0; j < variance; j++)
   {
-    names[i] = names_arr.getString(i);
+    //Preperation
+    String[] group = new String[1+picks*parts.length];
+    group[0] = ground+"0";
+    String[] group_parts;
+    int[] final_amounts = new int[picks*parts.length];
+    for(int i = 0; i < parts.length; i++)
+    {
+      group_parts = objectManager.getNamesByGroup(parts[i]+"Tiles");
+      for(int k = 0; k < picks; k++)
+      {
+        group[1+i*picks+k] = group_parts[floor(random(group_parts.length))];
+        final_amounts[i*picks+k] = floor(amounts[i]/picks);
+      }
+    }
+    String group_name = name+"_Chunktiles";
+    objectManager.registerGroup(group_name,group);
+
+    obj = createChunkByVariance(final_amounts,1,group,group_name);
+    //obj = createTile(amounts,template_type);
+
+    objectManager.registerPart(name+"Chunk"+j, obj);
+  }
+  return 0;
+}
+
+/*Part createChunk(String name_)
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+  JSONObject chunk = loadJSONObject("Chunk.json").getJSONObject(name_); 
+
+  String name = name_;
+  String ground = chunk.getString("ground");
+  JSONArray parts_arr = chunk.getJSONArray("parts");
+  JSONArray amounts_arr = chunk.getJSONArray("amounts");
+  String[] parts = new String[parts_arr.size()];
+  int[] amounts = new int[amounts_arr.size()];
+  for(int i=0; i<parts.length; i++)
+  {
+    parts[i] = parts_arr.getString(i);
     amounts[i] = amounts_arr.getInt(i);
   }
-  int variance = chunk.getInt("variance");
+  int picks = chunk.getInt("picks");
 
-  String[] group = new String[1+variance*names.length];
+  String[] group = new String[1+picks*parts.length];
   group[0] = ground+"0";
-  String[] parts;
-  int[] final_amounts = new int[variance*names.length];
-  for(int i = 0; i < names.length; i++)
+  String[] group_parts;
+  int[] final_amounts = new int[picks*parts.length];
+  for(int i = 0; i < parts.length; i++)
   {
-    parts = objectManager.getNamesByGroup(names[i]+"Tiles");
-    for(int j = 0; j < variance; j++)
+    group_parts = objectManager.getNamesByGroup(parts[i]+"Tiles");
+    for(int j = 0; j < picks; j++)
     {
-      group[1+i*variance+j] = parts[floor(random(parts.length))];
-      final_amounts[i*variance+j] = floor(amounts[i]/variance);
+      group[1+i*picks+j] = group_parts[floor(random(group_parts.length))];
+      final_amounts[i*picks+j] = floor(amounts[i]/picks);
     }
   }
   String group_name = name+"_chunktiles";
   objectManager.registerGroup(group_name,group);
 
   return createChunkByVariance(final_amounts,1,group,group_name);
-}
+}*/
 
-Part createChunkByVariance(int[] amount_, int variance, String[] names_, String group_name)
+Part createChunkByVariance(int[] amount_, int picks, String[] parts_, String group_name)
 {
-  int[] amount = new int[amount_.length*variance];
-  String[] names = new String[amount.length];
+  int[] amount = new int[amount_.length*picks];
+  String[] parts = new String[amount.length];
   for(int i=0; i<amount_.length; i++)
-    for(int j=0; j<variance; j++)
+    for(int j=0; j<picks; j++)
     {
-      amount[i*variance+j] = floor(amount_[i]/variance);
-      names[i*variance+j] = names_[1+i];//names_[i]+j;
+      amount[i*picks+j] = floor(amount_[i]/picks);
+      parts[i*picks+j] = parts_[1+i];//parts_[i]+j;
     }
 
   ObjectManager objectManager = GAME.getObjectManager();
 
   String[] group = objectManager.getNamesByGroup(group_name);
-  int[] adresses = new int[names.length];
+  int[] adresses = new int[parts.length];
   int size = 8;
 
-  for(int i=0;i<names.length;i++)
+  for(int i=0;i<parts.length;i++)
     for(int j=1;j<group.length;j++)
     {
-      if(group[j].equals(names[i]))
+      if(group[j].equals(parts[i]))
       {
         adresses[i] = j;
         break;
       }
       if(j == group.length-1)
-        throw new RuntimeException("Part not found: "+names[i]+" @createChunkByVariance");
+        throw new RuntimeException("Part not found: "+parts[i]+" @createChunkByVariance");
     }
       
 

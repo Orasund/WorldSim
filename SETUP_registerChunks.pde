@@ -1,4 +1,4 @@
-public void registerChunk()
+/*public void registerChunks()
 {
   ObjectManager objectManager = GAME.getObjectManager();
 
@@ -27,4 +27,4 @@ public void registerChunk()
   };
   objectManager.registerGroup("chunk",chunk);
   registerCostumChunks();
-}
+}*/
