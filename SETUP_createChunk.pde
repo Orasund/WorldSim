@@ -1,15 +1,14 @@
-Part createChunkByVariance(int[] amount_, int variance, String[] parts_, String group_name)
+Part createChunk(int[] amount_, String[] parts_, String group_name)
 {
-  int[] amount = new int[amount_.length*variance];
+  ObjectManager objectManager = GAME.getObjectManager();
+
+  int[] amount = new int[amount_.length];
   String[] parts = new String[amount.length];
   for(int i=0; i<amount_.length; i++)
-    for(int j=0; j<variance; j++)
-    {
-      amount[i*variance+j] = floor(amount_[i]/variance);
-      parts[i*variance+j] = parts_[1+i];//parts_[i]+j;
-    }
-
-  ObjectManager objectManager = GAME.getObjectManager();
+  {
+    amount[i] = floor(amount_[i]);
+    parts[i] = parts_[1+i];//parts_[i]+j;
+  }
 
   String[] group = objectManager.getNamesByGroup(group_name);
   int[] adresses = new int[parts.length];
@@ -24,7 +23,7 @@ Part createChunkByVariance(int[] amount_, int variance, String[] parts_, String 
         break;
       }
       if(j == group.length-1)
-        throw new RuntimeException("Part not found: "+parts[i]+" @createChunkByVariance");
+        throw new RuntimeException("Part not found: "+parts[i]+" @createChunk");
     }
       
 

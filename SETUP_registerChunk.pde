@@ -31,7 +31,7 @@ public int registerChunk(JSONObject file)
     String group_name = name+"_Chunktiles";
     objectManager.registerGroup(group_name,group);
 
-    obj = createChunkByVariance(final_amounts,1,group,group_name);
+    obj = createChunk(final_amounts,group,group_name);
     //obj = createTile(amounts,template_type);
 
     objectManager.registerPart(name+"Chunk"+j, obj);

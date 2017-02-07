@@ -1561,100 +1561,6 @@ class RenderEngine// implements Service
     guiManager.drawGUI();
   }
 }
-public int registerChunk(JSONObject file)
-{
-  ObjectManager objectManager = GAME.getObjectManager();
-
-  JSONObjectHandler entry = new JSONObjectHandler(file);
-  String name = entry.getString("name");
-  String[] parts = entry.getStringArray("parts");
-  int[] amounts = entry.getIntArray("amounts");
-  String ground = entry.getString("ground");
-  int picks = entry.getInt("picks");
-
-  Part obj;
-
-  int variance = 2;
-  for(int j = 0; j < variance; j++)
-  {
-    //Preperation
-    String[] group = new String[1+picks*parts.length];
-    group[0] = ground+"0";
-    String[] group_parts;
-    int[] final_amounts = new int[picks*parts.length];
-    for(int i = 0; i < parts.length; i++)
-    {
-      group_parts = objectManager.getNamesByGroup(parts[i]+"Tiles");
-      for(int k = 0; k < picks; k++)
-      {
-        group[1+i*picks+k] = group_parts[floor(random(group_parts.length))];
-        final_amounts[i*picks+k] = floor(amounts[i]/picks);
-      }
-    }
-    String group_name = name+"_Chunktiles";
-    objectManager.registerGroup(group_name,group);
-
-    obj = createChunkByVariance(final_amounts,1,group,group_name);
-    //obj = createTile(amounts,template_type);
-
-    objectManager.registerPart(name+"Chunk"+j, obj);
-  }
-  return 0;
-}
-
-public Part createChunkByVariance(int[] amount_, int picks, String[] parts_, String group_name)
-{
-  int[] amount = new int[amount_.length*picks];
-  String[] parts = new String[amount.length];
-  for(int i=0; i<amount_.length; i++)
-    for(int j=0; j<picks; j++)
-    {
-      amount[i*picks+j] = floor(amount_[i]/picks);
-      parts[i*picks+j] = parts_[1+i];//parts_[i]+j;
-    }
-
-  ObjectManager objectManager = GAME.getObjectManager();
-
-  String[] group = objectManager.getNamesByGroup(group_name);
-  int[] adresses = new int[parts.length];
-  int size = 8;
-
-  for(int i=0;i<parts.length;i++)
-    for(int j=1;j<group.length;j++)
-    {
-      if(group[j].equals(parts[i]))
-      {
-        adresses[i] = j;
-        break;
-      }
-      if(j == group.length-1)
-        throw new RuntimeException("Part not found: "+parts[i]+" @createChunkByVariance");
-    }
-      
-
-  int[][] out = new int[size][size];
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
-    {
-      float rand = random(100);
-
-      int type = 0;
-      for(int k=0;k<amount.length;k++)
-      {
-        if(rand<amount[k])
-        {
-          type = adresses[k];
-          break;
-        }
-        rand-=amount[k];
-      }
-      out[i][j] = type;
-    }
-
-  //return new Chunk(out,group_name);
-  return evaluateChunk(out,group_name);
-}
-
 public int[][] seedTemplate(int base, int source, int life, int power)
 {
   int[][] out = randTemplate(base,source,life,power);
@@ -1731,6 +1637,57 @@ public int[][] frameTemplate(int base, int source, int life, int power)
 
   return createChunkByVariance(final_amounts,1,group,group_name);
 }*/
+public Part createChunk(int[] amount_, String[] parts_, String group_name)
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+
+  int[] amount = new int[amount_.length];
+  String[] parts = new String[amount.length];
+  for(int i=0; i<amount_.length; i++)
+  {
+    amount[i] = floor(amount_[i]);
+    parts[i] = parts_[1+i];//parts_[i]+j;
+  }
+
+  String[] group = objectManager.getNamesByGroup(group_name);
+  int[] adresses = new int[parts.length];
+  int size = 8;
+
+  for(int i=0;i<parts.length;i++)
+    for(int j=1;j<group.length;j++)
+    {
+      if(group[j].equals(parts[i]))
+      {
+        adresses[i] = j;
+        break;
+      }
+      if(j == group.length-1)
+        throw new RuntimeException("Part not found: "+parts[i]+" @createChunk");
+    }
+      
+
+  int[][] out = new int[size][size];
+  for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
+    {
+      float rand = random(100);
+
+      int type = 0;
+      for(int k=0;k<amount.length;k++)
+      {
+        if(rand<amount[k])
+        {
+          type = adresses[k];
+          break;
+        }
+        rand-=amount[k];
+      }
+      out[i][j] = type;
+    }
+
+  //return new Chunk(out,group_name);
+  return evaluateChunk(out,group_name);
+}
 public Part createTile(int[] elements,String template_type)
 {
   int[][] template;
@@ -1880,7 +1837,46 @@ public void gameSetup()
 
   println("fails in registerBlocks:"+fails);
 }*/
+public int registerChunk(JSONObject file)
+{
+  ObjectManager objectManager = GAME.getObjectManager();
 
+  JSONObjectHandler entry = new JSONObjectHandler(file);
+  String name = entry.getString("name");
+  String[] parts = entry.getStringArray("parts");
+  int[] amounts = entry.getIntArray("amounts");
+  String ground = entry.getString("ground");
+  int picks = entry.getInt("picks");
+
+  Part obj;
+
+  int variance = 2;
+  for(int j = 0; j < variance; j++)
+  {
+    //Preperation
+    String[] group = new String[1+picks*parts.length];
+    group[0] = ground+"0";
+    String[] group_parts;
+    int[] final_amounts = new int[picks*parts.length];
+    for(int i = 0; i < parts.length; i++)
+    {
+      group_parts = objectManager.getNamesByGroup(parts[i]+"Tiles");
+      for(int k = 0; k < picks; k++)
+      {
+        group[1+i*picks+k] = group_parts[floor(random(group_parts.length))];
+        final_amounts[i*picks+k] = floor(amounts[i]/picks);
+      }
+    }
+    String group_name = name+"_Chunktiles";
+    objectManager.registerGroup(group_name,group);
+
+    obj = createChunk(final_amounts,group,group_name);
+    //obj = createTile(amounts,template_type);
+
+    objectManager.registerPart(name+"Chunk"+j, obj);
+  }
+  return 0;
+}
 public void registerCostumChunks()
 {
   ObjectManager objectManager = GAME.getObjectManager();
