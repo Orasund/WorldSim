@@ -1,4 +1,4 @@
-public int registerTiles(JSONObject file)
+public int registerTile(JSONObject file)
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();

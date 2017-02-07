@@ -1602,43 +1602,6 @@ public int registerChunk(JSONObject file)
   return 0;
 }
 
-/*Part createChunk(String name_)
-{
-  ObjectManager objectManager = GAME.getObjectManager();
-  JSONObject chunk = loadJSONObject("Chunk.json").getJSONObject(name_); 
-
-  String name = name_;
-  String ground = chunk.getString("ground");
-  JSONArray parts_arr = chunk.getJSONArray("parts");
-  JSONArray amounts_arr = chunk.getJSONArray("amounts");
-  String[] parts = new String[parts_arr.size()];
-  int[] amounts = new int[amounts_arr.size()];
-  for(int i=0; i<parts.length; i++)
-  {
-    parts[i] = parts_arr.getString(i);
-    amounts[i] = amounts_arr.getInt(i);
-  }
-  int picks = chunk.getInt("picks");
-
-  String[] group = new String[1+picks*parts.length];
-  group[0] = ground+"0";
-  String[] group_parts;
-  int[] final_amounts = new int[picks*parts.length];
-  for(int i = 0; i < parts.length; i++)
-  {
-    group_parts = objectManager.getNamesByGroup(parts[i]+"Tiles");
-    for(int j = 0; j < picks; j++)
-    {
-      group[1+i*picks+j] = group_parts[floor(random(group_parts.length))];
-      final_amounts[i*picks+j] = floor(amounts[i]/picks);
-    }
-  }
-  String group_name = name+"_chunktiles";
-  objectManager.registerGroup(group_name,group);
-
-  return createChunkByVariance(final_amounts,1,group,group_name);
-}*/
-
 public Part createChunkByVariance(int[] amount_, int picks, String[] parts_, String group_name)
 {
   int[] amount = new int[amount_.length*picks];
@@ -1917,36 +1880,7 @@ public void gameSetup()
 
   println("fails in registerBlocks:"+fails);
 }*/
-/*public void registerChunks()
-{
-  ObjectManager objectManager = GAME.getObjectManager();
 
-  int variance = 2;
-
-  String[] names = {"Plain","Swamp","Sea","Hill","Forest","Lava"};
-  String name;
-  String[] group = new String[variance];
-  for(int i=0; i<names.length; i++)
-  {
-    name = names[i]+"Chunk";
-    for(int j=0; j<variance; j++)
-    {
-      objectManager.registerPart(name+j, createChunk(names[i]));
-      group[j] = name+j;
-    }
-    objectManager.registerGroup(name+"s",group);
-  }
-
-  String[] chunk = 
-  {
-    "PlainChunk1","PlainChunk0",
-    "SeaChunk1","SwampChunk0",
-    "HillChunk1","LavaChunk0",
-    "ForestChunk1","ForestChunk0",
-  };
-  objectManager.registerGroup("chunk",chunk);
-  registerCostumChunks();
-}*/
 public void registerCostumChunks()
 {
   ObjectManager objectManager = GAME.getObjectManager();
@@ -2057,7 +1991,7 @@ public void registerObjects()
       switch(j)
       {
         case 0:
-          fails += registerTiles(file.getJSONObject(i));
+          fails += registerTile(file.getJSONObject(i));
           break;
         case 1:
           fails += registerChunk(file.getJSONObject(i));
@@ -2095,7 +2029,7 @@ public void registerObjects()
   
   //registerChunks();
 }
-public int registerTiles(JSONObject file)
+public int registerTile(JSONObject file)
 {
   ObjectManager objectManager = GAME.getObjectManager();
   SetupManager setupManager = GAME.getSetupManager();

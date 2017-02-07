@@ -23,7 +23,7 @@ void registerObjects()
       switch(j)
       {
         case 0:
-          fails += registerTiles(file.getJSONObject(i));
+          fails += registerTile(file.getJSONObject(i));
           break;
         case 1:
           fails += registerChunk(file.getJSONObject(i));
