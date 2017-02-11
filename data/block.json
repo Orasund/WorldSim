@@ -1,49 +1,56 @@
 [
-  {
-    "name":"Grass",
-    "parts":["liquid","organic","mineral"],
-    "amounts":[4,40,1],
-    "ground":"Dirt",
-    "group":"ground",
-    "variance":1
-  },
-  {
-    "name":"Alga",
-    "parts":["liquid","organic"],
-    "amounts":[50,0],
-    "ground":"Dirt",
-    "group":"marine_life",
-    "variance":1
-  },
-  {
-    "name":"Lake",
-    "parts":["liquid"],
-    "amounts":[70],
-    "ground":"Dirt",
-    "group":"marine_life",
-    "variance":1
-  },
-  {
-    "name":"Rock",
-    "parts":["liquid","mineral"],
-    "amounts":[5,65],
-    "ground":"Gravel",
-    "group":"resource",
-    "variance":1
+ {
+    "name":"Vakuum",
+    "parts":["Air"],
+    "amounts":[90],
+    "group":"background"
   },
   {
     "name":"Bush",
-    "parts":["liquid","mineral","organic"],
-    "amounts":[10,5,40],
-    "ground":"Dirt",
-    "group":"flora",
-    "variance":1
+    "parts":["Cell"],
+    "amounts":[90],
+    "group":"organism"
   },
   {
     "name":"Magma",
-    "parts":["reaction","mineral"],
-    "amounts":[60,20],
-    "ground":"Gravel",
-    "variance":1
+    "parts":["Energy"],
+    "amounts":[90],
+    "group":"reaction"
+  },
+  {
+    "name":"Ore",
+    "parts":["Moss"],
+    "amounts":[90],
+    "group":"mineral"
+  },
+  {
+    "name":"Grass",
+    "parts":["Dirt"],
+    "amounts":[90],
+    "group":"background"
+  },
+  {
+    "name":"Lake",
+    "parts":["Water"],
+    "amounts":[90],
+    "group":"liquid"
+  },
+  {
+    "name":"Rock",
+    "parts":["Stone"],
+    "amounts":[90],
+    "group":"mineral"
+  },
+  {
+    "name":"Alga",
+    "parts":["Spawn"],
+    "amounts":[90],
+    "group":"liquid"
+  },
+  {
+    "name":"GravelPath",
+    "parts":["Gravel"],
+    "amounts":[90],
+    "group":"background"
   }
 ]

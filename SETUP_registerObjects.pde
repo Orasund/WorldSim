@@ -6,8 +6,6 @@ void registerObjects()
   String[] part_name = {"Tile","Chunk"};
   for(int j = 0; j < 2; j++)
   {
-    //registerTiles
-    //TODO:make a generall Function for all Parts
     ObjectManager objectManager = GAME.getObjectManager();
     SetupManager setupManager = GAME.getSetupManager();
     setupManager.clear();
@@ -55,9 +53,5 @@ void registerObjects()
         registerCostumChunks();
         break;
     }
-    //registerTiles END
   }
-  
-  
-  //registerChunks();
 }
