@@ -21,7 +21,7 @@ public void registerCustomBlocks()
 
   String[] ship_blocks = 
   {
-    "floorBlock","custom2Block","Air0Block","Energy0Block"
+    "floorBlock","custom2Block","Air0","Energy0"
   };
   objectManager.registerGroup("shipBlocks",ship_blocks);
 }

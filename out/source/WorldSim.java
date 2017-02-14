@@ -2127,7 +2127,7 @@ public int registerChunk(JSONObject file)
     int[] final_amounts = new int[picks*parts.length];
     for(int i = 0; i < parts.length; i++)
     {
-      group_parts = objectManager.getNamesByGroup(parts[i]+"Tiles");
+      group_parts = objectManager.getNamesByGroup(parts[i]+"Blocks");
       for(int k = 0; k < picks; k++)
       {
         group[1+i*picks+k] = group_parts[floor(random(group_parts.length))];
@@ -2216,7 +2216,7 @@ public void registerCustomBlocks()
 
   String[] ship_blocks = 
   {
-    "floorBlock","custom2Block","Air0Block","Energy0Block"
+    "floorBlock","custom2Block","Air0","Energy0"
   };
   objectManager.registerGroup("shipBlocks",ship_blocks);
 }
