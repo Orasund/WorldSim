@@ -1,3 +1,27 @@
+public int registerBlock(JSONObject file)
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+  SetupManager setupManager = GAME.getSetupManager();
+
+  JSONObjectHandler entry = new JSONObjectHandler(file);
+  String name = entry.getString("name");
+  String[] parts = entry.getStringArray("parts");
+  int[] amounts = entry.getIntArray("amounts");
+  String group = entry.getString("group");
+  Part obj;
+
+  int fails = 0;
+  int variance = 2;
+  for(int j = 0; j < variance; j++)
+  {
+    obj = createBlock(amounts,parts,group);
+
+    setupManager.addPartToGroup(group,name+j);
+    objectManager.registerPart(name+j, obj);
+  }
+  return fails;
+}
+
 /*public void registerBlocks()
 {
   ObjectManager objectManager = GAME.getObjectManager();

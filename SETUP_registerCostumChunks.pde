@@ -29,16 +29,16 @@ public void registerCostumChunks()
     
   Part ship_chunk;
   //ship_chunk = new Chunk(ship_template1,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template1,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template1,"shipBlocks");
   objectManager.registerPart("ship_1", ship_chunk);
   //ship_chunk = new Chunk(ship_template2,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template2,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template2,"shipBlocks");
   objectManager.registerPart("ship_2", ship_chunk);
   //ship_chunk = new Chunk(ship_template3,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template3,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template3,"shipBlocks");
   objectManager.registerPart("ship_3", ship_chunk);
   //ship_chunk = new Chunk(ship_template4,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template4,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template4,"shipBlocks");
   objectManager.registerPart("ship_4", ship_chunk);
   String[] ship = 
   {

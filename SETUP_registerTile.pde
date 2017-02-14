@@ -17,7 +17,8 @@ public int registerTile(JSONObject file)
   {
     obj = createTile(amounts,template_type);
 
-    setupManager.addPartToGroup(group,name+j);
+    //old
+    //setupManager.addPartToGroup(group,name+j);
 
     for(int l = 0; l < types.length; l++)
     {

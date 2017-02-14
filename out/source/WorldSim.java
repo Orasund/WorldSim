@@ -1601,46 +1601,55 @@ public int[][] frameTemplate(int base, int source, int life, int power)
   
   return out;
 }
-  /*public Part createBlock(int[] elements,String template_type)
+public Part createBlock(int[] amount, String[] parts, String unused_group_name)
 {
-
   ObjectManager objectManager = GAME.getObjectManager();
-  JSONObject chunk = loadJSONObject("chunk.json").getJSONObject(name); 
 
-  String ground = chunk.getString("ground");
-  JSONArray names_arr = chunk.getJSONArray("names");
-  JSONArray amounts_arr = chunk.getJSONArray("amounts");
-  String[] names = new String[names_arr.size()];
-  int[] amounts = new int[amounts_arr.size()];
-  for(int i=0; i<names.length; i++)
-  {
-    names[i] = names_arr.getString(i);
-    amounts[i] = amounts_arr.getInt(i);
-  }
-  int variance = chunk.getInt("variance");
+  /*String[] group = objectManager.getNamesByGroup(group_name);
+  int[] adresses = new int[parts.length];
 
-  String[] group = new String[1+variance*names.length];
-  group[0] = ground+"0";
-  String[] parts;
-  int[] final_amounts = new int[variance*names.length];
-  for(int i = 0; i < names.length; i++)
-  {
-    parts = objectManager.getNamesByGroup(names[i]+"Tiles");
-    for(int j = 0; j < variance; j++)
+  for(int i=0;i<parts.length;i++)
+    for(int j=1;j<group.length;j++)
     {
-      group[1+i*variance+j] = parts[floor(random(parts.length))];
-      final_amounts[i*variance+j] = floor(amounts[i]/variance);
-    }
-  }
-  String group_name = name+"_chunktiles";
-  objectManager.registerGroup(group_name,group);
+      if(group[j].equals(parts[i]))
+      {
+        adresses[i] = j;
+        break;
+      }
+      if(j == group.length-1)
+        throw new RuntimeException("Part not found: "+parts[i]+" @createBlock");
+    }*/
+  String[] group = {"Air0",parts[0]+"0"};
+  String group_name = parts[0]+"TempGroup";
+  int[] adresses = {0,1};
+  objectManager.registerGroup(group_name, group);
+  
+  int[][] out = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+    {
+      float rand = random(100);
 
-  return createChunkByVariance(final_amounts,1,group,group_name);
-}*/
+      int type = 0;
+      for(int k=0;k<amount.length;k++)
+      {
+        if(rand<amount[k])
+        {
+          type = adresses[k];
+          break;
+        }
+        rand-=amount[k];
+      }
+      out[i][j] = type;
+    }
+  
+  return evaluateBlock(out,group_name);
+}
 public Part createChunk(int[] amount_, String[] parts_, String group_name)
 {
   ObjectManager objectManager = GAME.getObjectManager();
 
+  //unused?
   int[] amount = new int[amount_.length];
   String[] parts = new String[amount.length];
   for(int i=0; i<amount_.length; i++)
@@ -1651,7 +1660,7 @@ public Part createChunk(int[] amount_, String[] parts_, String group_name)
 
   String[] group = objectManager.getNamesByGroup(group_name);
   int[] adresses = new int[parts.length];
-  int size = 8;
+  //int size = 8;
 
   for(int i=0;i<parts.length;i++)
     for(int j=1;j<group.length;j++)
@@ -1666,9 +1675,9 @@ public Part createChunk(int[] amount_, String[] parts_, String group_name)
     }
       
 
-  int[][] out = new int[size][size];
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
+  int[][] out = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
     {
       float rand = random(100);
 
@@ -1705,6 +1714,240 @@ public Part createTile(int[] elements,String template_type)
       break;
   }
   return evaluateTile(template);
+}
+public Part evaluateBlock(final int[][] template_,String group_)
+{
+  SimulationManager simulationManager = GAME.getSimulationManager();
+
+  simulationManager.newSession(group_);
+  simulationManager.add("Organic",new OrganicSim(template_,group_));
+  simulationManager.listenTo("floid","Organic");
+  simulationManager.listenTo("organic","Organic");
+  
+  int[][] blocks = simulationManager.init(template_);
+
+  int[] resources = new int[16];
+  for(int i = 0;i<16;i++)
+    resources[i] = 0;
+
+  for(int j = 0;j<SIZE;j++)
+    for(int k = 0;k<SIZE;k++)
+      resources[blocks[j][k]]++;
+
+  String group = group_;
+  int background = 0;
+  int c = color(0);
+  Set<String> types = new Set<String>();
+
+  int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};
+
+  return new Part(img,resources,background,c,types,group);
+}
+public Part evaluateChunk(final int[][] template_,String group_)
+{
+/*  SimulationManager simulationManager = GAME.getSimulationManager();
+
+  simulationManager.newSession(group_);
+  simulationManager.add("Organic",new OrganicSim(template_,group_));
+  simulationManager.listenTo("floid","Organic");
+  simulationManager.listenTo("organic","Organic");
+  
+  int[][] blocks = simulationManager.init(template_);
+
+  int[] resources = new int[16];
+  for(int i = 0;i<16;i++)
+    resources[i] = 0;
+
+  for(int j = 0;j<SIZE;j++)
+    for(int k = 0;k<SIZE;k++)
+      resources[blocks[j][k]]++;
+
+  String group = group_;
+  int background = 0;
+  color c = color(0);
+  Set<String> types = new Set<String>();
+
+  int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};
+
+  return new Part(img,resources,background,c,types,group);*/
+  int[] resources = new int[16];
+  for(int i = 0;i<16;i++)
+    resources[i] = 0;
+
+  for(int j = 0;j<SIZE;j++)
+    for(int k = 0;k<SIZE;k++)
+      resources[template_[j][k]]++;
+  
+  String group = group_;
+  int background = 0;
+  int c = color(0);
+  Set<String> types = new Set<String>();
+  int[][][] img = {template_,template_,template_,template_,template_,template_};
+  
+  return new Part(img,resources,background,c,types,group);
+}
+public Part evaluateElement(int id)
+{
+  String[] names = {"space",    "base",         "source",       "life",       "power"};
+  int[] colors = {color(0,0,0),color(40,40,40),color(0,0,255),color(0,80,0),color(255,20,20)};
+  int c = colors[id];
+  Set<String> types = new Set<String>();
+  types.add(names[id]);
+
+  return new Part(id,c,types);
+
+  /*int[][][] img = new int[6][8][8];
+  int[] resources = new int[5];
+
+  for(int k = 0;k<6;k++)
+  {
+    for(int i=0;i<8;i++)
+      for(int j=0;j<8;j++)
+        img[k][i][j] = id;
+    
+    if(k<5)
+    {
+      if(k==id)
+        resources[k] = SIZE*SIZE;
+      else
+        resources[k] = 0;
+    }
+  }
+
+  int background = 0;
+  String group = "elements";
+  return new Part(img,resources,background,c,types,group);*/
+}
+public Part evaluateTile(int[][] template)
+{
+  Set<String> types = new Set<String>();
+
+  //Iterate for 16 Ticks
+  int[][] temp_template = new int[8][8];
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      temp_template[i][j]=template[i][j];
+  
+  int[][] map_empty = new int[8][8];
+  for(int i=0;i<8;i++)
+    for(int j=0;j<8;j++)
+      map_empty[i][j]=0;
+  
+  /* OLD */
+  for(int k = 0;k<16;k++)
+    temp_template = iterateTile(temp_template,map_empty);
+  /**/
+
+  /* NEW */
+  /*SimulationManager simulationManager = GAME.getSimulationManager();
+  String group = "elements";
+
+  simulationManager.newSession(group);
+  //simulationManager.add("Power",new PowerSim(template,group));
+  //simulationManager.add("Life",new LifeSim(template,group));
+  simulationManager.add("Source",new SourceSim(template,group));
+
+  temp_template = simulationManager.init(template);*/
+  /**/
+  
+  int[][][] img = new int[6][8][8];
+  int[] resources = new int[5];
+  for(int i = 0;i<5;i++)
+    resources[i]=0;
+    
+  for(int k = 0;k<6;k++)
+  {
+    temp_template = iterateTile(temp_template,map_empty);
+    for(int i=0;i<8;i++)
+      for(int j=0;j<8;j++)
+      {
+        img[k][i][j] = temp_template[i][j];
+        if(k==5)
+          resources[temp_template[i][j]]++;
+      }
+  }
+
+  //create simple Background
+  // 1 stone = 4 void
+  // 1 source = 3 stone = 12 void
+  // 1 life = 2.66 source = 5 stone = 20 void
+
+  int[] mult = {1,4,12,20,40};
+  int background = 0;
+  for(int i=1;i<5;i++)
+    if(mult[i]*resources[i]>mult[background]*resources[background])
+      background = i;
+  
+  if(background == 0 && resources[2] != 0)
+  {
+    background = 2;
+  }
+
+  int c;
+
+  //switch
+  switch(background)
+  {
+    //moving
+    case 4:
+      types.add("moving");
+      c = color(255,80,61);
+      break; 
+
+    //organic
+    case 3:
+      if(resources[1]>0) //cell
+      {
+        types.add("solid");
+        types.add("organic");
+        c = color(127,178,127);
+      }
+      else //organic
+      {
+        types.add("organic");
+        c = color(0,128,0);
+      }
+      break;
+
+    //floid
+    case 2:
+      //does life exist?
+      if(resources[3]>0) //OrganicSpawn
+      {
+        types.add("organic_spawn");
+        types.add("floid");
+        c = color(53,80,128);
+      }
+      else //floid
+      {
+        types.add("floid");
+        c = color(80,80,256);
+      }
+      break;
+
+    //stone
+    case 1:
+      
+      if(resources[1]>28)
+      {
+        types.add("solid");
+        c = color(90,90,90);
+      }
+      else
+      {
+        c = color(127,127,127);
+      }
+      break;
+
+    //ground
+    default:
+      if(resources[0]==SIZE*SIZE)
+        c = color(0,0,0);
+      else
+        c = color(80,255,80);
+  }
+  String group = "elements";
+  return new Part(img,resources,background,c,types,group);
 }
 public void gameSetup()
 {
@@ -1749,6 +1992,30 @@ public void gameSetup()
   //sceneManager.addScene("template",TEMPLATE,"tiles");
   //sceneManager.chanceScene("template");
 }
+public int registerBlock(JSONObject file)
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+  SetupManager setupManager = GAME.getSetupManager();
+
+  JSONObjectHandler entry = new JSONObjectHandler(file);
+  String name = entry.getString("name");
+  String[] parts = entry.getStringArray("parts");
+  int[] amounts = entry.getIntArray("amounts");
+  String group = entry.getString("group");
+  Part obj;
+
+  int fails = 0;
+  int variance = 2;
+  for(int j = 0; j < variance; j++)
+  {
+    obj = createBlock(amounts,parts,group);
+
+    setupManager.addPartToGroup(group,name+j);
+    objectManager.registerPart(name+j, obj);
+  }
+  return fails;
+}
+
 /*public void registerBlocks()
 {
   ObjectManager objectManager = GAME.getObjectManager();
@@ -1908,16 +2175,16 @@ public void registerCostumChunks()
     
   Part ship_chunk;
   //ship_chunk = new Chunk(ship_template1,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template1,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template1,"shipBlocks");
   objectManager.registerPart("ship_1", ship_chunk);
   //ship_chunk = new Chunk(ship_template2,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template2,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template2,"shipBlocks");
   objectManager.registerPart("ship_2", ship_chunk);
   //ship_chunk = new Chunk(ship_template3,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template3,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template3,"shipBlocks");
   objectManager.registerPart("ship_3", ship_chunk);
   //ship_chunk = new Chunk(ship_template4,"shipTiles");
-  ship_chunk = evaluateChunk(ship_template4,"shipTiles");
+  ship_chunk = evaluateChunk(ship_template4,"shipBlocks");
   objectManager.registerPart("ship_4", ship_chunk);
   String[] ship = 
   {
@@ -1925,6 +2192,33 @@ public void registerCostumChunks()
     "ship_3","ship_4"
   };
   objectManager.registerGroup("ship",ship);
+}
+public void registerCustomBlocks()
+{
+  ObjectManager objectManager = GAME.getObjectManager();
+
+  int[][] template;
+  JSONObject json = loadJSONObject("template.json");
+  String[] template_names = {"custom1","custom2","floor"};
+  JSONArray table,row;
+  for(int i=0; i<template_names.length; i++)
+  {
+    template = new int[SIZE][SIZE];
+    table = json.getJSONArray(template_names[i]);
+    for(int j=0; j<SIZE; j++)
+    {
+      row = table.getJSONArray(j);
+      for(int k=0; k<SIZE; k++)
+        template[k][j] = row.getInt(k);
+    }
+    objectManager.registerPart(template_names[i]+"Block",evaluateBlock(template,"shipTiles"));
+  }
+
+  String[] ship_blocks = 
+  {
+    "floorBlock","custom2Block","Air0Block","Energy0Block"
+  };
+  objectManager.registerGroup("shipBlocks",ship_blocks);
 }
 public void registerCustomTiles()
 {
@@ -1966,9 +2260,14 @@ public void registerObjects()
 {
   registerElements();
 
-  String[][] groups = {{"background","organism","reaction","mineral","liquid"},{}};
-  String[] part_name = {"Tile","Chunk"};
-  for(int j = 0; j < 2; j++)
+  String[][] groups = 
+  {
+    {},
+    {"background","organism","reaction","mineral","liquid"},
+    {}
+  };
+  String[] part_name = {"Tile","Block","Chunk"};
+  for(int j = 0; j < part_name.length; j++)
   {
     ObjectManager objectManager = GAME.getObjectManager();
     SetupManager setupManager = GAME.getSetupManager();
@@ -1988,6 +2287,9 @@ public void registerObjects()
           fails += registerTile(file.getJSONObject(i));
           break;
         case 1:
+          fails += registerBlock(file.getJSONObject(i));
+          break;
+        case 2:
           fails += registerChunk(file.getJSONObject(i));
           break;
       }
@@ -2006,6 +2308,9 @@ public void registerObjects()
         registerCustomTiles();
         break;
       case 1:
+        registerCustomBlocks();
+        break;
+      case 2:
         String[] chunk = 
         {
           "PlainChunk1","PlainChunk0",
@@ -2038,7 +2343,8 @@ public int registerTile(JSONObject file)
   {
     obj = createTile(amounts,template_type);
 
-    setupManager.addPartToGroup(group,name+j);
+    //old
+    //setupManager.addPartToGroup(group,name+j);
 
     for(int l = 0; l < types.length; l++)
     {
@@ -3284,203 +3590,6 @@ public void draw()
     println("ERROR:"+e.getMessage());
     exit();
   }
-}
-public Part evaluateChunk(final int[][] template_,String group_)
-{
-  SimulationManager simulationManager = GAME.getSimulationManager();
-
-  simulationManager.newSession(group_);
-  simulationManager.add("Organic",new OrganicSim(template_,group_));
-  simulationManager.listenTo("floid","Organic");
-  simulationManager.listenTo("organic","Organic");
-  /*
-  simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
-  simulationManager.listenTo("floid","OrganicSpawn");
-  simulationManager.listenTo("organic_spawn","OrganicSpawn");
-  */
-  
-  int[][] blocks = simulationManager.init(template_);
-
-  int[] resources = new int[16];
-  for(int i = 0;i<16;i++)
-    resources[i] = 0;
-
-  for(int j = 0;j<SIZE;j++)
-    for(int k = 0;k<SIZE;k++)
-      resources[blocks[j][k]]++;
-
-  String group = group_;
-  int background = 0;
-  int c = color(0);
-  Set<String> types = new Set<String>();
-
-  int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};
-
-  return new Part(img,resources,background,c,types,group);
-  //return new Chunk(blocks,group,background,c,resources);
-}
-public Part evaluateElement(int id)
-{
-  String[] names = {"space",    "base",         "source",       "life",       "power"};
-  int[] colors = {color(0,0,0),color(40,40,40),color(0,0,255),color(0,80,0),color(255,20,20)};
-  int c = colors[id];
-  Set<String> types = new Set<String>();
-  types.add(names[id]);
-
-  return new Part(id,c,types);
-
-  /*int[][][] img = new int[6][8][8];
-  int[] resources = new int[5];
-
-  for(int k = 0;k<6;k++)
-  {
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-        img[k][i][j] = id;
-    
-    if(k<5)
-    {
-      if(k==id)
-        resources[k] = SIZE*SIZE;
-      else
-        resources[k] = 0;
-    }
-  }
-
-  int background = 0;
-  String group = "elements";
-  return new Part(img,resources,background,c,types,group);*/
-}
-public Part evaluateTile(int[][] template)
-{
-  Set<String> types = new Set<String>();
-
-  //Iterate for 16 Ticks
-  int[][] temp_template = new int[8][8];
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      temp_template[i][j]=template[i][j];
-  
-  int[][] map_empty = new int[8][8];
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      map_empty[i][j]=0;
-  
-  /* OLD */
-  for(int k = 0;k<16;k++)
-    temp_template = iterateTile(temp_template,map_empty);
-  /**/
-
-  /* NEW */
-  /*SimulationManager simulationManager = GAME.getSimulationManager();
-  String group = "elements";
-
-  simulationManager.newSession(group);
-  //simulationManager.add("Power",new PowerSim(template,group));
-  //simulationManager.add("Life",new LifeSim(template,group));
-  simulationManager.add("Source",new SourceSim(template,group));
-
-  temp_template = simulationManager.init(template);*/
-  /**/
-  
-  int[][][] img = new int[6][8][8];
-  int[] resources = new int[5];
-  for(int i = 0;i<5;i++)
-    resources[i]=0;
-    
-  for(int k = 0;k<6;k++)
-  {
-    temp_template = iterateTile(temp_template,map_empty);
-    for(int i=0;i<8;i++)
-      for(int j=0;j<8;j++)
-      {
-        img[k][i][j] = temp_template[i][j];
-        if(k==5)
-          resources[temp_template[i][j]]++;
-      }
-  }
-
-  //create simple Background
-  // 1 stone = 4 void
-  // 1 source = 3 stone = 12 void
-  // 1 life = 2.66 source = 5 stone = 20 void
-
-  int[] mult = {1,4,12,20,40};
-  int background = 0;
-  for(int i=1;i<5;i++)
-    if(mult[i]*resources[i]>mult[background]*resources[background])
-      background = i;
-  
-  if(background == 0 && resources[2] != 0)
-  {
-    background = 2;
-  }
-
-  int c;
-
-  //switch
-  switch(background)
-  {
-    //moving
-    case 4:
-      types.add("moving");
-      c = color(255,80,61);
-      break; 
-
-    //organic
-    case 3:
-      if(resources[1]>0) //cell
-      {
-        types.add("solid");
-        types.add("organic");
-        c = color(127,178,127);
-      }
-      else //organic
-      {
-        types.add("organic");
-        c = color(0,128,0);
-      }
-      break;
-
-    //floid
-    case 2:
-      //does life exist?
-      if(resources[3]>0) //OrganicSpawn
-      {
-        types.add("organic_spawn");
-        types.add("floid");
-        c = color(53,80,128);
-      }
-      else //floid
-      {
-        types.add("floid");
-        c = color(80,80,256);
-      }
-      break;
-
-    //stone
-    case 1:
-      
-      if(resources[1]>28)
-      {
-        types.add("solid");
-        c = color(90,90,90);
-      }
-      else
-      {
-        c = color(127,127,127);
-      }
-      break;
-
-    //ground
-    default:
-      if(resources[0]==SIZE*SIZE)
-        c = color(0,0,0);
-      else
-        c = color(80,255,80);
-  }
-  String group = "elements";
-  return new Part(img,resources,background,c,types,group);
 }
   public void settings() {  size(1024,768,P2D); }
   static public void main(String[] passedArgs) {

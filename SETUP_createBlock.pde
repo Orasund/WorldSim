@@ -1,36 +1,44 @@
-  /*public Part createBlock(int[] elements,String template_type)
+public Part createBlock(int[] amount, String[] parts, String unused_group_name)
 {
-
   ObjectManager objectManager = GAME.getObjectManager();
-  JSONObject chunk = loadJSONObject("chunk.json").getJSONObject(name); 
 
-  String ground = chunk.getString("ground");
-  JSONArray names_arr = chunk.getJSONArray("names");
-  JSONArray amounts_arr = chunk.getJSONArray("amounts");
-  String[] names = new String[names_arr.size()];
-  int[] amounts = new int[amounts_arr.size()];
-  for(int i=0; i<names.length; i++)
-  {
-    names[i] = names_arr.getString(i);
-    amounts[i] = amounts_arr.getInt(i);
-  }
-  int variance = chunk.getInt("variance");
+  /*String[] group = objectManager.getNamesByGroup(group_name);
+  int[] adresses = new int[parts.length];
 
-  String[] group = new String[1+variance*names.length];
-  group[0] = ground+"0";
-  String[] parts;
-  int[] final_amounts = new int[variance*names.length];
-  for(int i = 0; i < names.length; i++)
-  {
-    parts = objectManager.getNamesByGroup(names[i]+"Tiles");
-    for(int j = 0; j < variance; j++)
+  for(int i=0;i<parts.length;i++)
+    for(int j=1;j<group.length;j++)
     {
-      group[1+i*variance+j] = parts[floor(random(parts.length))];
-      final_amounts[i*variance+j] = floor(amounts[i]/variance);
-    }
-  }
-  String group_name = name+"_chunktiles";
-  objectManager.registerGroup(group_name,group);
+      if(group[j].equals(parts[i]))
+      {
+        adresses[i] = j;
+        break;
+      }
+      if(j == group.length-1)
+        throw new RuntimeException("Part not found: "+parts[i]+" @createBlock");
+    }*/
+  String[] group = {"Air0",parts[0]+"0"};
+  String group_name = parts[0]+"TempGroup";
+  int[] adresses = {0,1};
+  objectManager.registerGroup(group_name, group);
+  
+  int[][] out = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
+    {
+      float rand = random(100);
 
-  return createChunkByVariance(final_amounts,1,group,group_name);
-}*/
+      int type = 0;
+      for(int k=0;k<amount.length;k++)
+      {
+        if(rand<amount[k])
+        {
+          type = adresses[k];
+          break;
+        }
+        rand-=amount[k];
+      }
+      out[i][j] = type;
+    }
+  
+  return evaluateBlock(out,group_name);
+}

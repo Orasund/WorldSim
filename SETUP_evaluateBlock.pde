@@ -1,4 +1,4 @@
-public Part evaluateChunk(final int[][] template_,String group_)
+public Part evaluateBlock(final int[][] template_,String group_)
 {
   SimulationManager simulationManager = GAME.getSimulationManager();
 
@@ -6,11 +6,6 @@ public Part evaluateChunk(final int[][] template_,String group_)
   simulationManager.add("Organic",new OrganicSim(template_,group_));
   simulationManager.listenTo("floid","Organic");
   simulationManager.listenTo("organic","Organic");
-  /*
-  simulationManager.add("OrganicSpawn",new OrganicSpawnSim(template_,group_));
-  simulationManager.listenTo("floid","OrganicSpawn");
-  simulationManager.listenTo("organic_spawn","OrganicSpawn");
-  */
   
   int[][] blocks = simulationManager.init(template_);
 
@@ -30,5 +25,4 @@ public Part evaluateChunk(final int[][] template_,String group_)
   int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};
 
   return new Part(img,resources,background,c,types,group);
-  //return new Chunk(blocks,group,background,c,resources);
 }

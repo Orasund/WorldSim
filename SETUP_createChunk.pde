@@ -2,6 +2,7 @@ Part createChunk(int[] amount_, String[] parts_, String group_name)
 {
   ObjectManager objectManager = GAME.getObjectManager();
 
+  //unused?
   int[] amount = new int[amount_.length];
   String[] parts = new String[amount.length];
   for(int i=0; i<amount_.length; i++)
@@ -12,7 +13,7 @@ Part createChunk(int[] amount_, String[] parts_, String group_name)
 
   String[] group = objectManager.getNamesByGroup(group_name);
   int[] adresses = new int[parts.length];
-  int size = 8;
+  //int size = 8;
 
   for(int i=0;i<parts.length;i++)
     for(int j=1;j<group.length;j++)
@@ -27,9 +28,9 @@ Part createChunk(int[] amount_, String[] parts_, String group_name)
     }
       
 
-  int[][] out = new int[size][size];
-  for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
+  int[][] out = new int[SIZE][SIZE];
+  for(int i=0;i<SIZE;i++)
+    for(int j=0;j<SIZE;j++)
     {
       float rand = random(100);
 

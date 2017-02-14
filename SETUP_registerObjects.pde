@@ -2,9 +2,14 @@ void registerObjects()
 {
   registerElements();
 
-  String[][] groups = {{"background","organism","reaction","mineral","liquid"},{}};
-  String[] part_name = {"Tile","Chunk"};
-  for(int j = 0; j < 2; j++)
+  String[][] groups = 
+  {
+    {},
+    {"background","organism","reaction","mineral","liquid"},
+    {}
+  };
+  String[] part_name = {"Tile","Block","Chunk"};
+  for(int j = 0; j < part_name.length; j++)
   {
     ObjectManager objectManager = GAME.getObjectManager();
     SetupManager setupManager = GAME.getSetupManager();
@@ -24,6 +29,9 @@ void registerObjects()
           fails += registerTile(file.getJSONObject(i));
           break;
         case 1:
+          fails += registerBlock(file.getJSONObject(i));
+          break;
+        case 2:
           fails += registerChunk(file.getJSONObject(i));
           break;
       }
@@ -42,6 +50,9 @@ void registerObjects()
         registerCustomTiles();
         break;
       case 1:
+        registerCustomBlocks();
+        break;
+      case 2:
         String[] chunk = 
         {
           "PlainChunk1","PlainChunk0",
