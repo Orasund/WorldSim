@@ -1,7 +1,7 @@
 public Part evaluateBlock(final int[][] template_,String group_)
 {
   SimulationManager simulationManager = GAME.getSimulationManager();
-
+  
   simulationManager.newSession(group_);
   simulationManager.add("Organic",new OrganicSim(template_,group_));
   simulationManager.listenTo("floid","Organic");
@@ -19,7 +19,8 @@ public Part evaluateBlock(final int[][] template_,String group_)
 
   String group = group_;
   int background = 0;
-  color c = color(0);
+  //color c = color(random(255));
+  color c = color(255,0,255);
   Set<String> types = new Set<String>();
 
   int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};

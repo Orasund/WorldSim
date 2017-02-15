@@ -16,9 +16,13 @@ public Part createBlock(int[] amount, String[] parts, String unused_group_name)
       if(j == group.length-1)
         throw new RuntimeException("Part not found: "+parts[i]+" @createBlock");
     }*/
-  String[] group = {"Air0",parts[0]+"0"};
+  //String[] group = {"Air0",parts[0]+"0"};
+  String[] group = new String[parts.length+1];
+  group[0] = "Air0";
+  for(int i = 0; i<parts.length; i++)
+    group[i+1] = parts[i]+"0";
   String group_name = parts[0]+"TempGroup";
-  int[] adresses = {0,1};
+  //int[] adresses = {1};
   objectManager.registerGroup(group_name, group);
   
   int[][] out = new int[SIZE][SIZE];
@@ -28,11 +32,12 @@ public Part createBlock(int[] amount, String[] parts, String unused_group_name)
       float rand = random(100);
 
       int type = 0;
+      println(amount.length);
       for(int k=0;k<amount.length;k++)
       {
         if(rand<amount[k])
         {
-          type = adresses[k];
+          type = k+1;//adresses[k];
           break;
         }
         rand-=amount[k];

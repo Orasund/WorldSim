@@ -84,6 +84,7 @@ public class SceneManager //implements Service
   public void renderArea()
   {
     RenderEngine renderEngine = GAME.getRenderEngine();
+    ObjectManager objectManager = GAME.getObjectManager();
 
     if(trans_time != 0)
     {
@@ -120,6 +121,27 @@ public class SceneManager //implements Service
       float difference = (factor-zoom)/zoom_time;
       renderEngine.setZoom(zoom+difference);
       zoom_time--;
+
+      if(zoom_time <= 0)
+      {
+        if(renderEngine.getZoom()<SIZE/2)
+        {
+           //chance to main Map
+          chanceScene("main");         
+        }
+        else
+        {
+          //chance to Editor
+          chanceScene("TileEditor");
+
+          String name = getCorrentScene().getCorrentPartName();
+          Part obj = objectManager.getPart(name);
+          String group_name = obj.getGroupName();
+          int[][] map = obj.getFrame(0);
+          getCorrentScene().setMap(map);
+          getCorrentScene().setGroupName(group_name);
+        }
+      }
     }
 
     getCorrentScene().renderArea();

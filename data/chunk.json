@@ -3,42 +3,42 @@
     "name":"Plain",
     "parts":["liquid","organism","mineral"],
     "amounts":[4,40,1],
-    "ground":"Dirt",
+    "ground":"Grass",
     "picks":4
   },
   {
     "name":"Swamp",
     "parts":["liquid","organism"],
     "amounts":[50,0],
-    "ground":"Dirt",
+    "ground":"Grass",
     "picks":3
   },
   {
     "name":"Sea",
     "parts":["liquid"],
     "amounts":[70],
-    "ground":"Dirt",
+    "ground":"Grass",
     "picks":2
   },
   {
     "name":"Hill",
     "parts":["liquid","mineral"],
     "amounts":[5,65],
-    "ground":"Gravel",
+    "ground":"GravelPath",
     "picks":2
   },
   {
     "name":"Forest",
     "parts":["liquid","mineral","organism"],
     "amounts":[10,5,40],
-    "ground":"Dirt",
+    "ground":"Grass",
     "picks":2
   },
   {
     "name":"Lava",
     "parts":["reaction","mineral"],
     "amounts":[60,20],
-    "ground":"Gravel",
+    "ground":"GravelPath",
     "picks":2
   }
 ]

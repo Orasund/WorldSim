@@ -1619,9 +1619,13 @@ public Part createBlock(int[] amount, String[] parts, String unused_group_name)
       if(j == group.length-1)
         throw new RuntimeException("Part not found: "+parts[i]+" @createBlock");
     }*/
-  String[] group = {"Air0",parts[0]+"0"};
+  //String[] group = {"Air0",parts[0]+"0"};
+  String[] group = new String[parts.length+1];
+  group[0] = "Air0";
+  for(int i = 0; i<parts.length; i++)
+    group[i+1] = parts[i]+"0";
   String group_name = parts[0]+"TempGroup";
-  int[] adresses = {0,1};
+  //int[] adresses = {1};
   objectManager.registerGroup(group_name, group);
   
   int[][] out = new int[SIZE][SIZE];
@@ -1631,11 +1635,12 @@ public Part createBlock(int[] amount, String[] parts, String unused_group_name)
       float rand = random(100);
 
       int type = 0;
+      println(amount.length);
       for(int k=0;k<amount.length;k++)
       {
         if(rand<amount[k])
         {
-          type = adresses[k];
+          type = k+1;//adresses[k];
           break;
         }
         rand-=amount[k];
@@ -1718,7 +1723,7 @@ public Part createTile(int[] elements,String template_type)
 public Part evaluateBlock(final int[][] template_,String group_)
 {
   SimulationManager simulationManager = GAME.getSimulationManager();
-
+  
   simulationManager.newSession(group_);
   simulationManager.add("Organic",new OrganicSim(template_,group_));
   simulationManager.listenTo("floid","Organic");
@@ -1736,7 +1741,8 @@ public Part evaluateBlock(final int[][] template_,String group_)
 
   String group = group_;
   int background = 0;
-  int c = color(0);
+  //color c = color(random(255));
+  int c = color(255,0,255);
   Set<String> types = new Set<String>();
 
   int[][][] img = {blocks,blocks,blocks,blocks,blocks,blocks};
@@ -1975,7 +1981,7 @@ public void gameSetup()
 
 
   COUNTER = 0;
-  registerObjects();
+  loadObjects();
 
   TEMPLATE = frameTemplate(0,10,0,0);
 
@@ -1989,8 +1995,77 @@ public void gameSetup()
 
   GAME.addSceneManager(new SceneManager("main",map.getMap(),"chunk"));
   SceneManager sceneManager = GAME.getSceneManager();
+  sceneManager.addScene("TileEditor", map.getMap(), "chunk");
   //sceneManager.addScene("template",TEMPLATE,"tiles");
   //sceneManager.chanceScene("template");
+}
+public void loadObjects()
+{
+  registerElements();
+
+  String[][] groups = 
+  {
+    {},
+    {"background","organism","reaction","mineral","liquid"},
+    {}
+  };
+  String[] part_name = {"Tile","Block","Chunk"};
+  for(int j = 0; j < part_name.length; j++)
+  {
+    ObjectManager objectManager = GAME.getObjectManager();
+    SetupManager setupManager = GAME.getSetupManager();
+    setupManager.clear();
+
+    for(int i=0; i<groups[j].length; i++)
+      setupManager.addGroup(groups[j][i]);
+    
+    JSONArray file = loadJSONArray(part_name[j]+".json");
+    
+    int fails = 0;
+    for(int i = 0; i < file.size(); i++)
+    {
+      switch(j)
+      {
+        case 0:
+          fails += registerTile(file.getJSONObject(i));
+          break;
+        case 1:
+          fails += registerBlock(file.getJSONObject(i));
+          break;
+        case 2:
+          fails += registerChunk(file.getJSONObject(i));
+          break;
+      }
+    }
+    println("fails in register"+part_name[j]+"s:"+fails);
+
+    String[] new_group;
+    for(int i=0; i<groups[j].length; i++)
+    {
+      new_group = setupManager.getGroup(groups[j][i]);
+      objectManager.registerGroup(groups[j][i]+part_name[j]+"s",new_group);
+    }
+    switch(j)
+    {
+      case 0:
+        registerCustomTiles();
+        break;
+      case 1:
+        registerCustomBlocks();
+        break;
+      case 2:
+        String[] chunk = 
+        {
+          "PlainChunk1","PlainChunk0",
+          "SeaChunk1","SwampChunk0",
+          "HillChunk1","LavaChunk0",
+          "ForestChunk1","ForestChunk0",
+        };
+        objectManager.registerGroup("chunk",chunk);      
+        registerCostumChunks();
+        break;
+    }
+  }
 }
 public int registerBlock(JSONObject file)
 {
@@ -2255,74 +2330,6 @@ public void registerElements()
   for(int i = 0; i<5; i++)
     objectManager.registerPart(elements[i], evaluateElement(i));
   objectManager.registerGroup("elements",elements);
-}
-public void registerObjects()
-{
-  registerElements();
-
-  String[][] groups = 
-  {
-    {},
-    {"background","organism","reaction","mineral","liquid"},
-    {}
-  };
-  String[] part_name = {"Tile","Block","Chunk"};
-  for(int j = 0; j < part_name.length; j++)
-  {
-    ObjectManager objectManager = GAME.getObjectManager();
-    SetupManager setupManager = GAME.getSetupManager();
-    setupManager.clear();
-
-    for(int i=0; i<groups[j].length; i++)
-      setupManager.addGroup(groups[j][i]);
-    
-    JSONArray file = loadJSONArray(part_name[j]+".json");
-    
-    int fails = 0;
-    for(int i = 0; i < file.size(); i++)
-    {
-      switch(j)
-      {
-        case 0:
-          fails += registerTile(file.getJSONObject(i));
-          break;
-        case 1:
-          fails += registerBlock(file.getJSONObject(i));
-          break;
-        case 2:
-          fails += registerChunk(file.getJSONObject(i));
-          break;
-      }
-    }
-    println("fails in register"+part_name[j]+"s:"+fails);
-
-    String[] new_group;
-    for(int i=0; i<groups[j].length; i++)
-    {
-      new_group = setupManager.getGroup(groups[j][i]);
-      objectManager.registerGroup(groups[j][i]+part_name[j]+"s",new_group);
-    }
-    switch(j)
-    {
-      case 0:
-        registerCustomTiles();
-        break;
-      case 1:
-        registerCustomBlocks();
-        break;
-      case 2:
-        String[] chunk = 
-        {
-          "PlainChunk1","PlainChunk0",
-          "SeaChunk1","SwampChunk0",
-          "HillChunk1","LavaChunk0",
-          "ForestChunk1","ForestChunk0",
-        };
-        objectManager.registerGroup("chunk",chunk);      
-        registerCostumChunks();
-        break;
-    }
-  }
 }
 public int registerTile(JSONObject file)
 {
@@ -2960,6 +2967,11 @@ public class Scene
     group_name = tiles;
   }
 
+  public void setGroupName(String name)
+  {
+    group_name = name;
+  }
+
   public void setMap(int[][] map_)
   {
     for(int i = 0; i < map.length; i++)
@@ -3122,6 +3134,7 @@ public class SceneManager //implements Service
   public void renderArea()
   {
     RenderEngine renderEngine = GAME.getRenderEngine();
+    ObjectManager objectManager = GAME.getObjectManager();
 
     if(trans_time != 0)
     {
@@ -3158,6 +3171,27 @@ public class SceneManager //implements Service
       float difference = (factor-zoom)/zoom_time;
       renderEngine.setZoom(zoom+difference);
       zoom_time--;
+
+      if(zoom_time <= 0)
+      {
+        if(renderEngine.getZoom()<SIZE/2)
+        {
+           //chance to main Map
+          chanceScene("main");         
+        }
+        else
+        {
+          //chance to Editor
+          chanceScene("TileEditor");
+
+          String name = getCorrentScene().getCorrentPartName();
+          Part obj = objectManager.getPart(name);
+          String group_name = obj.getGroupName();
+          int[][] map = obj.getFrame(0);
+          getCorrentScene().setMap(map);
+          getCorrentScene().setGroupName(group_name);
+        }
+      }
     }
 
     getCorrentScene().renderArea();

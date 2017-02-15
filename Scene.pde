@@ -15,6 +15,11 @@ public class Scene
     group_name = tiles;
   }
 
+  public void setGroupName(String name)
+  {
+    group_name = name;
+  }
+
   public void setMap(int[][] map_)
   {
     for(int i = 0; i < map.length; i++)
