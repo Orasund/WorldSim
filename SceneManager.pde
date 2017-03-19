@@ -140,6 +140,8 @@ public class SceneManager //implements Service
           int[][] map = obj.getFrame(0);
           getCorrentScene().setMap(map);
           getCorrentScene().setGroupName(group_name);
+          //zoom_time = -1;
+          renderEngine.setZoom(1);
         }
       }
     }

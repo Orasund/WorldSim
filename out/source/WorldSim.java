@@ -1894,62 +1894,66 @@ public Part evaluateTile(int[][] template)
   //switch
   switch(background)
   {
-    //moving
+    //Power
     case 4:
+      //Energy
       types.add("moving");
       c = color(255,80,61);
       break; 
 
-    //organic
+    //Life
     case 3:
-      if(resources[1]>0) //cell
+      if(resources[1]>0) //Moss
       {
-        types.add("solid");
         types.add("organic");
         c = color(127,178,127);
       }
-      else //organic
+      if(resources[1]>28) //Coal
+      {
+        types.add("solid");
+        types.add("organic");
+        c = color(97,135,97);
+      }
+      else //Cell
       {
         types.add("organic");
         c = color(0,128,0);
       }
       break;
 
-    //floid
+    //Source
     case 2:
-      //does life exist?
-      if(resources[3]>0) //OrganicSpawn
+      if(resources[3]>0) //Spawn
       {
         types.add("organic_spawn");
         types.add("floid");
         c = color(53,80,128);
       }
-      else //floid
+      else //Water
       {
         types.add("floid");
         c = color(80,80,256);
       }
       break;
 
-    //stone
+    //Base
     case 1:
-      
-      if(resources[1]>28)
+      if(resources[1]>28) //Stone
       {
         types.add("solid");
         c = color(90,90,90);
       }
-      else
+      else //Gravel
       {
         c = color(127,127,127);
       }
       break;
 
-    //ground
+    //Space
     default:
-      if(resources[0]==SIZE*SIZE)
+      if(resources[0]==SIZE*SIZE) //Air
         c = color(0,0,0);
-      else
+      else //Dirt
         c = color(80,255,80);
   }
   String group = "elements";
@@ -3190,6 +3194,8 @@ public class SceneManager //implements Service
           int[][] map = obj.getFrame(0);
           getCorrentScene().setMap(map);
           getCorrentScene().setGroupName(group_name);
+          //zoom_time = -1;
+          renderEngine.setZoom(1);
         }
       }
     }
