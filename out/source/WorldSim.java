@@ -946,6 +946,104 @@ class Map
     return out;
   }
 }
+//test
+public class MapScene implements Scene
+{
+  private int[][] map;
+  private Part[] tiles;
+  String group_name;
+
+  MapScene(int[][] map_,String tiles)
+  {
+    map = new int[map_.length][map_[0].length];
+    for(int i = 0; i < map_.length; i++)
+      for(int j = 0; j < map_[0].length; j++)
+        map[i][j] = map_[i][j];
+    
+    group_name = tiles;
+  }
+
+  public void setGroupName(String name)
+  {
+    group_name = name;
+  }
+
+  public void setMap(int[][] map_)
+  {
+    for(int i = 0; i < map.length; i++)
+      for(int j = 0; j < map[0].length; j++)
+        map[i][j] = map_[i][j];
+  }
+
+  public int[][] getMap()
+  {
+    int[][] out = new int[map.length][map[0].length];
+    for(int i = 0; i < map.length; i++)
+      for(int j = 0; j < map[0].length; j++)
+        out[i][j] = map[i][j];
+    return out;
+  }
+
+  public String getCorrentPartName()
+  {
+    ObjectManager objectManager = GAME.getObjectManager();
+    Player player = GAME.getPlayer();
+    
+    String[] parts = objectManager.getNamesByGroup(group_name);
+    PVector pos = player.getPos();
+    int x = floor(pos.x/SIZE);
+    int y = floor(pos.y/SIZE);
+
+    return parts[map[x][y]];
+  }  
+
+  public int[][] getMapArea(int x, int y, int w, int h)
+  {
+    int[][] out = new int[map.length][map[0].length];
+    for(int i = 0; i < map.length; i++)
+      for(int j = 0; j < map[0].length; j++)
+        out[i][j] = map[i][j];
+    return out;
+  }
+
+  public void renderArea()
+  {
+    RenderEngine renderEngine = GAME.getRenderEngine();
+    ObjectManager objectManager = GAME.getObjectManager();
+    GameLoop gameLoop = GAME.getGameLoop();
+    Player player = GAME.getPlayer();
+    PVector pos = player.getPos();
+    int x = floor(pos.x/SIZE);
+    int y = floor(pos.y/SIZE);
+    
+    renderEngine.rotateScene(false);
+
+    Part[] tiles = objectManager.getGroup(group_name);
+    Part[] ship = objectManager.getGroup("ship");
+
+    for(int i=0;i<5;i++)
+      for(int j=0;j<5;j++)
+      {
+        int x2 = x+i-2;
+        int y2 = y+j-2;
+        if(x2==3 && y2 == -2)
+        	ship[0].drawGrid(x2,y2,gameLoop.getFrame());
+        if(x2==3 && y2 == -1)
+          ship[2].drawGrid(x2,y2,gameLoop.getFrame());
+        if(x2==4 && y2 == -2)
+          ship[1].drawGrid(x2,y2,gameLoop.getFrame());
+        if(x2==4 && y2 == -1)
+          ship[3].drawGrid(x2,y2,gameLoop.getFrame());
+
+        if(x2<0 || y2<0 || x2>=SIZE || y2>=SIZE)
+          continue;
+
+        tiles[map[x2][y2]].drawGrid(x2,y2,gameLoop.getFrame());
+      }
+    
+    renderEngine.rotateScene(true);
+  }
+}
 public class Msg
 {
   public JSONObject a;
@@ -1903,18 +2001,22 @@ public Part evaluateTile(int[][] template)
 
     //Life
     case 3:
-      if(resources[1]>0) //Moss
+      if(resources[1]>0)
       {
-        types.add("organic");
-        c = color(127,178,127);
+        if(resources[1]>28) //Coal
+        {
+          types.add("energy_storage");
+          types.add("solid");
+          types.add("organic");
+          c = color(97,135,97);
+        }
+        else                //Moss           - unused
+        {
+          types.add("organic");
+          c = color(127,178,127);
+        }
       }
-      if(resources[1]>28) //Coal
-      {
-        types.add("solid");
-        types.add("organic");
-        c = color(97,135,97);
-      }
-      else //Cell
+      else                  //Cell
       {
         types.add("organic");
         c = color(0,128,0);
@@ -1923,13 +2025,22 @@ public Part evaluateTile(int[][] template)
 
     //Source
     case 2:
-      if(resources[3]>0) //Spawn
+      if(resources[3]>0)
       {
-        types.add("organic_spawn");
-        types.add("floid");
-        c = color(53,80,128);
+        if(resources[1]>28) //                - unused
+        {
+          types.add("organic_spawn");
+          types.add("floid");
+          c = color(53,80,128);
+        }
+        else  	            //Spawn
+        {
+          types.add("organic_spawn");
+          types.add("floid");
+          c = color(53,80,128);
+        }
       }
-      else //Water
+      else                  //Water
       {
         types.add("floid");
         c = color(80,80,256);
@@ -1938,12 +2049,12 @@ public Part evaluateTile(int[][] template)
 
     //Base
     case 1:
-      if(resources[1]>28) //Stone
+      if(resources[1]>28)   //Stone
       {
         types.add("solid");
         c = color(90,90,90);
       }
-      else //Gravel
+      else                  //Gravel
       {
         c = color(127,127,127);
       }
@@ -2955,102 +3066,19 @@ public int[][] simSource(final int[][] template,final int[][] temp_template_,Str
   return temp_template;*/
 }
 //test
-public class Scene
+interface Scene
 {
-  private int[][] map;
-  private Part[] tiles;
-  String group_name;
+  public void setGroupName(String name);
 
-  Scene(int[][] map_,String tiles)
-  {
-    map = new int[map_.length][map_[0].length];
-    for(int i = 0; i < map_.length; i++)
-      for(int j = 0; j < map_[0].length; j++)
-        map[i][j] = map_[i][j];
-    
-    group_name = tiles;
-  }
+  public void setMap(int[][] map_);
 
-  public void setGroupName(String name)
-  {
-    group_name = name;
-  }
+  public int[][] getMap();
 
-  public void setMap(int[][] map_)
-  {
-    for(int i = 0; i < map.length; i++)
-      for(int j = 0; j < map[0].length; j++)
-        map[i][j] = map_[i][j];
-  }
+  public String getCorrentPartName();
 
-  public int[][] getMap()
-  {
-    int[][] out = new int[map.length][map[0].length];
-    for(int i = 0; i < map.length; i++)
-      for(int j = 0; j < map[0].length; j++)
-        out[i][j] = map[i][j];
-    return out;
-  }
+  public int[][] getMapArea(int x, int y, int w, int h);
 
-  public String getCorrentPartName()
-  {
-    ObjectManager objectManager = GAME.getObjectManager();
-    Player player = GAME.getPlayer();
-    
-    String[] parts = objectManager.getNamesByGroup(group_name);
-    PVector pos = player.getPos();
-    int x = floor(pos.x/SIZE);
-    int y = floor(pos.y/SIZE);
-
-    return parts[map[x][y]];
-  }  
-
-  public int[][] getMapArea(int x, int y, int w, int h)
-  {
-    int[][] out = new int[map.length][map[0].length];
-    for(int i = 0; i < map.length; i++)
-      for(int j = 0; j < map[0].length; j++)
-        out[i][j] = map[i][j];
-    return out;
-  }
-
-  public void renderArea()
-  {
-    RenderEngine renderEngine = GAME.getRenderEngine();
-    ObjectManager objectManager = GAME.getObjectManager();
-    GameLoop gameLoop = GAME.getGameLoop();
-    Player player = GAME.getPlayer();
-    PVector pos = player.getPos();
-    int x = floor(pos.x/SIZE);
-    int y = floor(pos.y/SIZE);
-    
-    renderEngine.rotateScene(false);
-
-    Part[] tiles = objectManager.getGroup(group_name);
-    Part[] ship = objectManager.getGroup("ship");
-
-    for(int i=0;i<5;i++)
-      for(int j=0;j<5;j++)
-      {
-        int x2 = x+i-2;
-        int y2 = y+j-2;
-        if(x2==3 && y2 == -2)
-        	ship[0].drawGrid(x2,y2,gameLoop.getFrame());
-        if(x2==3 && y2 == -1)
-          ship[2].drawGrid(x2,y2,gameLoop.getFrame());
-        if(x2==4 && y2 == -2)
-          ship[1].drawGrid(x2,y2,gameLoop.getFrame());
-        if(x2==4 && y2 == -1)
-          ship[3].drawGrid(x2,y2,gameLoop.getFrame());
-
-        if(x2<0 || y2<0 || x2>=SIZE || y2>=SIZE)
-          continue;
-
-        tiles[map[x2][y2]].drawGrid(x2,y2,gameLoop.getFrame());
-      }
-    
-    renderEngine.rotateScene(true);
-  }
+  public void renderArea();
 }
 public class SceneManager //implements Service
 {
@@ -3122,7 +3150,7 @@ public class SceneManager //implements Service
 
   public void addScene(String name, int[][] map, String tiles)
   {
-    database.add(name,new Scene(map,tiles));
+    database.add(name,new MapScene(map,tiles));
   }
 
   public void chanceScene(String name)

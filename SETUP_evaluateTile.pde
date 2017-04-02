@@ -77,18 +77,22 @@ Part evaluateTile(int[][] template)
 
     //Life
     case 3:
-      if(resources[1]>0) //Moss
+      if(resources[1]>0)
       {
-        types.add("organic");
-        c = color(127,178,127);
+        if(resources[1]>28) //Coal
+        {
+          types.add("energy_storage");
+          types.add("solid");
+          types.add("organic");
+          c = color(97,135,97);
+        }
+        else                //Moss           - unused
+        {
+          types.add("organic");
+          c = color(127,178,127);
+        }
       }
-      if(resources[1]>28) //Coal
-      {
-        types.add("solid");
-        types.add("organic");
-        c = color(97,135,97);
-      }
-      else //Cell
+      else                  //Cell
       {
         types.add("organic");
         c = color(0,128,0);
@@ -97,13 +101,22 @@ Part evaluateTile(int[][] template)
 
     //Source
     case 2:
-      if(resources[3]>0) //Spawn
+      if(resources[3]>0)
       {
-        types.add("organic_spawn");
-        types.add("floid");
-        c = color(53,80,128);
+        if(resources[1]>28) //                - unused
+        {
+          types.add("organic_spawn");
+          types.add("floid");
+          c = color(53,80,128);
+        }
+        else  	            //Spawn
+        {
+          types.add("organic_spawn");
+          types.add("floid");
+          c = color(53,80,128);
+        }
       }
-      else //Water
+      else                  //Water
       {
         types.add("floid");
         c = color(80,80,256);
@@ -112,12 +125,12 @@ Part evaluateTile(int[][] template)
 
     //Base
     case 1:
-      if(resources[1]>28) //Stone
+      if(resources[1]>28)   //Stone
       {
         types.add("solid");
         c = color(90,90,90);
       }
-      else //Gravel
+      else                  //Gravel
       {
         c = color(127,127,127);
       }

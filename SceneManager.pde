@@ -68,7 +68,7 @@ public class SceneManager //implements Service
 
   public void addScene(String name, int[][] map, String tiles)
   {
-    database.add(name,new Scene(map,tiles));
+    database.add(name,new MapScene(map,tiles));
   }
 
   public void chanceScene(String name)
